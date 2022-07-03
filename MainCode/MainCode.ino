@@ -1,19 +1,31 @@
 #include <WiFi.h>
 #include "UNIT_ENV.h"
+#include "Adafruit_SGP30.h"
 
-const char* ssid = "myssid";
-const char* password = "mypassword";
+const char* ssid = "myssid"; //myssid
+const char* password = "mypassword"; //mypassword
 struct tm timeInfo;
 char timeData[20];
 int measurementIntervalInMinutes = 1;
 
 SHT3X sht30;
 QMP6988 qmp6988;
+Adafruit_SGP30 sgp;
+
+float temperature, humidity;
 
 void setup() {
   Serial.begin(115200);
   Wire.begin(21, 22);
   qmp6988.init();
+
+  if (! sgp.begin()){
+    Serial.println("Sensor not found :(");
+    while (1);
+  }
+  Serial.print("Found SGP30 serial #");
+  Serial.println(sgp.serialnumber[0], HEX);
+  
   connectToAccessPoint(ssid, password);
   configTime(9 * 3600L, 0, "ntp.nict.jp", "time.google.com");
 }
@@ -24,6 +36,7 @@ void loop() {
     sprintf(timeData, "%04d/%02d/%02d %02d:%02d:%02d", timeInfo.tm_year + 1900, timeInfo.tm_mon + 1, timeInfo.tm_mday, timeInfo.tm_hour, timeInfo.tm_min, timeInfo.tm_sec);
     Serial.println(timeData);
     measureEnv3();
+    measureSgp30();
     delay(1000);
   }
 }
@@ -45,14 +58,40 @@ void connectToAccessPoint(const char* ssid, const char* password) {
 }
 
 void measureEnv3() {
-  float temperature;
-  float humidity;
   float pressure = qmp6988.calcPressure();
   if (sht30.get() == 0) {
     temperature = sht30.cTemp;
     humidity = sht30.humidity;
   } else {
     temperature = 0, humidity = 0;
+    Serial.println("Measurement failed (SGP30)");
+    return;
   }
-  Serial.printf("Temperatura: %2.2f*C  Humedad: %0.2f%%  Pressure: %0.2fPa\r\n", temperature, humidity, pressure);
+  Serial.printf("Temperature: %2.2f*C  Humiedity: %0.2f%%  Pressure: %0.2fPa\r\n", temperature, humidity, pressure);
+}
+
+uint32_t getAbsoluteHumidity(float temperature, float humidity) {
+    const float absoluteHumidity = 216.7f * ((humidity / 100.0f) * 6.112f * exp((17.62f * temperature) / (243.12f + temperature)) / (273.15f + temperature)); // [g/m^3]
+    const uint32_t absoluteHumidityScaled = static_cast<uint32_t>(1000.0f * absoluteHumidity); // [mg/m^3]
+    return absoluteHumidityScaled;
+}
+
+void measureSgp30() {
+  if(temperature != 0 || humidity != 0){
+    sgp.setHumidity(getAbsoluteHumidity(temperature, humidity));
+  }
+  
+  if (! sgp.IAQmeasure()) {
+    Serial.println("Measurement failed (SGP30)");
+    return;
+  }
+  Serial.print("TVOC: "); Serial.print(sgp.TVOC); Serial.print("ppb ");
+  Serial.print("eCO2: "); Serial.print(sgp.eCO2); Serial.println("ppm");
+
+  if (! sgp.IAQmeasureRaw()) {
+    Serial.println("Raw Measurement failed");
+    return;
+  }
+  Serial.print("Raw H2: "); Serial.print(sgp.rawH2);
+  Serial.print(" Raw Ethanol: "); Serial.println(sgp.rawEthanol);
 }
