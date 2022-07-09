@@ -7,6 +7,7 @@ const char* ssid = "myssid"; //myssid
 const char* password = "mypassword"; //mypassword
 int measurementIntervalInMinutes = 1;
 #define DATA_PIN 19
+int mySensorAddress[] = {0, 3};
 
 struct tm timeInfo;
 char timeData[20];
@@ -16,7 +17,6 @@ QMP6988 qmp6988;
 Adafruit_SGP30 sgp;
 
 float temperature, humidity;
-int sensorAddress = 3;
 
 void setup() {
   Serial.begin(115200);
@@ -24,13 +24,13 @@ void setup() {
   qmp6988.init();
   mySDI12.begin();
 
-  if (! sgp.begin()){
+  if (! sgp.begin()) {
     Serial.println("Sensor not found :(");
     while (1);
   }
   Serial.print("Found SGP30 serial #");
   Serial.println(sgp.serialnumber[0], HEX);
-  
+
   connectToAccessPoint(ssid, password);
   configTime(9 * 3600L, 0, "ntp.nict.jp", "time.google.com");
 }
@@ -42,7 +42,7 @@ void loop() {
     Serial.println(timeData);
     measureEnv3();
     measureSgp30();
-    measureSdi12(sensorAddress);
+    measureSdi12(mySensorAddress);
     delay(1000);
   }
 }
@@ -77,16 +77,16 @@ void measureEnv3() {
 }
 
 uint32_t getAbsoluteHumidity(float temperature, float humidity) {
-    const float absoluteHumidity = 216.7f * ((humidity / 100.0f) * 6.112f * exp((17.62f * temperature) / (243.12f + temperature)) / (273.15f + temperature)); // [g/m^3]
-    const uint32_t absoluteHumidityScaled = static_cast<uint32_t>(1000.0f * absoluteHumidity); // [mg/m^3]
-    return absoluteHumidityScaled;
+  const float absoluteHumidity = 216.7f * ((humidity / 100.0f) * 6.112f * exp((17.62f * temperature) / (243.12f + temperature)) / (273.15f + temperature)); // [g/m^3]
+  const uint32_t absoluteHumidityScaled = static_cast<uint32_t>(1000.0f * absoluteHumidity); // [mg/m^3]
+  return absoluteHumidityScaled;
 }
 
 void measureSgp30() {
-  if(temperature != 0 || humidity != 0){
+  if (temperature != 0 || humidity != 0) {
     sgp.setHumidity(getAbsoluteHumidity(temperature, humidity));
   }
-  
+
   if (! sgp.IAQmeasure()) {
     Serial.println("Measurement failed (SGP30)");
     return;
@@ -120,7 +120,7 @@ void split(String data, String *dataArray) {
   return;
 }
 
-String sendCommandAndCollectResponse(String myCommand, int sendInterval, int requestNumber){
+String sendCommandAndCollectResponse(String myCommand, int sendInterval, int requestNumber) {
   String response = "";
   for (int j = 0; j < requestNumber; j++) {
     mySDI12.sendCommand(myCommand);
@@ -158,39 +158,45 @@ boolean checkActiveSdi12(byte i) {
 
   response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
 
-  if(response != "\0"){
+  if (response != "\0") {
     return true;
-  }else{
+  } else {
     return false;
   }
 }
 
-String measureSdi12(int sensorAddress){
-  Serial.println("Start measurement (Sensor address: " + String(sensorAddress) + ")");
-  String response = "";
-  String myCommand = String(sensorAddress) + "C!";
-  String sdiResponse[6];
-  int sendInterval = 50;
-  int requestNumber = 5;
+String measureSdi12(int *sensorAddress) {
+  String totalResponse = "";
 
-  response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
+  for (int sensorNumber = 0; sensorNumber <= sizeof(sensorAddress) / sizeof(int); sensorNumber++) {
+    Serial.println("Start measurement (Sensor address: " + String(sensorAddress[sensorNumber]) + ")");
+    String response = "";
+    String sdiResponse[6] = {"\0"};
+    int sendInterval = 50;
+    int requestNumber = 5;
+    String myCommand = String(sensorAddress[sensorNumber]) + "C!";
+    Serial.println("Command: " + myCommand);
 
-  if(response == "\0"){
-    return "MEASUREMENT ERROR!";
+    response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
+
+    if (response == "\0") {
+      continue;
+    }
+
+    int waitTime = response.substring(3, 4).toInt() * 1000;
+    delay(waitTime);
+
+    myCommand = String(sensorAddress[sensorNumber]) + "D0!";
+    Serial.println("Command: " + myCommand);
+    response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
+
+    if (response == "\0") {
+      continue;
+    }
+
+    split(response, sdiResponse);
+    Serial.println("Address: " + sdiResponse[0] + "(-), VWC: " + sdiResponse[1] + "(%), Soil temperature: " + sdiResponse[2] + "(*C), BRP: " + sdiResponse[3] + "(-), SEC: " + sdiResponse[4] + "(dS/m)");
+    totalResponse += sensorNumber == 0 ? response : "+" + response;
   }
-
-  int waitTime = response.substring(3,4).toInt()*1000;
-  delay(waitTime);
-
-  myCommand = String(sensorAddress) + "D0!";
-  response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
-
-  if(response == "\0"){
-    return "MEASUREMENT ERROR!";
-  }
-  
-  split(response, sdiResponse);
-  response = "Address: " + sdiResponse[0] + "(-), VWC: " + sdiResponse[1] + "(%), Soil temperature: " + sdiResponse[2] + "(*C), BRP: " + sdiResponse[3] + "(-), SEC: " + sdiResponse[4] + "(dS/m)";
-  Serial.println(response);
-  return response;
+  return totalResponse;
 }
