@@ -1,13 +1,16 @@
 #include <WiFi.h>
+#include <SDI12.h>
 #include "UNIT_ENV.h"
 #include "Adafruit_SGP30.h"
 
 const char* ssid = "myssid"; //myssid
 const char* password = "mypassword"; //mypassword
+int measurementIntervalInMinutes = 1;
+#define DATA_PIN 19
+
 struct tm timeInfo;
 char timeData[20];
-int measurementIntervalInMinutes = 1;
-
+SDI12 mySDI12(DATA_PIN);
 SHT3X sht30;
 QMP6988 qmp6988;
 Adafruit_SGP30 sgp;
@@ -94,4 +97,22 @@ void measureSgp30() {
   }
   Serial.print("Raw H2: "); Serial.print(sgp.rawH2);
   Serial.print(" Raw Ethanol: "); Serial.println(sgp.rawEthanol);
+}
+
+void split(String data, String *dataArray) {
+  int index = 0;
+  int arraySize = (sizeof(data) / sizeof((data)[0]));
+  int datalength = data.length();
+  for (int i = 0; i < datalength; i++) {
+    char dataChar = data.charAt(i);
+    if ( dataChar == '+' ) {
+      index++;
+    } else if (dataChar == '-') {
+      index++;
+      dataArray[index] += dataChar;
+    } else {
+      dataArray[index] += dataChar;
+    }
+  }
+  return;
 }
