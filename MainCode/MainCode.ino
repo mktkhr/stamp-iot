@@ -1,23 +1,28 @@
 #include <WiFi.h>
+#include <SDI12.h>
 #include "UNIT_ENV.h"
 #include "Adafruit_SGP30.h"
 
 const char* ssid = "myssid"; //myssid
 const char* password = "mypassword"; //mypassword
+int measurementIntervalInMinutes = 1;
+#define DATA_PIN 19
+
 struct tm timeInfo;
 char timeData[20];
-int measurementIntervalInMinutes = 1;
-
+SDI12 mySDI12(DATA_PIN);
 SHT3X sht30;
 QMP6988 qmp6988;
 Adafruit_SGP30 sgp;
 
 float temperature, humidity;
+int sensorAddress = 3;
 
 void setup() {
   Serial.begin(115200);
   Wire.begin(21, 22);
   qmp6988.init();
+  mySDI12.begin();
 
   if (! sgp.begin()){
     Serial.println("Sensor not found :(");
@@ -37,6 +42,7 @@ void loop() {
     Serial.println(timeData);
     measureEnv3();
     measureSgp30();
+    measureSdi12(sensorAddress);
     delay(1000);
   }
 }
@@ -94,4 +100,97 @@ void measureSgp30() {
   }
   Serial.print("Raw H2: "); Serial.print(sgp.rawH2);
   Serial.print(" Raw Ethanol: "); Serial.println(sgp.rawEthanol);
+}
+
+void split(String data, String *dataArray) {
+  int index = 0;
+  int arraySize = (sizeof(data) / sizeof((data)[0]));
+  int datalength = data.length();
+  for (int i = 0; i < datalength; i++) {
+    char dataChar = data.charAt(i);
+    if ( dataChar == '+' ) {
+      index++;
+    } else if (dataChar == '-') {
+      index++;
+      dataArray[index] += dataChar;
+    } else {
+      dataArray[index] += dataChar;
+    }
+  }
+  return;
+}
+
+String sendCommandAndCollectResponse(String myCommand, int sendInterval, int requestNumber){
+  String response = "";
+  for (int j = 0; j < requestNumber; j++) {
+    mySDI12.sendCommand(myCommand);
+    delay(sendInterval);
+
+    if (mySDI12.available()) {
+      Serial.println("Response detected (sendInterval: " + String(sendInterval) + ")");
+      while (mySDI12.available()) {
+        char responseChar = mySDI12.read();
+        if ((responseChar != '\n') && (responseChar != '\r')) {
+          response += responseChar;
+          delay(10);
+        }
+      }
+      mySDI12.clearBuffer();
+      Serial.println("Response: " + response);
+      return response;
+      break;
+    } else {
+      mySDI12.clearBuffer();
+      sendInterval = sendInterval + 10;
+    }
+    Serial.print(".");
+  }
+  Serial.println("Failed to connect to sensor");
+  return response = "\0";
+}
+
+boolean checkActiveSdi12(byte i) {
+  Serial.println("Checking address " + String(i) + "...");
+  String response = "";
+  String myCommand = String(i) + "!";
+  int sendInterval = 50;
+  int requestNumber = 5;
+
+  response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
+
+  if(response != "\0"){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+String measureSdi12(int sensorAddress){
+  Serial.println("Start measurement (Sensor address: " + String(sensorAddress) + ")");
+  String response = "";
+  String myCommand = String(sensorAddress) + "C!";
+  String sdiResponse[6];
+  int sendInterval = 50;
+  int requestNumber = 5;
+
+  response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
+
+  if(response == "\0"){
+    return "MEASUREMENT ERROR!";
+  }
+
+  int waitTime = response.substring(3,4).toInt()*1000;
+  delay(waitTime);
+
+  myCommand = String(sensorAddress) + "D0!";
+  response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
+
+  if(response == "\0"){
+    return "MEASUREMENT ERROR!";
+  }
+  
+  split(response, sdiResponse);
+  response = "Address: " + sdiResponse[0] + "(-), VWC: " + sdiResponse[1] + "(%), Soil temperature: " + sdiResponse[2] + "(*C), BRP: " + sdiResponse[3] + "(-), SEC: " + sdiResponse[4] + "(dS/m)";
+  Serial.println(response);
+  return response;
 }
