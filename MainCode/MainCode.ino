@@ -16,11 +16,13 @@ QMP6988 qmp6988;
 Adafruit_SGP30 sgp;
 
 float temperature, humidity;
+int sensorAddress = 3;
 
 void setup() {
   Serial.begin(115200);
   Wire.begin(21, 22);
   qmp6988.init();
+  mySDI12.begin();
 
   if (! sgp.begin()){
     Serial.println("Sensor not found :(");
@@ -40,6 +42,7 @@ void loop() {
     Serial.println(timeData);
     measureEnv3();
     measureSgp30();
+    measureSdi12(sensorAddress);
     delay(1000);
   }
 }
@@ -133,7 +136,7 @@ String sendCommandAndCollectResponse(String myCommand, int sendInterval, int req
         }
       }
       mySDI12.clearBuffer();
-      Serial.print("Response: " + response);
+      Serial.println("Response: " + response);
       return response;
       break;
     } else {
@@ -146,8 +149,8 @@ String sendCommandAndCollectResponse(String myCommand, int sendInterval, int req
   return response = "\0";
 }
 
-boolean checkActive(byte i) {
-  Serial.print("Checking address " + String(i) + "...");
+boolean checkActiveSdi12(byte i) {
+  Serial.println("Checking address " + String(i) + "...");
   String response = "";
   String myCommand = String(i) + "!";
   int sendInterval = 50;
@@ -160,4 +163,34 @@ boolean checkActive(byte i) {
   }else{
     return false;
   }
+}
+
+String measureSdi12(int sensorAddress){
+  Serial.println("Start measurement (Sensor address: " + String(sensorAddress) + ")");
+  String response = "";
+  String myCommand = String(sensorAddress) + "C!";
+  String sdiResponse[6];
+  int sendInterval = 50;
+  int requestNumber = 5;
+
+  response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
+
+  if(response == "\0"){
+    return "MEASUREMENT ERROR!";
+  }
+
+  int waitTime = response.substring(3,4).toInt()*1000;
+  delay(waitTime);
+
+  myCommand = String(sensorAddress) + "D0!";
+  response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
+
+  if(response == "\0"){
+    return "MEASUREMENT ERROR!";
+  }
+  
+  split(response, sdiResponse);
+  response = "Address: " + sdiResponse[0] + "(-), VWC: " + sdiResponse[1] + "(%), Soil temperature: " + sdiResponse[2] + "(*C), BRP: " + sdiResponse[3] + "(-), SEC: " + sdiResponse[4] + "(dS/m)";
+  Serial.println(response);
+  return response;
 }
