@@ -116,3 +116,48 @@ void split(String data, String *dataArray) {
   }
   return;
 }
+
+String sendCommandAndCollectResponse(String myCommand, int sendInterval, int requestNumber){
+  String response = "";
+  for (int j = 0; j < requestNumber; j++) {
+    mySDI12.sendCommand(myCommand);
+    delay(sendInterval);
+
+    if (mySDI12.available()) {
+      Serial.println("Response detected (sendInterval: " + String(sendInterval) + ")");
+      while (mySDI12.available()) {
+        char responseChar = mySDI12.read();
+        if ((responseChar != '\n') && (responseChar != '\r')) {
+          response += responseChar;
+          delay(10);
+        }
+      }
+      mySDI12.clearBuffer();
+      Serial.print("Response: " + response);
+      return response;
+      break;
+    } else {
+      mySDI12.clearBuffer();
+      sendInterval = sendInterval + 10;
+    }
+    Serial.print(".");
+  }
+  Serial.println("Failed to connect to sensor");
+  return response = "\0";
+}
+
+boolean checkActive(byte i) {
+  Serial.print("Checking address " + String(i) + "...");
+  String response = "";
+  String myCommand = String(i) + "!";
+  int sendInterval = 50;
+  int requestNumber = 5;
+
+  response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
+
+  if(response != "\0"){
+    return true;
+  }else{
+    return false;
+  }
+}
