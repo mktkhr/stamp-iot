@@ -2,12 +2,18 @@
 #include <SDI12.h>
 #include "UNIT_ENV.h"
 #include "Adafruit_SGP30.h"
+#include "SD.h"
+#include "SPI.h"
+#include "FS.h"
 
-const char* ssid = "myssid"; //myssid
-const char* password = "mypassword"; //mypassword
+const char* ssid = "TP-Link_4454"; //myssid
+const char* password = "59159919"; //mypassword
 int measurementIntervalInMinutes = 1;
 #define DATA_PIN 19
 int mySensorAddress[] = {0, 3};
+String serialNumber = "sampleNumber";
+#define SDPin 0
+bool sd_flag = false;
 
 struct tm timeInfo;
 char timeData[20];
@@ -23,13 +29,34 @@ void setup() {
   Wire.begin(21, 22);
   qmp6988.init();
   mySDI12.begin();
-
-  if (! sgp.begin()) {
-    Serial.println("Sensor not found :(");
-    while (1);
+  
+  for (int i = 0; i < 3; i++) {
+    if (SD.begin(SDPin)) {
+      sd_flag = true;
+      break;
+    }
   }
-  Serial.print("Found SGP30 serial #");
-  Serial.println(sgp.serialnumber[0], HEX);
+
+  if(sd_flag == true){
+    Serial.println("SD card Connection done");
+    File file = SD.open("/log.csv");
+    if (!file) {
+      String first_row = "Timestamp,Serial number,# of SDI-12 sensor,Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water electric coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Atmospheric pressure,Temperature,Humidity,CO2 concentration,Total volatile organic compounds,Analog value,Voltage\n";
+      String second_row = "(YYYY/MM/DD hh:mm:ss),(-),(-),(-),(%),(C),(-),(dS/m),(uS/cm),(uS/cm),(G),(G),(G),(-),(%),(C),(-),(dS/m),(uS/cm),(uS/cm),(G),(G),(G),(-),(%),(C),(-),(dS/m),(uS/cm),(μS/cm),(G),(G),(G),(-),(%),(C),(-),(dS/m),(uS/cm),(uS/cm),(G),(G),(G),(hPa),(C),(%),(ppm),(ppb),(-),(V)\n";
+      appendFile("/log.csv", first_row);
+      appendFile("/log.csv", second_row);
+    }
+  }else{
+    Serial.println("Card Mount Failed");
+  }
+
+  if (!sgp.begin()) {
+    Serial.println("Sensor not found");
+    while (1);
+  }else{
+    Serial.print("Found SGP30 serial #");
+    Serial.println(sgp.serialnumber[0], HEX);
+  }
 
   connectToAccessPoint(ssid, password);
   configTime(9 * 3600L, 0, "ntp.nict.jp", "time.google.com");
@@ -38,11 +65,14 @@ void setup() {
 void loop() {
   getLocalTime(&timeInfo);
   if ((timeInfo.tm_min % measurementIntervalInMinutes == 0) && (timeInfo.tm_sec == 0)) {
+    String sdSaveData = "";
     sprintf(timeData, "%04d/%02d/%02d %02d:%02d:%02d", timeInfo.tm_year + 1900, timeInfo.tm_mon + 1, timeInfo.tm_mday, timeInfo.tm_hour, timeInfo.tm_min, timeInfo.tm_sec);
     Serial.println(timeData);
-    measureEnv3();
-    measureSgp30();
-    measureSdi12(mySensorAddress);
+    String env3Result = measureEnv3();
+    String sgp30Result = measureSgp30();
+    String sdiResult = measureSdi12(mySensorAddress);
+    sdSaveData += String(timeData) + "," + serialNumber + "," + sdiResult + env3Result + sgp30Result + "blankLightData,blankVoltageData\n";
+    appendFile("/log.csv", sdSaveData);
     delay(1000);
   }
 }
@@ -63,17 +93,18 @@ void connectToAccessPoint(const char* ssid, const char* password) {
   Serial.println("\nWiFi connected.");
 }
 
-void measureEnv3() {
-  float pressure = qmp6988.calcPressure();
+String measureEnv3() {
+  float pressure = qmp6988.calcPressure()/100;
   if (sht30.get() == 0) {
     temperature = sht30.cTemp;
     humidity = sht30.humidity;
   } else {
     temperature = 0, humidity = 0;
     Serial.println("Measurement failed (SGP30)");
-    return;
+    return ",,";
   }
-  Serial.printf("Temperature: %2.2f*C  Humiedity: %0.2f%%  Pressure: %0.2fPa\r\n", temperature, humidity, pressure);
+  Serial.printf("Temperature: %2.2f*C  Humiedity: %0.2f%%  Pressure: %0.2fhPa\r\n", temperature, humidity, pressure);
+  return String(pressure) + "," + String(temperature) + "," + String(humidity) + ",";
 }
 
 uint32_t getAbsoluteHumidity(float temperature, float humidity) {
@@ -82,24 +113,25 @@ uint32_t getAbsoluteHumidity(float temperature, float humidity) {
   return absoluteHumidityScaled;
 }
 
-void measureSgp30() {
+String measureSgp30() {
   if (temperature != 0 || humidity != 0) {
     sgp.setHumidity(getAbsoluteHumidity(temperature, humidity));
   }
 
   if (! sgp.IAQmeasure()) {
     Serial.println("Measurement failed (SGP30)");
-    return;
+    return ",,";
   }
   Serial.print("TVOC: "); Serial.print(sgp.TVOC); Serial.print("ppb ");
   Serial.print("eCO2: "); Serial.print(sgp.eCO2); Serial.println("ppm");
 
   if (! sgp.IAQmeasureRaw()) {
     Serial.println("Raw Measurement failed");
-    return;
+    return ",,";
   }
   Serial.print("Raw H2: "); Serial.print(sgp.rawH2);
   Serial.print(" Raw Ethanol: "); Serial.println(sgp.rawEthanol);
+  return String(sgp.eCO2) + "," + String(sgp.TVOC) + ",";
 }
 
 void split(String data, String *dataArray) {
@@ -167,36 +199,171 @@ boolean checkActiveSdi12(byte i) {
 
 String measureSdi12(int *sensorAddress) {
   String totalResponse = "";
+  int sensorNumber = sizeof(sensorAddress) / sizeof(int);
+  totalResponse += String(sensorNumber + 1) + ",";
 
-  for (int sensorNumber = 0; sensorNumber <= sizeof(sensorAddress) / sizeof(int); sensorNumber++) {
-    Serial.println("Start measurement (Sensor address: " + String(sensorAddress[sensorNumber]) + ")");
+  for (int i = 0; i <= sensorNumber; i++) {
+    Serial.println("Start measurement (Sensor address: " + String(sensorAddress[i]) + ")");
     String response = "";
     String sdiResponse[6] = {"\0"};
     int sendInterval = 50;
     int requestNumber = 5;
-    String myCommand = String(sensorAddress[sensorNumber]) + "C!";
+    String myCommand = String(sensorAddress[i]) + "C!";
     Serial.println("Command: " + myCommand);
 
     response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
 
     if (response == "\0") {
+      totalResponse = ",,,,,,,,,,";
       continue;
     }
 
     int waitTime = response.substring(3, 4).toInt() * 1000;
     delay(waitTime);
 
-    myCommand = String(sensorAddress[sensorNumber]) + "D0!";
+    myCommand = String(sensorAddress[i]) + "D0!";
     Serial.println("Command: " + myCommand);
     response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
 
     if (response == "\0") {
+      totalResponse = ",,,,,,,,,,";
       continue;
     }
 
     split(response, sdiResponse);
     Serial.println("Address: " + sdiResponse[0] + "(-), VWC: " + sdiResponse[1] + "(%), Soil temperature: " + sdiResponse[2] + "(*C), BRP: " + sdiResponse[3] + "(-), SEC: " + sdiResponse[4] + "(dS/m)");
-    totalResponse += sensorNumber == 0 ? response : "+" + response;
+    totalResponse += sdiResponse[0] + "," + sdiResponse[1] + "," + sdiResponse[2] + "," + sdiResponse[3] + "," + sdiResponse[4] + ",,,,,,";
+  }
+  
+  for (int n = 0; n < (3 - sensorNumber); n++) {
+    totalResponse += ",,,,,,,,,,";
   }
   return totalResponse;
+}
+
+void listDir(const char * dirname, uint8_t levels) {
+  Serial.printf("Listing directory: %s\n", dirname);
+
+  File root = SD.open(dirname);
+  if (!root) {
+    Serial.println("Failed to open directory");
+    return;
+  }
+  if (!root.isDirectory()) {
+    Serial.println("Not a directory");
+    return;
+  }
+
+  File file = root.openNextFile();
+  while (file) {
+    if (file.isDirectory()) {
+      Serial.print("  DIR : ");
+      Serial.println(file.name());
+      if (levels) {
+        listDir(file.name(), levels - 1);
+      }
+    } else {
+      Serial.print("  FILE: ");
+      Serial.print(file.name());
+      Serial.print("  SIZE: ");
+      Serial.println(file.size());
+    }
+    file = root.openNextFile();
+  }
+}
+
+void createDir(const char * path) {
+  Serial.printf("Creating Dir: %s\n", path);
+  if (SD.mkdir(path)) {
+    Serial.println("Directory created");
+  } else {
+    Serial.println("Make directory failed");
+  }
+}
+
+void removeDir(const char * path) {
+  Serial.printf("Removing Directory: %s\n", path);
+  if (SD.rmdir(path)) {
+    Serial.println("Directory removed");
+  } else {
+    Serial.println("Remove directory failed");
+  }
+}
+
+void readFile(const char * path) {
+  Serial.printf("Reading file: %s\n", path);
+
+  File file = SD.open(path);
+  if (!file) {
+    Serial.println("Failed to open file for reading");
+    return;
+  }
+
+  Serial.print("Read from file: ");
+  while (file.available()) {
+    Serial.write(file.read());
+  }
+  file.close();
+}
+
+void writeFile(const char * path, String message) {
+  Serial.printf("Writing file: %s\n", path);
+
+  File file = SD.open(path, FILE_WRITE);
+  if (!file) {
+    Serial.println("Failed to open file for writing");
+    return;
+  }
+  if (file.print(message)) {
+    Serial.println("File written");
+  } else {
+    Serial.println("Write failed");
+  }
+  file.close();
+}
+
+void appendFile(const char * path, String message) {
+  Serial.printf("Appending to file: %s\n", path);
+
+  File file = SD.open(path, FILE_APPEND);
+  if (!file) {
+    Serial.println("Failed to open file for appending");
+    writeFile(path, message);
+    return;
+  }
+  if (file.print(message)) {
+    Serial.println("Message appended");
+  } else {
+    Serial.println("Append failed");
+  }
+  file.close();
+}
+
+void renameFile(const char * path1, const char * path2) {
+  Serial.printf("Renaming file %s to %s\n", path1, path2);
+  if (SD.rename(path1, path2)) {
+    Serial.println("File renamed");
+  } else {
+    Serial.println("Rename failed");
+  }
+}
+
+String deleteFile(const char * path) {
+  String response;
+  Serial.printf("Deleting file: %s\n", path);
+  if (SD.remove(path)) {
+    Serial.println("File deleted");
+    response = "正常に削除されました。";
+  } else {
+    Serial.println("Delete failed");
+    response = "削除に失敗しました。";
+  }
+  return response;
+}
+
+String readSdSize() {
+  int total = SD.totalBytes() / (1024 * 1024);
+  int used = SD.usedBytes() / (1024 * 1024);
+  String sizelist = "SDカードの最大容量: " + String(total) + " MB<br>使用済み容量: " + String(used) + " MB<br>空き容量： " + String(total - used) + " MB";
+  return sizelist;
 }
