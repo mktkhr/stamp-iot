@@ -12,8 +12,9 @@ int measurementIntervalInMinutes = 1;
 #define DATA_PIN 19
 int mySensorAddress[] = {0, 3};
 String serialNumber = "sampleNumber";
-#define SDPin 0
-bool sd_flag = false;
+#define SD_PIN 0
+bool sdFlag = false;
+#define ANALOG_PIN 33
 
 struct tm timeInfo;
 char timeData[20];
@@ -31,13 +32,13 @@ void setup() {
   mySDI12.begin();
   
   for (int i = 0; i < 3; i++) {
-    if (SD.begin(SDPin)) {
-      sd_flag = true;
+    if (SD.begin(SD_PIN)) {
+      sdFlag = true;
       break;
     }
   }
 
-  if(sd_flag == true){
+  if(sdFlag == true){
     Serial.println("SD card Connection done");
     File file = SD.open("/log.csv");
     if (!file) {
@@ -58,6 +59,8 @@ void setup() {
     Serial.println(sgp.serialnumber[0], HEX);
   }
 
+  pinMode(ANALOG_PIN, INPUT);
+
   connectToAccessPoint(ssid, password);
   configTime(9 * 3600L, 0, "ntp.nict.jp", "time.google.com");
 }
@@ -71,7 +74,8 @@ void loop() {
     String env3Result = measureEnv3();
     String sgp30Result = measureSgp30();
     String sdiResult = measureSdi12(mySensorAddress);
-    sdSaveData += String(timeData) + "," + serialNumber + "," + sdiResult + env3Result + sgp30Result + "blankLightData,blankVoltageData\n";
+    String analogResult = readAnalogValue();
+    sdSaveData += String(timeData) + "," + serialNumber + "," + sdiResult + env3Result + sgp30Result + analogResult + "blankVoltageData\n";
     appendFile("/log.csv", sdSaveData);
     delay(1000);
   }
@@ -214,7 +218,7 @@ String measureSdi12(int *sensorAddress) {
     response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
 
     if (response == "\0") {
-      totalResponse = ",,,,,,,,,,";
+      totalResponse += ",,,,,,,,,,";
       continue;
     }
 
@@ -226,7 +230,7 @@ String measureSdi12(int *sensorAddress) {
     response = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
 
     if (response == "\0") {
-      totalResponse = ",,,,,,,,,,";
+      totalResponse += ",,,,,,,,,,";
       continue;
     }
 
@@ -366,4 +370,11 @@ String readSdSize() {
   int used = SD.usedBytes() / (1024 * 1024);
   String sizelist = "SDカードの最大容量: " + String(total) + " MB<br>使用済み容量: " + String(used) + " MB<br>空き容量： " + String(total - used) + " MB";
   return sizelist;
+}
+
+String readAnalogValue(){
+  String response = "";
+  response = analogRead(ANALOG_PIN);
+  Serial.println("Analog Value: " + response);
+  return response + ",";
 }
