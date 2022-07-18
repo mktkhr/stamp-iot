@@ -5,6 +5,8 @@
 #include "SD.h"
 #include "SPI.h"
 #include "FS.h"
+#include "driver/adc.h"
+#include "esp_adc_cal.h"
 
 const char* ssid = "TP-Link_4454"; //myssid
 const char* password = "59159919"; //mypassword
@@ -15,6 +17,9 @@ String serialNumber = "sampleNumber";
 #define SD_PIN 0
 bool sdFlag = false;
 #define ANALOG_PIN 33
+#define ADC_PIN 32
+#define ADC_CHANNEL ADC_CHANNEL_4
+int calculateNumber = 100;
 
 struct tm timeInfo;
 char timeData[20];
@@ -22,6 +27,7 @@ SDI12 mySDI12(DATA_PIN);
 SHT3X sht30;
 QMP6988 qmp6988;
 Adafruit_SGP30 sgp;
+esp_adc_cal_characteristics_t adcChar;
 
 float temperature, humidity;
 
@@ -61,6 +67,9 @@ void setup() {
 
   pinMode(ANALOG_PIN, INPUT);
 
+  pinMode(ADC_PIN, ANALOG);
+  adcInit();
+
   connectToAccessPoint(ssid, password);
   configTime(9 * 3600L, 0, "ntp.nict.jp", "time.google.com");
 }
@@ -75,7 +84,8 @@ void loop() {
     String sgp30Result = measureSgp30();
     String sdiResult = measureSdi12(mySensorAddress);
     String analogResult = readAnalogValue();
-    sdSaveData += String(timeData) + "," + serialNumber + "," + sdiResult + env3Result + sgp30Result + analogResult + "blankVoltageData\n";
+    String adcResult = readAdcValue(calculateNumber);
+    sdSaveData += String(timeData) + "," + serialNumber + "," + sdiResult + env3Result + sgp30Result + analogResult + adcResult + "\n";
     appendFile("/log.csv", sdSaveData);
     delay(1000);
   }
@@ -377,4 +387,25 @@ String readAnalogValue(){
   response = analogRead(ANALOG_PIN);
   Serial.println("Analog Value: " + response);
   return response + ",";
+}
+
+void adcInit(void) {
+  adc_power_on();
+  adc_gpio_init(ADC_UNIT_1, ADC_CHANNEL);
+  adc1_config_width(ADC_WIDTH_BIT_12);
+  adc1_config_channel_atten(ADC1_CHANNEL_4, ADC_ATTEN_DB_11);
+  esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 1100, &adcChar);
+}
+
+String readAdcValue(int calculateNumber) {
+  uint32_t readValue = 0;
+  int readValueSum = 0;
+  float readValueAvg = 0;
+  for(int i = 0; i < calculateNumber; i++){
+    esp_adc_cal_get_voltage(ADC_CHANNEL, &adcChar, &readValue);
+    readValueSum += readValue;
+  }
+  readValueAvg = readValueSum / float(calculateNumber);
+  Serial.print("Average value(ADC): "); Serial.println(String(readValueAvg));
+  return String(readValueAvg);
 }
