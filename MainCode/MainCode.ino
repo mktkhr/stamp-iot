@@ -2,41 +2,61 @@
 #include <SDI12.h>
 #include "UNIT_ENV.h"
 #include "Adafruit_SGP30.h"
+#include <M5_BH1750FVI.h>
 #include "SD.h"
 #include "SPI.h"
 #include "FS.h"
 #include "driver/adc.h"
 #include "esp_adc_cal.h"
 
-const char* ssid = "TP-Link_4454"; //myssid
-const char* password = "59159919"; //mypassword
-int measurementIntervalInMinutes = 1;
-#define DATA_PIN 19
-int mySensorAddress[] = {0, 3};
-String serialNumber = "sampleNumber";
 #define SD_PIN 0
-bool sdFlag = false;
-#define ANALOG_PIN 33
+#define DATA_PIN 19
 #define ADC_PIN 32
+#define ANALOG_PIN 33
 #define ADC_CHANNEL ADC_CHANNEL_4
+
+uint8_t sda = 21;
+uint8_t scl = 22;
+
+String serialNumber = "sampleNumber";
+const char* ssid = ""; //myssid
+const char* password = ""; //mypassword
+
+int measurementIntervalInMinutes = 1;
+
+int mySensorAddress[] = {0,3};
+
 int calculateNumber = 100;
 
-struct tm timeInfo;
-char timeData[20];
-SDI12 mySDI12(DATA_PIN);
-SHT3X sht30;
-QMP6988 qmp6988;
-Adafruit_SGP30 sgp;
-esp_adc_cal_characteristics_t adcChar;
+bool sdFlag = false;
 
 float temperature, humidity;
 
+struct tm timeInfo;
+char timeData[20];
+
+SDI12 mySDI12(DATA_PIN); //SDI-12センサ
+SHT3X sht30; //温湿度センサ
+QMP6988 qmp6988; //大気圧センサ
+Adafruit_SGP30 sgp; //二酸化炭素濃度センサ
+esp_adc_cal_characteristics_t adcChar; //ADCモジュール
+M5_BH1750FVI bh1750; //デジタル光センサ
+
 void setup() {
   Serial.begin(115200);
-  Wire.begin(21, 22);
-  qmp6988.init();
-  mySDI12.begin();
+  while(!Serial){}
   
+  Wire.begin(sda, scl);
+  
+  //光センサ
+  bh1750.begin(&Wire,sda,scl);
+  bh1750.setMode(CONTINUOUSLY_H_RESOLUTION_MODE);
+
+  qmp6988.init(); //大気圧センサ
+  
+  mySDI12.begin(); //SDI-12センサ
+
+  //SDカードの接続確認
   for (int i = 0; i < 3; i++) {
     if (SD.begin(SD_PIN)) {
       sdFlag = true;
@@ -44,12 +64,13 @@ void setup() {
     }
   }
 
+  //SDカードに初期値
   if(sdFlag == true){
     Serial.println("SD card Connection done");
-    File file = SD.open("/log.csv");
-    if (!file) {
-      String first_row = "Timestamp,Serial number,# of SDI-12 sensor,Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water electric coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Atmospheric pressure,Temperature,Humidity,CO2 concentration,Total volatile organic compounds,Analog value,Voltage\n";
-      String second_row = "(YYYY/MM/DD hh:mm:ss),(-),(-),(-),(%),(C),(-),(dS/m),(uS/cm),(uS/cm),(G),(G),(G),(-),(%),(C),(-),(dS/m),(uS/cm),(uS/cm),(G),(G),(G),(-),(%),(C),(-),(dS/m),(uS/cm),(μS/cm),(G),(G),(G),(-),(%),(C),(-),(dS/m),(uS/cm),(uS/cm),(G),(G),(G),(hPa),(C),(%),(ppm),(ppb),(-),(V)\n";
+    File file = SD.open("/log.csv"); //ログファイルの有無確認
+    if (!file) { //ログファイルがない場合に先頭の
+      String first_row = "Timestamp,Serial number,# of SDI-12 sensor,Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water electric coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Atmospheric pressure,Temperature,Humidity,CO2 concentration,Total volatile organic compounds,Illumination,Analog value,Voltage\n";
+      String second_row = "(YYYY/MM/DD hh:mm:ss),(-),(-),(-),(%),(C),(-),(dS/m),(uS/cm),(uS/cm),(G),(G),(G),(-),(%),(C),(-),(dS/m),(uS/cm),(uS/cm),(G),(G),(G),(-),(%),(C),(-),(dS/m),(uS/cm),(μS/cm),(G),(G),(G),(-),(%),(C),(-),(dS/m),(uS/cm),(uS/cm),(G),(G),(G),(hPa),(C),(%),(ppm),(ppb),(lux),(-),(V)\n";
       appendFile("/log.csv", first_row);
       appendFile("/log.csv", second_row);
     }
@@ -57,21 +78,23 @@ void setup() {
     Serial.println("Card Mount Failed");
   }
 
+  //二酸化炭素濃度センサの接続確認
   if (!sgp.begin()) {
     Serial.println("Sensor not found");
-    while (1);
   }else{
     Serial.print("Found SGP30 serial #");
     Serial.println(sgp.serialnumber[0], HEX);
   }
 
+  //アナログセンサのピン設定
   pinMode(ANALOG_PIN, INPUT);
 
+  //ADCのピン設定
   pinMode(ADC_PIN, ANALOG);
-  adcInit();
+  adcInit(); //ADCの設定
 
-  connectToAccessPoint(ssid, password);
-  configTime(9 * 3600L, 0, "ntp.nict.jp", "time.google.com");
+  connectToAccessPoint(ssid, password); //Wi-Fiに接続
+  configTime(9 * 3600L, 0, "ntp.nict.jp", "time.google.com"); //NTPサーバの設定
 }
 
 void loop() {
@@ -83,9 +106,10 @@ void loop() {
     String env3Result = measureEnv3();
     String sgp30Result = measureSgp30();
     String sdiResult = measureSdi12(mySensorAddress);
+    String illuminationResult = measureIllumination();
     String analogResult = readAnalogValue();
     String adcResult = readAdcValue(calculateNumber);
-    sdSaveData += String(timeData) + "," + serialNumber + "," + sdiResult + env3Result + sgp30Result + analogResult + adcResult + "\n";
+    sdSaveData += String(timeData) + "," + serialNumber + "," + sdiResult + env3Result + sgp30Result + illuminationResult + analogResult + adcResult + "\n";
     appendFile("/log.csv", sdSaveData);
     delay(1000);
   }
@@ -114,8 +138,8 @@ String measureEnv3() {
     humidity = sht30.humidity;
   } else {
     temperature = 0, humidity = 0;
-    Serial.println("Measurement failed (SGP30)");
-    return ",,";
+    Serial.println("Measurement failed (ENV3)");
+    return ",,,";
   }
   Serial.printf("Temperature: %2.2f*C  Humiedity: %0.2f%%  Pressure: %0.2fhPa\r\n", temperature, humidity, pressure);
   return String(pressure) + "," + String(temperature) + "," + String(humidity) + ",";
@@ -253,6 +277,12 @@ String measureSdi12(int *sensorAddress) {
     totalResponse += ",,,,,,,,,,";
   }
   return totalResponse;
+}
+
+String measureIllumination() {
+  uint16_t lux = bh1750.getLUX();
+  Serial.println("デジタル光センサ: " + String(lux) + " (lux)");
+  return String(lux) + ",";
 }
 
 void listDir(const char * dirname, uint8_t levels) {
