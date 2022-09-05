@@ -1,0 +1,29 @@
+version: '3'
+services:
+  db:
+    image: postgres:14
+    container_name: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - db-store:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=stamp-db
+      - POSTGRES_USER=admin
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  redisinsight:
+    image: redislabs/redisinsight:1.12.0
+    ports:
+      - 8005:8001
+    volumes:
+      - redisinsight:/db
+    depends_on:
+      - redis
+volumes:
+  db-store:
+  redisinsight:
