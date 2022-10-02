@@ -1,10 +1,17 @@
 <script setup lang="ts">
-    
+
+const props = defineProps<{
+    title?: string
+}>()
+
 </script>
 
 <template>
     <div class="form-frame">
         <slot name="icon" class="icon"></slot>
+        <div class="title">
+            <span v-if="title">{{props.title}}</span>
+        </div>
         <slot name="mailAddress"></slot>
         <slot name="password"></slot>
         <slot name="passwordConfirm"></slot>
@@ -25,9 +32,12 @@
         margin: calc((40vh - 50px) / 2) auto;
         box-shadow: 0px 10px 20px -5px rgba(0,0,0,0.6);
     }
-    .icon img{
+    .icon img {
         height: 10px;
         width: auto;
+    }
+    .title span {
+        font-size: 25px;
     }
 
 </style>

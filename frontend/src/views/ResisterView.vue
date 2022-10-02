@@ -13,7 +13,7 @@ menuStateRef.value = param;
 
 <template>
     <HeaderComponent :hamburgerState=false :menuState="menuStateRef" @clickEvent="changeState"/>
-        <FormWindow>
+        <FormWindow title="新規登録">
             <template #icon>
                 <img src="@/assets/logo_blue.png" alt="logo" />
             </template>
