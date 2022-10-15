@@ -1,3 +1,27 @@
+<script setup lang="ts">
+import TuneIcon from 'vue-material-design-icons/Tune.vue'
+import Update from 'vue-material-design-icons/Update.vue'
+import Information from 'vue-material-design-icons/InformationOutline.vue'
+import DataBase from 'vue-material-design-icons/Database.vue'
+import WiFi from 'vue-material-design-icons/Wifi.vue'
+import Timer from 'vue-material-design-icons/TimerOutline.vue'
+import AccountSettings from 'vue-material-design-icons/AccountSettings.vue'
+import router from '@/router'
+
+interface Props {
+    menuState: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    menuState: false,
+});
+
+const toHomePage = () => {
+    router.push('/home');
+}
+    
+</script>
+
 <template>
     <nav class="navigator-side" id="navigator" v-bind:class="{ active: menuState }">
         <div class="nav-top">
@@ -6,10 +30,11 @@
         <ul class="navigator">
             <form method="post">
                 <li class="navigator-list">
-                    <router-link to=""></router-link>
-                    <button>
+                    <button @click="toHomePage">
                         <Information style="margin-top: auto; margin-bottom: auto;"/>
-                        <div>登録機器</div>
+                        <div>
+                            ホーム
+                        </div>
                     </button>
                 </li>
                 <li class="navigator-list">
@@ -52,35 +77,6 @@
         </ul>
     </nav>
 </template>
-
-<script lang="ts">
-import TuneIcon from 'vue-material-design-icons/Tune.vue'
-import Update from 'vue-material-design-icons/Update.vue'
-import Information from 'vue-material-design-icons/InformationOutline.vue'
-import DataBase from 'vue-material-design-icons/Database.vue'
-import WiFi from 'vue-material-design-icons/Wifi.vue'
-import Timer from 'vue-material-design-icons/TimerOutline.vue'
-import AccountSettings from 'vue-material-design-icons/AccountSettings.vue'
-
-export default {
-    components: {
-        TuneIcon,
-        Update,
-        Information,
-        DataBase,
-        WiFi,
-        Timer,
-        AccountSettings,
-    },
-    props: {
-        menuState: {
-            type: Boolean,
-            default: false,
-        }
-    },
-}
-    
-</script>
 
 <style scoped>
 nav {
