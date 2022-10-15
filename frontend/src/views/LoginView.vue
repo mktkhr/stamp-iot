@@ -12,7 +12,7 @@ const changeState = (param: boolean) => {
 
 <template>
     <HeaderComponent :hamburgerState=false :menuState="menuStateRef" @clickEvent="changeState" />
-    <FormWindow>
+    <FormWindow title="ログイン">
         <template #icon>
             <img src="@/assets/logo_blue.png" alt="logo" />
         </template>
