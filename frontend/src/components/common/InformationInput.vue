@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 	
 interface Props {
     mailAddress?: boolean
@@ -11,14 +12,16 @@ const props = withDefaults(defineProps<Props>(), {
     password: false,
     passwordConfirm: false,
 });
+
+const inputValue = ref('');
     
 </script>
 
 <template>
     <div class="input-wrap">
-        <input v-if="mailAddress" class="input" type="email" placeholder="">
-		<input v-if="password" class="input" type="password" placeholder="">
-		<input v-if="passwordConfirm" class="input" type="password" placeholder="">
+        <input v-if="mailAddress" class="input" type="email" placeholder="" v-model="inputValue">
+		<input v-if="password" class="input" type="password" placeholder="" v-model="inputValue">
+		<input v-if="passwordConfirm" class="input" type="password" placeholder="" v-model="inputValue">
         <label v-if="mailAddress">メールアドレス</label>
 		<label v-if="password">パスワード</label>
 		<label v-if="passwordConfirm">確認用パスワード</label>
