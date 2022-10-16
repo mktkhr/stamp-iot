@@ -1,0 +1,70 @@
+@startuml stamp-iot 
+entity "AccountTable" {
+    +account_ulid : ULID<<PK>>
+    --
+    mail_address : VARCHAR(255)
+    hashed_password : VARCHAR(255)
+    name : VARCHAR(255)
+    created_at : DATETIME
+    updated_at : DATETIME
+    deleted_at : DATETIME
+}
+
+entity "MicroControllerTable" {
+    +micro_controller_ulid : ULID<<PK>>
+    account_ulid : ULID<<FK>>
+    --
+    mac_address : VARCHAR
+    created_at : DATETIME
+    updated_at : DATETIME
+    deleted_at : DATETIME
+}
+
+entity "MeasuredTimeTable" {
+    +time_data_ulid : ULID<<PK>>
+    micro_controller_ulid : ULID<<FK>>
+    --
+    measuring_time : DATETIME
+    day_of_year : FLOAT
+    created_at : DATETIME
+    updated_at : DATETIME
+    deleted_at : DATETIME
+}
+
+entity "MeasuredDataTable" {
+    +measured_data_ulid : ULID<<PK>>
+    time_data_ulid : ULID<<FK>>
+    sensor_id : SMALLINT<<FK>>
+    --
+    sdi_address : VARCHAR(1)
+    volumetric_water_content : FLOAT
+    soil_temperature : FLOAT
+    bulk_relative_permittivity : FLOAT
+    soil_bulk_electric_conductivity : FLOAT
+    soil_pore_water_electric_conductivity : FLOAT
+    gravitational_accelaration_x_axis : FLOAT
+    gravitational accelaration_y_axis : FLOAT
+    gravitational accelaration_z_axis : FLOAT
+    atmospheric_pressure : FLOAT
+    temperature : FLOAT
+    relative_humidity : FLOAT
+    co2_concentration : FLOAT
+    total_valatile_oeganic_compounds : BINGINT
+    analog_value : FLOAT
+    voltage : FLOAT
+}
+
+entity "SensorTable" {
+    +sensor_id : SMALLINT<<PK>>
+    --
+    sensor_name : VARCHAR(255)
+    vender_name : VARCHAR(255)
+    identification_code : VARCHAR(255)
+}
+
+AccountTable ||-d-o{ MicroControllerTable
+MicroControllerTable ||-r-o{ MeasuredTimeTable
+MeasuredTimeTable ||-r-o{ MeasuredDataTable
+SensorTable ||-o{ MeasuredDataTable
+
+@enduml
