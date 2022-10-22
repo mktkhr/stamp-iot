@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import router from '@/router'
 
 interface Props {
     title?: string,
@@ -10,10 +9,6 @@ const props = withDefaults(defineProps<Props>(), {
     title: '',
     content: '',
 });
-
-const toHomePage = () => {
-    router.push('/home');
-}
     
 </script>
 

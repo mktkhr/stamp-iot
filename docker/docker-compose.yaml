@@ -1,15 +1,16 @@
 version: '3'
 services:
-  db:
+  postgres:
     image: postgres:14
     container_name: postgres
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - db-store:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=stamp-db
-      - POSTGRES_USER=admin
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "stamp_db"
 
   redis:
     image: redis:7

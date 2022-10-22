@@ -5,7 +5,7 @@ interface Props {
     isForMultiMedia?: boolean,
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
     title: '',
     isForMultiMedia: true,
 });
@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
 <template>
     <div class="content-box" v-bind:class="{'col': isForMultiMedia, 'col-one-half': isForMultiMedia, 'col-one-fourth': isForMultiMedia,}" >
         <div class="title-box">
-            <span>{{props.title}}</span>
+            <span>{{title}}</span>
         </div>
         <slot name="content"></slot>
     </div>
