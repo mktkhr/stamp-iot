@@ -1,39 +1,39 @@
 @startuml stamp-iot 
 entity "AccountTable" {
-    +account_ulid : ULID<<PK>>
+    +account_ulid : UUID<<PK>>
     --
     mail_address : VARCHAR(255)
     hashed_password : VARCHAR(255)
     name : VARCHAR(255)
-    created_at : DATETIME
-    updated_at : DATETIME
-    deleted_at : DATETIME
+    created_at : LOCALDATETIME
+    updated_at : LOCALDATETIME
+    deleted_at : LOCALDATETIME
 }
 
 entity "MicroControllerTable" {
-    +micro_controller_ulid : ULID<<PK>>
-    account_ulid : ULID<<FK>>
+    +micro_controller_ulid : UUID<<PK>>
+    account_ulid : UUID<<FK>>
     --
     mac_address : VARCHAR
-    created_at : DATETIME
-    updated_at : DATETIME
-    deleted_at : DATETIME
+    created_at : LOCALDATETIME
+    updated_at : LOCALDATETIME
+    deleted_at : LOCALDATETIME
 }
 
 entity "MeasuredTimeTable" {
-    +time_data_ulid : ULID<<PK>>
-    micro_controller_ulid : ULID<<FK>>
+    +time_data_ulid : UUID<<PK>>
+    micro_controller_ulid : UUID<<FK>>
     --
-    measuring_time : DATETIME
+    measuring_time : LOCALDATETIME
     day_of_year : FLOAT
-    created_at : DATETIME
-    updated_at : DATETIME
-    deleted_at : DATETIME
+    created_at : LOCALDATETIME
+    updated_at : LOCALDATETIME
+    deleted_at : LOCALDATETIME
 }
 
 entity "MeasuredDataTable" {
-    +measured_data_ulid : ULID<<PK>>
-    time_data_ulid : ULID<<FK>>
+    +measured_data_ulid : UUID<<PK>>
+    time_data_ulid : UUID<<FK>>
     sensor_id : SMALLINT<<FK>>
     --
     sdi_address : VARCHAR(1)
@@ -42,14 +42,14 @@ entity "MeasuredDataTable" {
     bulk_relative_permittivity : FLOAT
     soil_bulk_electric_conductivity : FLOAT
     soil_pore_water_electric_conductivity : FLOAT
-    gravitational_accelaration_x_axis : FLOAT
-    gravitational accelaration_y_axis : FLOAT
-    gravitational accelaration_z_axis : FLOAT
+    gravitational_acceleration_x_axis : FLOAT
+    gravitational_acceleration_y_axis : FLOAT
+    gravitational_acceleration_z_axis : FLOAT
     atmospheric_pressure : FLOAT
     temperature : FLOAT
     relative_humidity : FLOAT
     co2_concentration : FLOAT
-    total_valatile_oeganic_compounds : BINGINT
+    total_valatile_organic_compounds : BINGINT
     analog_value : FLOAT
     voltage : FLOAT
 }
