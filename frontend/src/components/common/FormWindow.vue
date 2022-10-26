@@ -8,13 +8,16 @@ const props = defineProps<{
 
 <template>
     <div class="form-frame">
-        <slot name="icon" class="icon"></slot>
+        <slot name="icon"></slot>
         <div class="title">
             <span v-if="title">{{props.title}}</span>
         </div>
         <slot name="mailAddress"></slot>
         <slot name="password"></slot>
         <slot name="passwordConfirm"></slot>
+        <div>
+            <slot name="button"></slot>
+        </div>
         <div>
             <slot name="link"></slot>
         </div>
