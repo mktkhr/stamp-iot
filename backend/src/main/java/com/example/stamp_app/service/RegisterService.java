@@ -30,7 +30,7 @@ public class RegisterService {
         }
 
         try {
-            isNewUser = accountRepository.findByEmail(userData.getEmail()) != null;
+            isNewUser = accountRepository.findByEmail(userData.getEmail()) == null;
         } catch (Exception exception) {
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }
