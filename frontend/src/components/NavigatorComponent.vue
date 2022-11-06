@@ -89,6 +89,7 @@ nav {
     width: 50%;
     max-width: 250px;
     height: 100vh;
+    height: 100dvh;
     transform: translateX(-100%);
     background-color: #eeeeee;
     transition: ease 0.5s;
@@ -110,6 +111,7 @@ nav {
     border-top: #333333 1px solid;
     border-bottom: #333333 1px solid;
     height: 7vh;
+    height: 7dvh;
     margin: 10px;
     display: flex;
     flex-direction: column;
@@ -123,6 +125,7 @@ nav {
 	background: none;
 	border: none;
 	font-size: 2vh;
+    font-size: 2dvh;
 	color:#111111;
 	cursor: pointer;
     display: flex;
@@ -136,6 +139,7 @@ nav {
 }
 .nav-top {
     height: 16vh;
+    height: 16dvh;
     overflow: hidden;
     border-bottom-left-radius: 1000px 300px;
     border-bottom-right-radius: 1000px 300px;
@@ -149,6 +153,7 @@ nav {
     width: 10vh;
     height: auto;
     margin-top: 4vh;
+    margin-top: 4dvh;
     margin-left: auto;
     margin-right: auto;
 }

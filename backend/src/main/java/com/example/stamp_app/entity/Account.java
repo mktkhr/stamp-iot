@@ -1,6 +1,7 @@
 package com.example.stamp_app.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Data
 public class Account {
 
     @Id
@@ -26,7 +28,7 @@ public class Account {
 
     @Column
     @NotNull
-    private String hashedPassword;
+    private String password;
 
     @Column
     private String name;
