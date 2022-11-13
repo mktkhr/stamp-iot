@@ -43,7 +43,7 @@ public class RegisterService {
         String hashedPassword = DigestUtils.md5DigestAsHex(userData.getPassword().getBytes());
         LocalDateTime localDateTime = LocalDateTime.now();
         Account newUser = new Account();
-        newUser.setUlid(UUID.randomUUID());
+        newUser.setUuid(UUID.randomUUID());
         newUser.setEmail(userData.getEmail());
         newUser.setPassword(hashedPassword);
         newUser.setCreatedAt(localDateTime);
