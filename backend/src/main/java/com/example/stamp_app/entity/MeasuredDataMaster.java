@@ -10,18 +10,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-
 @Entity
 @Data
-public class MicroController {
+public class MeasuredDataMaster {
 
     @Id
     @NotNull
     private UUID uuid;
 
-    @NotNull
-    @Column(unique = true)
-    private String macAddress;
+    @Column
+    private String dayOfYear;
 
     @Column
     private LocalDateTime createdAt;
@@ -32,9 +30,16 @@ public class MicroController {
     @Column
     private LocalDateTime deletedAt;
 
-    @OneToMany(mappedBy = "microController")
-    private List<MeasuredDataMaster> measuredDataMasters;
-
     @ManyToOne
-    private Account account;
+    private MicroController microController;
+
+    @OneToMany(mappedBy = "measuredDataMaster")
+    private List<Sdi12Data> sdi12Data;
+
+    @OneToMany(mappedBy = "measuredDataMaster")
+    private List<EnvironmentalData> environmentalData;
+
+    @Column
+    private String voltage;
+
 }

@@ -1,8 +1,6 @@
 package com.example.stamp_app.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,15 +9,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Data
 public class Account {
 
     @Id
     @NotNull
-    private UUID ulid;
+    private UUID uuid;
 
     @NotNull
     @Pattern(regexp = "^([a-zA-Z0-9])+([a-zA-Z0-9._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9._-]+)+$")
@@ -44,4 +40,5 @@ public class Account {
 
     @OneToMany(mappedBy = "account")
     private List<MicroController> microController;
+
 }

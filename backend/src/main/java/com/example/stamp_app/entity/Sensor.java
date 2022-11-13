@@ -1,20 +1,19 @@
 package com.example.stamp_app.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class Sensor {
 
     @Id
     @NotNull
-    private Integer id;
+    @Length(max = 1, min = 1)
+    private String id;
 
     @Column
     @NotNull
@@ -27,5 +26,6 @@ public class Sensor {
     private String identificationCode;
 
     @OneToMany(mappedBy = "sensor")
-    private List<MeasuredData> measuredData;
+    private List<Sdi12Data> sdi12Data;
+
 }
