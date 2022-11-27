@@ -40,7 +40,7 @@ public class MeasuredDataService {
         MicroController microController;
 
         // 必要なパラメータが不足していた場合
-        if(measureDataPostParam.getOwnerUuid() == null || measureDataPostParam.getMacAddress() == null){
+        if(measureDataPostParam.getMacAddress() == null){
             return HttpStatus.BAD_REQUEST;
         }
 
@@ -51,18 +51,21 @@ public class MeasuredDataService {
 
             // DBに登録されていないマイコンの場合
             if(microController == null){
+                System.out.println("登録されていないマイコン 403");
                 return HttpStatus.FORBIDDEN;
             }
 
             var accountId = microController.getAccount().getUuid().toString();
             System.out.println("登録対象のアカウントID: " + accountId);
 
-            // 所有者が一致しない場合401を返す
-            if(!measureDataPostParam.getOwnerUuid().equals(accountId)){
+            // 所有者UUIDがnullの場合401を返す
+            if(accountId == null){
+                System.out.println("所有者の不一致 401");
                 return HttpStatus.UNAUTHORIZED;
             }
 
         } catch(Exception e) {
+            System.out.println("500: " + e);
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
@@ -103,9 +106,11 @@ public class MeasuredDataService {
             }
 
         }catch(Exception e){
+            System.out.println("500: " + e);
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
+        System.out.println("200: 測定値の保存に成功");
         return HttpStatus.OK;
     }
 }
