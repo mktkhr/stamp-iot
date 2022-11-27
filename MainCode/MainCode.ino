@@ -35,6 +35,8 @@ float temperature, humidity;
 struct tm timeInfo;
 char timeData[20];
 
+int maxSdi12SensorNum = 4;
+
 SDI12 mySDI12(DATA_PIN); //SDI-12センサ
 SHT3X sht30; //温湿度センサ
 QMP6988 qmp6988; //大気圧センサ
@@ -64,12 +66,12 @@ void setup() {
     }
   }
 
-  //SDカードに初期値
+  //SDカードに初期値を挿入
   if(sdFlag == true){
     Serial.println("SD card Connection done");
     File file = SD.open("/log.csv"); //ログファイルの有無確認
-    if (!file) { //ログファイルがない場合に先頭の
-      String first_row = "Timestamp,Serial number,# of SDI-12 sensor,Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water electric coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational accelaration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Atmospheric pressure,Temperature,Humidity,CO2 concentration,Total volatile organic compounds,Illumination,Analog value,Voltage\n";
+    if (!file) { //ログファイルがない場合に先頭と2行目を追加
+      String first_row = "Timestamp,Serial number,# of SDI-12 sensor,Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water electric coductivity,Gravitational acceleration(x-axis),Gravitational accelaration(y-axis),Gravitational accelaration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational acceleration(x-axis),Gravitational acceleration(y-axis),Gravitational acceleration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational acceleration(x-axis),Gravitational acceleration(y-axis),Gravitational acceleration(z-axis),Address,Volumetric water content,Soil temperature,Bulk relative permittivity,Soil bulk electric conductivity(TDT),Soil bulk electric conductivity(TDR),Soil pore water coductivity,Gravitational acceleration(x-axis),Gravitational acceleration(y-axis),Gravitational acceleration(z-axis),Atmospheric pressure,Temperature,Humidity,CO2 concentration,Total volatile organic compounds,Illumination,Analog value,Voltage\n";
       String second_row = "(YYYY/MM/DD hh:mm:ss),(-),(-),(-),(%),(C),(-),(dS/m),(uS/cm),(uS/cm),(G),(G),(G),(-),(%),(C),(-),(dS/m),(uS/cm),(uS/cm),(G),(G),(G),(-),(%),(C),(-),(dS/m),(uS/cm),(μS/cm),(G),(G),(G),(-),(%),(C),(-),(dS/m),(uS/cm),(uS/cm),(G),(G),(G),(hPa),(C),(%),(ppm),(ppb),(lux),(-),(V)\n";
       appendFile("/log.csv", first_row);
       appendFile("/log.csv", second_row);
@@ -115,6 +117,12 @@ void loop() {
   }
 }
 
+/**
+ * @brief アクセスポイントに接続
+ * 
+ * @param ssid 接続先SSID
+ * @param password 接続先PASS
+ */
 void connectToAccessPoint(const char* ssid, const char* password) {
   WiFi.begin(ssid, password);
   int waitCountInSec = 0;
@@ -132,6 +140,11 @@ void connectToAccessPoint(const char* ssid, const char* password) {
   Serial.println("\nWiFi connected.");
 }
 
+/**
+ * @brief ENV3センサの測定
+ * 
+ * @return String 測定結果
+ */
 String measureEnv3() {
   float pressure = qmp6988.calcPressure()/100;
   if (sht30.get() == 0) {
@@ -180,12 +193,24 @@ String convertEnv3ResultForPost(String result){
   return resultForPost = "\"temp\":\"" + response[0] + "\"," + "\"humi\":\"" + response[1] + "\",\"airPress\":\"" + response[2] + "\",";
 }
 
+/**
+ * @brief 気温と相対湿度から絶対湿度を算出
+ * 
+ * @param temperature 気温
+ * @param humidity 相対湿度
+ * @return uint32_t 絶対湿度
+ */
 uint32_t getAbsoluteHumidity(float temperature, float humidity) {
   const float absoluteHumidity = 216.7f * ((humidity / 100.0f) * 6.112f * exp((17.62f * temperature) / (243.12f + temperature)) / (273.15f + temperature)); // [g/m^3]
   const uint32_t absoluteHumidityScaled = static_cast<uint32_t>(1000.0f * absoluteHumidity); // [mg/m^3]
   return absoluteHumidityScaled;
 }
 
+/**
+ * @brief SGP30二酸化炭素濃度センサの測定
+ * 
+ * @return String 二酸化炭素濃度, 総揮発性有機化合物
+ */
 String measureSgp30() {
   if (temperature != 0 || humidity != 0) {
     sgp.setHumidity(getAbsoluteHumidity(temperature, humidity));
@@ -264,6 +289,14 @@ void split(String data, String *dataArray) {
   return;
 }
 
+/**
+ * @brief SDI-12にコマンドを送信し, レスポンスを取得
+ * 
+ * @param myCommand コマンド文字列
+ * @param sendInterval 送信感覚
+ * @param requestNumber 送信回数
+ * @return String SDI-12レスポンス
+ */
 String sendCommandAndCollectResponse(String myCommand, int sendInterval, int requestNumber) {
   String response = "";
   for (int j = 0; j < requestNumber; j++) {
@@ -293,6 +326,12 @@ String sendCommandAndCollectResponse(String myCommand, int sendInterval, int req
   return response = "\0";
 }
 
+/**
+ * @brief 対象アドレスのSDI-12センサがアクティブかを判定
+ * 
+ * @param i SDI-12センサアドレス
+ * @return boolean アクティブor非アクティブ
+ */
 boolean checkActiveSdi12(byte i) {
   Serial.println("Checking address " + String(i) + "...");
   String response = "";
