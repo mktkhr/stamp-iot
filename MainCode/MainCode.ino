@@ -622,3 +622,46 @@ String readAdcValue(int calculateNumber) {
   Serial.print("Average value(ADC): "); Serial.println(String(readValueAvg));
   return String(readValueAvg);
 }
+
+/**
+ * @brief POSTリクエストを送信
+ * 
+ * @param host ホスト
+ * @param port ポート番号
+ * @param uri エンドポイントのURI
+ * @param measureData 測定データ(json文字列)
+ */
+void postRequest(char* host, int port, String uri, String measureData) {
+  Serial.println("\r\n-----Connecting to API-----\r\n");
+  WiFiClient micorControllerClient;
+
+  const String hostString = String(host);
+  const int requestLimit = 5;
+
+  Serial.print("Urlencoded data:"); Serial.println(measureData);
+
+  for (int j = 0; j < requestLimit; j++) {
+    if (micorControllerClient.connect(host, port)) {
+      Serial.println("\r\n-----Posting measured data-----\r\n");
+      micorControllerClient.println("POST "+ uri + " HTTP/1.1");
+      micorControllerClient.println("Host: " + hostString + ":" + String(port));
+      micorControllerClient.println("Connection: close");
+      micorControllerClient.println("Content-Type: application/json");
+      micorControllerClient.print("Content-Length: ");
+      micorControllerClient.println(measureData.length());
+      micorControllerClient.println();
+      micorControllerClient.println(measureData);
+      delay(100);
+      String apiResponse = micorControllerClient.readString();
+      int bodypos = apiResponse.indexOf("\r\n");
+      delay(100);
+      Serial.print("API response:"); Serial.println(apiResponse);
+      micorControllerClient.stop();
+      return;
+    } else {
+      Serial.println(".");
+      delay(200);
+    }
+  }
+  Serial.println("\r\n-----POST request failed.-----\r\n");
+}
