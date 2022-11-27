@@ -21,6 +21,9 @@ uint8_t scl = 22;
 String serialNumber = "sampleNumber";
 const char* ssid = ""; //myssid
 const char* password = ""; //mypassword
+const char* host = ""; //バックエンドのIPを指定
+int port = 8082; //バックエンドのポートを指定
+String postMeasuredDataUri = "/ems/measured-data"; //POST先のエンドポイントを指定
 
 int measurementIntervalInMinutes = 1;
 
@@ -95,24 +98,80 @@ void setup() {
   pinMode(ADC_PIN, ANALOG);
   adcInit(); //ADCの設定
 
-  connectToAccessPoint(ssid, password); //Wi-Fiに接続
-  configTime(9 * 3600L, 0, "ntp.nict.jp", "time.google.com"); //NTPサーバの設定
+  //アクセスポイントに接続
+  connectToAccessPoint(ssid, password);
+  
+  //NTPサーバの設定
+  configTime(9 * 3600L, 0, "ntp.nict.jp", "time.google.com");
 }
 
 void loop() {
   getLocalTime(&timeInfo);
   if ((timeInfo.tm_min % measurementIntervalInMinutes == 0) && (timeInfo.tm_sec == 0)) {
-    String sdSaveData = "";
     sprintf(timeData, "%04d/%02d/%02d %02d:%02d:%02d", timeInfo.tm_year + 1900, timeInfo.tm_mon + 1, timeInfo.tm_mday, timeInfo.tm_hour, timeInfo.tm_min, timeInfo.tm_sec);
     Serial.println(timeData);
-    String env3Result = measureEnv3();
-    String sgp30Result = measureSgp30();
-    String sdiResult = measureSdi12(mySensorAddress);
-    String illuminationResult = measureIllumination();
-    String analogResult = readAnalogValue();
+    String macAddress = WiFi.macAddress();
+
+    String postString = "{\"macAddress\":\"" + WiFi.macAddress() + "\",";
+    String sdSaveData = "";
+
     String adcResult = readAdcValue(calculateNumber);
-    sdSaveData += String(timeData) + "," + serialNumber + "," + sdiResult + env3Result + sgp30Result + illuminationResult + analogResult + adcResult + "\n";
+    postString += "\"voltage\":\"" + adcResult + "\",";
+  
+    //SDI-12
+    int sensorNum = sizeof(mySensorAddress) / sizeof(int);
+    String sdiResultForSd = "";
+    String sdiResultForPost = "";
+    postString += "\"sdi12Param\": [";
+    //測定, SDデータへの追加, POSTデータへの追加
+    for(int i = 0;i < sensorNum; i++){
+      String sdi12Response = measureSdi12(mySensorAddress[i]);
+      sdiResultForSd += "," + convertSdi12ResultForSd(sdi12Response);
+      sdiResultForPost += convertSdi12ResultForPost(sdi12Response);
+      //最後の1本以外の場合はカンマを追加
+      if(i != sensorNum - 1 && sdiResultForPost != ""){
+        sdiResultForPost += ",";
+      }
+    }
+    //最大本数未満の場合，SDデータに空データ示すカンマを追加する
+    if(maxSdi12SensorNum > sensorNum){
+      for(int i = 0;i < (maxSdi12SensorNum - sensorNum); i++){
+        sdiResultForSd += ",,,,,,,,,,";
+      }
+    }
+    
+    postString += sdiResultForPost + "],";
+
+    //環境センサ系
+    postString += "\"environmentalDataParam\":[{";
+
+    String env3Result = measureEnv3();
+    postString += convertEnv3ResultForPost(env3Result);
+
+    String sgp30Result = measureSgp30();
+    postString += convertSgp30ResultForPost(sgp30Result);
+    
+    String illuminationResult = measureIllumination();
+    //測定結果が空でない場合, POST用文字列に加える
+    if(illuminationResult != ""){
+      postString += "\"light\":\"" + illuminationResult + "\",";
+    }
+
+    String analogResult = readAnalogValue();
+    //測定結果が空でない場合, POST用文字列に加える
+    if(illuminationResult != ""){
+      postString += "\"analogValue\":\"" + analogResult + "\"";
+    }
+
+    postString += "}]}";
+    Serial.println(postString);
+
+    Serial.println(sdiResultForSd);
+
+    sdSaveData += String(timeData) + "," + macAddress + "," + sensorNum + "," + sdiResultForSd + convertEnv3ResultForSd(env3Result) + convertSgp30ResultForSd(sgp30Result) + illuminationResult + "," + analogResult + "," + adcResult + "\n";
+    Serial.println(sdSaveData);
     appendFile("/log.csv", sdSaveData);
+    postRequest(host, port, postMeasuredDataUri, postString);
     delay(1000);
   }
 }
