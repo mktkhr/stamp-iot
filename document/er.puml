@@ -61,7 +61,7 @@ entity "EnvironmentalDataTable" {
 }
 
 entity "SensorTable" {
-    +id : INT<<PK>>
+    +id : VARCHAR(3)<<PK>>
     --
     sensor_name : VARCHAR(255)
     vender_name : VARCHAR(255)

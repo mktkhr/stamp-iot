@@ -12,7 +12,7 @@ public class Sensor {
 
     @Id
     @NotNull
-    @Length(max = 1, min = 1)
+    @Length(max = 3, min = 1)
     private String id;
 
     @Column
