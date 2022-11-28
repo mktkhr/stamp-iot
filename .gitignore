@@ -28,3 +28,7 @@ Temporary Items
 .vscode/arduino.json
 .vscode/c_cpp_properties.json
 .vscode/launch.json
+arduino.json
+c_cpp_properties.json
+launch.json
+tasks.json

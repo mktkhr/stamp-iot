@@ -54,7 +54,7 @@ public class LoginService {
 
             // redis
             String sessionId = UUID.randomUUID().toString();
-            redisService.set(loginUser.getUlid().toString(), sessionId, 60 * 60);
+            redisService.set(loginUser.getUuid().toString(), sessionId, 60 * 60);
 
             // cookie
             Cookie cookie = sessionService.generateCookie(sessionId);

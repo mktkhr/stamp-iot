@@ -1,9 +1,9 @@
 @startuml stamp-iot 
 entity "AccountTable" {
-    +account_ulid : UUID<<PK>>
+    +uuid : UUID<<PK>>
     --
     mail_address : VARCHAR(255)
-    hashed_password : VARCHAR(255)
+    password : VARCHAR(255)
     name : VARCHAR(255)
     created_at : LOCALDATETIME
     updated_at : LOCALDATETIME
@@ -11,51 +11,57 @@ entity "AccountTable" {
 }
 
 entity "MicroControllerTable" {
-    +micro_controller_ulid : UUID<<PK>>
-    account_ulid : UUID<<FK>>
+    +uuid : UUID<<PK>>
+    account_uuid : UUID<<FK>>
     --
-    mac_address : VARCHAR
+    mac_address : VARCHAR(255)
     created_at : LOCALDATETIME
     updated_at : LOCALDATETIME
     deleted_at : LOCALDATETIME
 }
 
-entity "MeasuredTimeTable" {
-    +time_data_ulid : UUID<<PK>>
-    micro_controller_ulid : UUID<<FK>>
+entity "MeasuredDataMasterTable" {
+    +uuid : UUID<<PK>>
+    micro_controller_uuid : UUID<<FK>>
     --
     measuring_time : LOCALDATETIME
-    day_of_year : FLOAT
+    day_of_year : VARCHAR(255)
+    voltage : VARCHAR(255)
     created_at : LOCALDATETIME
     updated_at : LOCALDATETIME
     deleted_at : LOCALDATETIME
 }
 
-entity "MeasuredDataTable" {
-    +measured_data_ulid : UUID<<PK>>
-    time_data_ulid : UUID<<FK>>
-    sensor_id : SMALLINT<<FK>>
+entity "Sdi12DataTable" {
+    +id : BINGINT AUTO INCREMENT<<PK>>
+    measured_data_master_uuid : UUID<<FK>>
+    sensor_id : INT<<FK>>
     --
     sdi_address : VARCHAR(1)
-    volumetric_water_content : FLOAT
-    soil_temperature : FLOAT
-    bulk_relative_permittivity : FLOAT
-    soil_bulk_electric_conductivity : FLOAT
-    soil_pore_water_electric_conductivity : FLOAT
-    gravitational_acceleration_x_axis : FLOAT
-    gravitational_acceleration_y_axis : FLOAT
-    gravitational_acceleration_z_axis : FLOAT
-    atmospheric_pressure : FLOAT
-    temperature : FLOAT
-    relative_humidity : FLOAT
-    co2_concentration : FLOAT
-    total_valatile_organic_compounds : BINGINT
-    analog_value : FLOAT
-    voltage : FLOAT
+    volumetric_water_content : VARCHAR(255)
+    soil_temperature : VARCHAR(255)
+    bulk_relative_permittivity : VARCHAR(255)
+    soil_bulk_electric_conductivity : VARCHAR(255)
+    soil_pore_water_electric_conductivity : VARCHAR(255)
+    gravitational_acceleration_x_axis : VARCHAR(255)
+    gravitational_acceleration_y_axis : VARCHAR(255)
+    gravitational_acceleration_z_axis : VARCHAR(255)
+}
+
+entity "EnvironmentalDataTable" {
+    +id : BINGINT AUTO INCREMENT<<PK>>
+    measured_data_master_uuid : UUID<<FK>>
+    --
+    atmospheric_pressure : VARCHAR(255)
+    temperature : VARCHAR(255)
+    relative_humidity : VARCHAR(255)
+    co2_concentration : VARCHAR(255)
+    total_valatile_organic_compounds : VARCHAR(255)
+    analog_value : VARCHAR(255)
 }
 
 entity "SensorTable" {
-    +sensor_id : SMALLINT<<PK>>
+    +id : VARCHAR(3)<<PK>>
     --
     sensor_name : VARCHAR(255)
     vender_name : VARCHAR(255)
@@ -63,8 +69,9 @@ entity "SensorTable" {
 }
 
 AccountTable ||-d-o{ MicroControllerTable
-MicroControllerTable ||-r-o{ MeasuredTimeTable
-MeasuredTimeTable ||-r-o{ MeasuredDataTable
-SensorTable ||-o{ MeasuredDataTable
+MicroControllerTable ||-r-o{ MeasuredDataMasterTable
+MeasuredDataMasterTable ||-r-o{ Sdi12DataTable
+MeasuredDataMasterTable ||-r-o{ EnvironmentalDataTable
+Sdi12DataTable ||-r-o{ SensorTable
 
 @enduml

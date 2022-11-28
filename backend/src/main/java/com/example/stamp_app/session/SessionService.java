@@ -10,9 +10,9 @@ public class SessionService {
     @Autowired
     RedisService redisService;
 
-    public boolean checkSession(String userUlid, String sessionId) {
+    public boolean checkSession(String userUuid, String sessionId) {
         try {
-            String sessionValue = redisService.get(userUlid);
+            String sessionValue = redisService.get(userUuid);
             return sessionValue.matches(sessionId);
         } catch (Exception e) {
             return false;

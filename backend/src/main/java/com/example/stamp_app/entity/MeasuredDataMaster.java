@@ -1,7 +1,6 @@
 package com.example.stamp_app.entity;
 
 import lombok.Data;
-import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -9,16 +8,18 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import java.util.UUID;
 
 @Entity
 @Data
-public class MicroController {
+public class MeasuredDataMaster {
 
     @Id
     @NotNull
-    @Comment(value = "Macアドレス")
-    private String macAddress;
+    private UUID uuid;
+
+    @Column
+    private String dayOfYear;
 
     @Column
     private LocalDateTime createdAt;
@@ -29,9 +30,16 @@ public class MicroController {
     @Column
     private LocalDateTime deletedAt;
 
-    @OneToMany(mappedBy = "microController")
-    private List<MeasuredDataMaster> measuredDataMasters;
-
     @ManyToOne
-    private Account account;
+    private MicroController microController;
+
+    @OneToMany(mappedBy = "measuredDataMaster")
+    private List<Sdi12Data> sdi12Data;
+
+    @OneToMany(mappedBy = "measuredDataMaster")
+    private List<EnvironmentalData> environmentalData;
+
+    @Column
+    private String voltage;
+
 }
