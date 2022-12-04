@@ -3,7 +3,7 @@ package com.example.stamp_app.session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import static com.example.stamp_app.constants.Constants.*;
 

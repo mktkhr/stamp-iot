@@ -2,11 +2,9 @@ package com.example.stamp_app.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.Comment;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;

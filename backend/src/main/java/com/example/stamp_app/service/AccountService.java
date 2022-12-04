@@ -5,13 +5,13 @@ import com.example.stamp_app.entity.Account;
 import com.example.stamp_app.repository.AccountRepository;
 import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.client.HttpServerErrorException;
 
-import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -116,14 +116,13 @@ public class AccountService {
 
         try {
             account = accountRepository.findByUuid(UUID.fromString(UserUuid));
+            if (account == null) {
+                System.out.println("This account does not exist.");
+                return null;
+            }
 
         } catch (Exception exception) {
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        if (account == null) {
-            System.out.println("This account does not exist.");
-            return null;
         }
 
         // IDと名前のみを返す
