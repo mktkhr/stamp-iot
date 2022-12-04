@@ -5,15 +5,21 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.BinaryOperator;
 
 @Entity
 @Data
 public class Account {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private BigInteger id;
+
+    @Column
     @NotNull
     private UUID uuid;
 

@@ -6,6 +6,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -15,8 +16,8 @@ import java.util.UUID;
 public class MeasuredDataMaster {
 
     @Id
-    @NotNull
-    private UUID uuid;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private BigInteger id;
 
     @Column
     private String dayOfYear;

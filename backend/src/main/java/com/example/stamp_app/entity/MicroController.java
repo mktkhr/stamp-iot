@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,6 +17,9 @@ import java.util.List;
 public class MicroController {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private BigInteger id;
+
     @NotNull
     @Comment(value = "Macアドレス")
     private String macAddress;

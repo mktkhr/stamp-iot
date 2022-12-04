@@ -33,18 +33,18 @@ public class RedisService {
     /**
      * セッション情報の取得
      *
-     * @param key キー
-     * @return String
+     * @param key セッションUUID
+     * @return String ユーザーUUID or null
      */
-    public String get(String key) {
+    public String getUserUuidFromSessionUuid(String key) {
         return key == null ? null : (String) redisTemplate.opsForValue().get(key);
     }
 
     /**
      * セッション情報の保存
      *
-     * @param key   キー
-     * @param value 値
+     * @param key セッションUUID
+     * @param value ユーザーUUID
      */
     public void set(String key, String value, long timeInSec) {
         redisTemplate.opsForValue().set(key, value, timeInSec, TimeUnit.SECONDS);
