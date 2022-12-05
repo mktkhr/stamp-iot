@@ -1,6 +1,7 @@
 package com.example.stamp_app.service;
 
-import com.example.stamp_app.controller.Response.AccountInfoResponse;
+import com.example.stamp_app.controller.Response.AccountGetResponse;
+import com.example.stamp_app.controller.Response.AccountLoginResponse;
 import com.example.stamp_app.entity.Account;
 import com.example.stamp_app.repository.AccountRepository;
 import com.example.stamp_app.session.RedisService;
@@ -21,10 +22,6 @@ import static org.springframework.util.DigestUtils.md5DigestAsHex;
 public class AccountService {
     @Autowired
     AccountRepository accountRepository;
-    @Autowired
-    RedisService redisService;
-    @Autowired
-    SessionService sessionService;
 
     /**
      * アカウント追加Service
@@ -76,30 +73,33 @@ public class AccountService {
      * @param userData ログイン情報
      * @return HttpStatus
      */
-    public Account login(Account userData, HttpServletResponse httpServletResponse) {
+    public AccountLoginResponse login(Account userData) {
 
         boolean isCorrectPassword;
 
         try {
             Account loginUser = accountRepository.findByEmail(userData.getEmail());
 
+            // 対象のアカウントが存在しない場合，400を返す
             if (loginUser == null) {
                 System.out.println("This account does not exist.");
-                return null;
+                return new AccountLoginResponse(HttpStatus.BAD_REQUEST, null);
             }
 
             isCorrectPassword = loginUser.getPassword().matches(md5DigestAsHex(userData.getPassword().getBytes()));
 
+            // パスワードが合致しない場合，401を返す
             if (!isCorrectPassword) {
                 System.out.println("Account Information are not correct.");
-                return null;
+                return new AccountLoginResponse(HttpStatus.UNAUTHORIZED, null);
             }
 
             System.out.println("Successfully logged in.");
-            return loginUser;
+            return new AccountLoginResponse(HttpStatus.OK, loginUser);
 
-        } catch (Exception exception) {
-            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            System.out.println(e);
+            return new AccountLoginResponse(HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
 
     }
@@ -110,26 +110,25 @@ public class AccountService {
      * @param UserUuid ユーザーUUID
      * @return Account アカウント情報
      */
-    public AccountInfoResponse getAccountInfo(String UserUuid) {
+    public AccountGetResponse getAccountInfo(String UserUuid) {
 
         Account account;
 
         try {
             account = accountRepository.findByUuid(UUID.fromString(UserUuid));
+
+            // アカウントが存在しない場合，400を返す
             if (account == null) {
                 System.out.println("This account does not exist.");
-                return null;
+                return new AccountGetResponse(HttpStatus.BAD_REQUEST, null, null);
             }
 
-        } catch (Exception exception) {
-            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            System.out.println(e);
+            return new AccountGetResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, null);
         }
 
         // IDと名前のみを返す
-        var accountInfoResponse = new AccountInfoResponse();
-        accountInfoResponse.setId(account.getId());
-        accountInfoResponse.setName(account.getName());
-
-        return accountInfoResponse;
+        return new AccountGetResponse(HttpStatus.OK, account.getId(), account.getName());
     }
 }

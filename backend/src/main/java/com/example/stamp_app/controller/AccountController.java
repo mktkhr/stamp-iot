@@ -1,6 +1,7 @@
 package com.example.stamp_app.controller;
 
-import com.example.stamp_app.controller.Response.AccountInfoResponse;
+import com.example.stamp_app.controller.Response.AccountGetResponse;
+import com.example.stamp_app.controller.Response.AccountLoginResponse;
 import com.example.stamp_app.entity.Account;
 import com.example.stamp_app.service.AccountService;
 import com.example.stamp_app.session.RedisService;
@@ -63,23 +64,25 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Account loginUser = accountService.login(userData, httpServletResponse);
+        AccountLoginResponse accountLoginResponse = accountService.login(userData);
 
-        if (loginUser != null) {
-            // redisにセッション情報を追加
-            String sessionId = UUID.randomUUID().toString();
-            redisService.set(sessionId, loginUser.getUuid().toString(), SESSION_VALID_TIME_IN_SEC);
-
-            // cookieを生成し，レスポンスにセット
-            Cookie cookie = sessionService.generateCookie(sessionId);
-            httpServletResponse.addCookie(cookie);
-
+        // アカウントがnull = エラー の場合
+        if (accountLoginResponse.getAccount() == null) {
             System.out.println("<< Account Controller(login:POST)");
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(accountLoginResponse.getStatus());
         }
 
+        // redisにセッション情報を追加
+        String sessionId = UUID.randomUUID().toString();
+        redisService.set(sessionId, accountLoginResponse.getAccount().getUuid().toString(), SESSION_VALID_TIME_IN_SEC);
+
+        // cookieを生成し，レスポンスにセット
+        Cookie cookie = sessionService.generateCookie(sessionId);
+        httpServletResponse.addCookie(cookie);
+
         System.out.println("<< Account Controller(login:POST)");
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     /**
@@ -88,7 +91,7 @@ public class AccountController {
      * @return ユーザーIDとユーザー名
      */
     @GetMapping(value = "/info")
-    public ResponseEntity<AccountInfoResponse> accountInfo(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<AccountGetResponse> accountInfo(HttpServletRequest httpServletRequest) {
         var cookieLIst = httpServletRequest.getCookies();
 
         var sessionUuid = sessionService.getSessionUuidFromCookie(cookieLIst);
@@ -101,11 +104,8 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        var accountInfo = accountService.getAccountInfo(userUuid);
+        var accountGetResponse = accountService.getAccountInfo(userUuid);
 
-        if(accountInfo != null){
-            return new ResponseEntity<>(accountInfo, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(accountGetResponse, accountGetResponse.getStatus());
     }
 }
