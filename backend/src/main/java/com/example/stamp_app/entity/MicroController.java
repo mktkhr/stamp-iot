@@ -1,5 +1,6 @@
 package com.example.stamp_app.entity;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.annotations.Comment;
 
@@ -20,6 +21,7 @@ public class MicroController {
 
     @NotNull
     @Comment(value = "Macアドレス")
+    @Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$")
     private String macAddress;
 
     @Column
