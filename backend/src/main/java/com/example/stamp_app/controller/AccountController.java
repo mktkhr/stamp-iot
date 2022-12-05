@@ -1,25 +1,36 @@
 package com.example.stamp_app.controller;
 
+import com.example.stamp_app.controller.Response.AccountGetResponse;
+import com.example.stamp_app.controller.Response.AccountLoginResponse;
 import com.example.stamp_app.entity.Account;
-import com.example.stamp_app.service.LoginService;
-import com.example.stamp_app.service.RegisterService;
+import com.example.stamp_app.service.AccountService;
+import com.example.stamp_app.session.RedisService;
+import com.example.stamp_app.session.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.UUID;
+
+import static com.example.stamp_app.constants.Constants.SESSION_VALID_TIME_IN_SEC;
 
 @Controller
 @RequestMapping(value = "/ems/account")
 public class AccountController {
     @Autowired
-    RegisterService registerService;
+    AccountService accountService;
     @Autowired
-    LoginService loginService;
+    SessionService sessionService;
+    @Autowired
+    RedisService redisService;
 
     /**
      * アカウント登録API
@@ -32,7 +43,8 @@ public class AccountController {
         System.out.println(">> Account Controller(register:POST)");
         System.out.println("RequestBody:" + userData);
 
-        HttpStatus responseStatus = registerService.addAccount(userData);
+        HttpStatus responseStatus = accountService.addAccount(userData);
+
         System.out.println("<< Account Controller(register:POST)");
         return new ResponseEntity<>(responseStatus);
     }
@@ -48,8 +60,52 @@ public class AccountController {
         System.out.println(">> Account Controller(login:POST)");
         System.out.println("RequestBody:" + userData);
 
-        HttpStatus responseStatus = loginService.login(userData, httpServletResponse);
+        if (userData == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        AccountLoginResponse accountLoginResponse = accountService.login(userData);
+
+        // アカウントがnull = エラー の場合
+        if (accountLoginResponse.getAccount() == null) {
+            System.out.println("<< Account Controller(login:POST)");
+            return new ResponseEntity<>(accountLoginResponse.getStatus());
+        }
+
+        // redisにセッション情報を追加
+        String sessionId = UUID.randomUUID().toString();
+        redisService.set(sessionId, accountLoginResponse.getAccount().getUuid().toString(), SESSION_VALID_TIME_IN_SEC);
+
+        // cookieを生成し，レスポンスにセット
+        Cookie cookie = sessionService.generateCookie(sessionId);
+        httpServletResponse.addCookie(cookie);
+
         System.out.println("<< Account Controller(login:POST)");
-        return new ResponseEntity<>(responseStatus);
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    /**
+     * アカウント情報取得
+     *
+     * @return ユーザーIDとユーザー名
+     */
+    @GetMapping(value = "/info")
+    public ResponseEntity<AccountGetResponse> accountInfo(HttpServletRequest httpServletRequest) {
+        var cookieLIst = httpServletRequest.getCookies();
+
+        var sessionUuid = sessionService.getSessionUuidFromCookie(cookieLIst);
+        if(sessionUuid == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        var userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
+        if(userUuid == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        var accountGetResponse = accountService.getAccountInfo(userUuid);
+
+        return new ResponseEntity<>(accountGetResponse, accountGetResponse.getStatus());
     }
 }

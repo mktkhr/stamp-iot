@@ -3,8 +3,8 @@ package com.example.stamp_app.entity;
 import com.example.stamp_app.controller.Param.Sdi12Param;
 import lombok.Data;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;

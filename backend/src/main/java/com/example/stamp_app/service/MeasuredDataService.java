@@ -69,8 +69,6 @@ public class MeasuredDataService {
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        var dataMasterId = UUID.randomUUID();
-
         // 測定時刻，DOYの算出
         var measuredTime = LocalDateTime.now();
         float doy = (float) LocalDate.now().getDayOfYear();
@@ -86,9 +84,9 @@ public class MeasuredDataService {
 
         // 測定データマスターを作成
         var measuredDataMaster = new MeasuredDataMaster();
-        measuredDataMaster.setUuid(dataMasterId);
         measuredDataMaster.setDayOfYear(doyForData);
         measuredDataMaster.setCreatedAt(measuredTime);
+        measuredDataMaster.setUpdatedAt(measuredTime);
         measuredDataMaster.setVoltage(measureDataPostParam.getVoltage());
         measuredDataMaster.setMicroController(microController);
 

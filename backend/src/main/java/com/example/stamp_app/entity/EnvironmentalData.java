@@ -3,7 +3,7 @@ package com.example.stamp_app.entity;
 import com.example.stamp_app.controller.Param.EnvironmentalDataParam;
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
