@@ -1,5 +1,6 @@
 package com.example.stamp_app.service;
 
+import com.example.stamp_app.controller.param.account.LoginPostParam;
 import com.example.stamp_app.controller.param.account.RegisterPostParam;
 import com.example.stamp_app.controller.response.AccountGetResponse;
 import com.example.stamp_app.controller.response.AccountLoginResponse;
@@ -65,28 +66,28 @@ public class AccountService {
     /**
      * ログインService
      *
-     * @param userData ログイン情報
+     * @param loginPostParam ログイン情報
      * @return HttpStatus
      */
-    public AccountLoginResponse login(Account userData) {
+    public AccountLoginResponse login(LoginPostParam loginPostParam) {
 
         boolean isCorrectPassword;
 
         try {
-            Account loginUser = accountRepository.findByEmail(userData.getEmail());
+            Account loginUser = accountRepository.findByEmail(loginPostParam.getEmail());
 
             // 対象のアカウントが存在しない場合，400を返す
             if (loginUser == null) {
                 System.out.println("This account does not exist.");
-                return new AccountLoginResponse(HttpStatus.BAD_REQUEST, null);
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
 
-            isCorrectPassword = loginUser.getPassword().matches(md5DigestAsHex(userData.getPassword().getBytes()));
+            isCorrectPassword = loginUser.getPassword().matches(md5DigestAsHex(loginPostParam.getPassword().getBytes()));
 
             // パスワードが合致しない場合，401を返す
             if (!isCorrectPassword) {
                 System.out.println("Account Information are not correct.");
-                return new AccountLoginResponse(HttpStatus.UNAUTHORIZED, null);
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             }
 
             System.out.println("Successfully logged in.");
@@ -94,7 +95,7 @@ public class AccountService {
 
         } catch (Exception e) {
             System.out.println(e);
-            return new AccountLoginResponse(HttpStatus.INTERNAL_SERVER_ERROR, null);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

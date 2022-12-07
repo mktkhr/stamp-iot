@@ -1,9 +1,9 @@
 package com.example.stamp_app.controller;
 
+import com.example.stamp_app.controller.param.account.LoginPostParam;
 import com.example.stamp_app.controller.param.account.RegisterPostParam;
 import com.example.stamp_app.controller.response.AccountGetResponse;
 import com.example.stamp_app.controller.response.AccountLoginResponse;
-import com.example.stamp_app.dummyData.Account;
 import com.example.stamp_app.service.AccountService;
 import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;
@@ -54,25 +54,19 @@ public class AccountController {
     /**
      * ログインAPI
      *
-     * @param userData 登録情報
+     * @param loginPostParam 登録情報
      * @return ResponseEntity
      */
     @PostMapping(value = "/login")
-    public ResponseEntity<HttpStatus> login(@RequestBody Account userData, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<HttpStatus> login(@RequestBody @Valid LoginPostParam loginPostParam, HttpServletResponse httpServletResponse) {
         System.out.println(">> Account Controller(login:POST)");
-        System.out.println("RequestBody:" + userData);
+        System.out.println("RequestBody:" + loginPostParam);
 
-        if (userData == null) {
+        if (loginPostParam == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        AccountLoginResponse accountLoginResponse = accountService.login(userData);
-
-        // アカウントがnull = エラー の場合
-        if (accountLoginResponse.getAccount() == null) {
-            System.out.println("<< Account Controller(login:POST)");
-            return new ResponseEntity<>(accountLoginResponse.getStatus());
-        }
+        AccountLoginResponse accountLoginResponse = accountService.login(loginPostParam);
 
         // redisにセッション情報を追加
         String sessionId = UUID.randomUUID().toString();
