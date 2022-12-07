@@ -1,17 +1,15 @@
 package com.example.stamp_app.service;
 
-import com.example.stamp_app.controller.Response.AccountGetResponse;
-import com.example.stamp_app.controller.Response.AccountLoginResponse;
-import com.example.stamp_app.entity.Account;
+import com.example.stamp_app.controller.param.account.RegisterPostParam;
+import com.example.stamp_app.controller.response.AccountGetResponse;
+import com.example.stamp_app.controller.response.AccountLoginResponse;
+import com.example.stamp_app.dummyData.Account;
 import com.example.stamp_app.repository.AccountRepository;
-import com.example.stamp_app.session.RedisService;
-import com.example.stamp_app.session.SessionService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -26,45 +24,42 @@ public class AccountService {
     /**
      * アカウント追加Service
      *
-     * @param userData 登録情報
-     * @return HttpStatus
+     * @param registerPostParam 登録情報
      */
-    public HttpStatus addAccount(Account userData) {
+    public void addAccount(RegisterPostParam registerPostParam) {
 
         boolean isNewUser;
 
-        if (userData == null) {
-            return HttpStatus.BAD_REQUEST;
-        }
-
         try {
-            isNewUser = accountRepository.findByEmail(userData.getEmail()) == null;
+            isNewUser = accountRepository.findByEmail(registerPostParam.getEmail()) == null;
         } catch (Exception exception) {
-            return HttpStatus.INTERNAL_SERVER_ERROR;
+            System.out.println(exception.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         if (!isNewUser) {
             System.out.println(" The email address has already been used.");
-            return HttpStatus.CONFLICT;
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
-        String hashedPassword = DigestUtils.md5DigestAsHex(userData.getPassword().getBytes());
+        String hashedPassword = DigestUtils.md5DigestAsHex(registerPostParam.getPassword().getBytes());
         LocalDateTime localDateTime = LocalDateTime.now();
         Account newUser = new Account();
         newUser.setUuid(UUID.randomUUID());
-        newUser.setEmail(userData.getEmail());
+        newUser.setEmail(registerPostParam.getEmail());
         newUser.setPassword(hashedPassword);
         newUser.setCreatedAt(localDateTime);
         newUser.setUpdatedAt(localDateTime);
+        System.out.println(newUser);
 
         try {
             accountRepository.save(newUser);
         } catch (Exception exception) {
-            return HttpStatus.INTERNAL_SERVER_ERROR;
+            System.out.println(exception.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         System.out.println("Successfully registered.");
-        return HttpStatus.OK;
     }
 
     /**

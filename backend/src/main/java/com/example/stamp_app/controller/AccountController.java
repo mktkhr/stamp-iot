@@ -1,11 +1,13 @@
 package com.example.stamp_app.controller;
 
-import com.example.stamp_app.controller.Response.AccountGetResponse;
-import com.example.stamp_app.controller.Response.AccountLoginResponse;
-import com.example.stamp_app.entity.Account;
+import com.example.stamp_app.controller.param.account.RegisterPostParam;
+import com.example.stamp_app.controller.response.AccountGetResponse;
+import com.example.stamp_app.controller.response.AccountLoginResponse;
+import com.example.stamp_app.dummyData.Account;
 import com.example.stamp_app.service.AccountService;
 import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,18 +37,18 @@ public class AccountController {
     /**
      * アカウント登録API
      *
-     * @param userData 登録情報
+     * @param registerPostParam 登録情報
      * @return ResponseEntity
      */
     @PostMapping(value = "/register")
-    public ResponseEntity<HttpStatus> addAccount(@RequestBody Account userData) {
+    public ResponseEntity<HttpStatus> addAccount(@RequestBody @Valid RegisterPostParam registerPostParam) {
         System.out.println(">> Account Controller(register:POST)");
-        System.out.println("RequestBody:" + userData);
+        System.out.println("RequestBody:" + registerPostParam);
 
-        HttpStatus responseStatus = accountService.addAccount(userData);
+        accountService.addAccount(registerPostParam);
 
         System.out.println("<< Account Controller(register:POST)");
-        return new ResponseEntity<>(responseStatus);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**

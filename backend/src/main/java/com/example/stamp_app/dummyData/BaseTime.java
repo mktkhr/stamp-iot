@@ -1,4 +1,4 @@
-package com.example.stamp_app.entity;
+package com.example.stamp_app.dummyData;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

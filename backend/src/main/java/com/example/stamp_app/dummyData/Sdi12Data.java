@@ -1,6 +1,6 @@
-package com.example.stamp_app.entity;
+package com.example.stamp_app.dummyData;
 
-import com.example.stamp_app.controller.Param.Sdi12Param;
+import com.example.stamp_app.controller.param.Sdi12Param;
 import lombok.Data;
 
 import jakarta.persistence.*;

@@ -1,7 +1,8 @@
-package com.example.stamp_app.entity;
+package com.example.stamp_app.dummyData;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 
 import jakarta.persistence.*;
@@ -23,6 +24,17 @@ public class MicroController {
     @Comment(value = "Macアドレス")
     @Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$")
     private String macAddress;
+
+    @NotNull
+    @Column
+    @ColumnDefault("60")
+    @Comment(value = "測定間隔(分)")
+    private int interval;
+
+    @Column
+    @Comment(value = "測定に使用するSDI-12アドレス(カンマ区切り)")
+    @Pattern(regexp = "^([0-9A-Za-z]{1},)*[0-9A-za-z]{1}$")
+    private String sdi12Address;
 
     @Column
     private LocalDateTime createdAt;

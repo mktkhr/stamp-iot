@@ -1,6 +1,5 @@
-package com.example.stamp_app.entity;
+package com.example.stamp_app.dummyData;
 
-import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import jakarta.persistence.*;

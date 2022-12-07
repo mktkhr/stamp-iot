@@ -1,6 +1,6 @@
 package com.example.stamp_app.repository;
 
-import com.example.stamp_app.entity.MicroController;
+import com.example.stamp_app.dummyData.MicroController;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

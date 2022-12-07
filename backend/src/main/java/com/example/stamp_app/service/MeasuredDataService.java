@@ -1,7 +1,7 @@
 package com.example.stamp_app.service;
 
-import com.example.stamp_app.controller.Param.MeasureDataPostParam;
-import com.example.stamp_app.entity.*;
+import com.example.stamp_app.controller.param.MeasureDataPostParam;
+import com.example.stamp_app.dummyData.*;
 import com.example.stamp_app.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 public class MeasuredDataService {

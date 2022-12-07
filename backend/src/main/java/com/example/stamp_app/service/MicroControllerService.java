@@ -1,8 +1,8 @@
 package com.example.stamp_app.service;
 
-import com.example.stamp_app.controller.Response.MicroControllerPostResponse;
-import com.example.stamp_app.entity.Account;
-import com.example.stamp_app.entity.MicroController;
+import com.example.stamp_app.controller.response.MicroControllerPostResponse;
+import com.example.stamp_app.dummyData.Account;
+import com.example.stamp_app.dummyData.MicroController;
 import com.example.stamp_app.repository.AccountRepository;
 import com.example.stamp_app.repository.MicroControllerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
