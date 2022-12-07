@@ -36,7 +36,7 @@ router.beforeEach(async (to, _from, next) => {
   //セッションの有効チェック
   const sessionStatus = await checkSession();
 
-  if (!sessionStatus && to.name != 'login') {
+  if (!sessionStatus && to.name != 'login' && to.name != 'register') {
     //セッションが無効かつログイン画面以外に遷移する場合
     next({ name: 'login' });
   } else if (sessionStatus && (to.name === 'login' || to.path === '/')) {
