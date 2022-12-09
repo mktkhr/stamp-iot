@@ -16,7 +16,7 @@ export default {
         }
       })
       .catch((error) => {
-        if (error.response.status == '409') {
+        if (error.response.status == '403') {
           alert('このメールアドレスは既に使用されています。');
         } else if (error.response.status == '500') {
           alert('エラーが発生しました。時間をおいて再度お試しください。');

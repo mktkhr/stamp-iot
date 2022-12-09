@@ -13,7 +13,7 @@ export class Account {
 
 export type AccountInfoState = {
   id: number;
-  name: string;
+  name: string | null;
 };
 
 export class AccountInfoRequestQuery {
