@@ -28,6 +28,7 @@
 - フロントエンド
   - vue v.3.2.13
   - vue-router v.4.0.3
+  - vuetify v.3.0.3
   - pinia v.2.0.27
   - axios v.1.2.0
   - vue-material-design-icon v.5.1.2
