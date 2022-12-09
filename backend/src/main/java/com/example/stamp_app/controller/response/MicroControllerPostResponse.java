@@ -1,4 +1,4 @@
-package com.example.stamp_app.controller.Response;
+package com.example.stamp_app.controller.response;
 
 import com.example.stamp_app.entity.MicroController;
 import lombok.AllArgsConstructor;

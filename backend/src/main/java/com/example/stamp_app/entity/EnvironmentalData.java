@@ -1,6 +1,6 @@
 package com.example.stamp_app.entity;
 
-import com.example.stamp_app.controller.Param.EnvironmentalDataParam;
+import com.example.stamp_app.controller.param.EnvironmentalDataParam;
 import lombok.Data;
 
 import jakarta.persistence.*;

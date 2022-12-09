@@ -9,7 +9,6 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.BinaryOperator;
 
 @Entity
 @Data

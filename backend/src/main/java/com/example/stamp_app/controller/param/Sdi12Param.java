@@ -1,4 +1,4 @@
-package com.example.stamp_app.controller.Param;
+package com.example.stamp_app.controller.param;
 
 import lombok.Data;
 
