@@ -4,7 +4,7 @@ import com.example.stamp_app.controller.param.account.LoginPostParam;
 import com.example.stamp_app.controller.param.account.RegisterPostParam;
 import com.example.stamp_app.controller.response.AccountGetResponse;
 import com.example.stamp_app.controller.response.AccountLoginResponse;
-import com.example.stamp_app.dummyData.Account;
+import com.example.stamp_app.entity.Account;
 import com.example.stamp_app.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

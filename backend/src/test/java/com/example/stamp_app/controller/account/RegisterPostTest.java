@@ -2,7 +2,7 @@ package com.example.stamp_app.controller.account;
 
 import com.example.stamp_app.controller.AccountController;
 import com.example.stamp_app.controller.param.account.RegisterPostParam;
-import com.example.stamp_app.dummyData.DummyData;
+import com.example.stamp_app.entity.DummyData;
 import com.example.stamp_app.service.AccountService;
 import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;

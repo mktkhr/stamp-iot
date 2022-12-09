@@ -1,7 +1,7 @@
 package com.example.stamp_app.service;
 
 import com.example.stamp_app.controller.param.MeasureDataPostParam;
-import com.example.stamp_app.dummyData.*;
+import com.example.stamp_app.entity.*;
 import com.example.stamp_app.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

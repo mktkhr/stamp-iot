@@ -1,4 +1,4 @@
-package com.example.stamp_app.dummyData;
+package com.example.stamp_app.entity;
 
 import com.example.stamp_app.controller.param.Sdi12Param;
 import lombok.Data;

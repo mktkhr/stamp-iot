@@ -1,4 +1,4 @@
-package com.example.stamp_app.dummyData;
+package com.example.stamp_app.entity;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;

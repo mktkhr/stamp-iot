@@ -1,4 +1,4 @@
-package com.example.stamp_app.dummyData;
+package com.example.stamp_app.entity;
 
 import org.hibernate.validator.constraints.Length;
 

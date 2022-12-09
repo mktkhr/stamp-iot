@@ -1,4 +1,4 @@
-package com.example.stamp_app.dummyData;
+package com.example.stamp_app.entity;
 
 public class DummyData {
     public static final String REGISTER_POST_PATH = "/ems/account/register";
