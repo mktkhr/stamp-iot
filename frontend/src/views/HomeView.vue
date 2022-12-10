@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import HeaderComponent from '@/components/HeaderComponent.vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import NavigatorComponent from '@/components/NavigatorComponent.vue';
 import InformationDetailFrame from '@/components/common/InformationDetailFrame.vue';
 import DisplayInformation from '@/components/common/DisplayInformation.vue';
@@ -9,10 +9,16 @@ import InformationInput from '@/components/common/InformationInput.vue';
 import CommonButton from '@/components/common/CommonButton.vue';
 
 import validation from '@/methods/validation';
+import common from '@/methods/common';
 import microControllerRegister from '@/methods/microControllerRegister';
 import { AccountStore } from '@/store/accountStore';
+import { MicroControllerStore } from '@/store/microControllerStore';
 
+// Store
 const accountStore = AccountStore();
+const microControllerStore = MicroControllerStore();
+microControllerStore.fetchAccountInfo();
+const microControllerList = computed(() => microControllerStore.getMicroControllerList);
 
 const menuStateRef = ref<boolean>();
 const changeState = (param: boolean) => {
@@ -67,28 +73,46 @@ const onClickRegister = () => {
   </v-dialog>
 
   <div class="main-content">
+    <v-row class="account-row">
+      <InformationDetailFrame
+        title="アカウント情報"
+        use-account-info
+        @clickButton="onClickPlusButton"
+      >
+        <template #content>
+          <DisplayInformation title="アカウント名" :content="accountStore.getName ?? '未設定'" />
+          <DisplayInformation title="登録日" content="2022/10/10" />
+          <DisplayInformation title="最終更新日" content="2022/10/11" />
+        </template>
+      </InformationDetailFrame>
+    </v-row>
     <!-- FIXME ハードコーディングのため，後でデータに差し替え -->
     <InformationDetailFrame
-      title="アカウント情報"
-      use-account-info
-      @clickButton="onClickPlusButton"
+      v-for="microController in microControllerList"
+      :title="microController.name ?? '端末名称未設定'"
+      :key="microController.id"
     >
       <template #content>
-        <DisplayInformation title="アカウント名" content="sample" />
-        <DisplayInformation title="登録日" content="2022/10/10" />
-        <DisplayInformation title="最終更新日" content="2022/10/11" />
-      </template>
-    </InformationDetailFrame>
-    <InformationDetailFrame title="登録端末1">
-      <template #content>
-        <DisplayInformation title="シリアル番号" content="sn_sample" />
-        <DisplayInformation title="最終更新時刻" content="2022/10/11 10:10:10" />
+        <DisplayInformation title="MACアドレス" :content="microController.macAddress" />
+        <DisplayInformation title="測定間隔(分)" :content="microController.interval.toString()" />
+        <DisplayInformation
+          title="登録日時"
+          :content="common.convertLocalDateTime(microController.createdAt)"
+        />
+        <DisplayInformation
+          title="更新日時"
+          :content="common.convertLocalDateTime(microController.updatedAt)"
+        />
       </template>
     </InformationDetailFrame>
   </div>
 </template>
 
 <style scoped>
+.account-row {
+  height: auto;
+  margin: 0 0 20px 0;
+}
 img {
   margin-top: 30px;
   height: 50px;

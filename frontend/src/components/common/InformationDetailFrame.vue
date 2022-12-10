@@ -77,7 +77,7 @@ button {
   margin: 5px;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 800px) {
   .col-one-half {
     width: calc(50% - 10px);
   }
@@ -86,7 +86,7 @@ button {
   }
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 1200px) {
   .col-one-fourth {
     width: calc(25% - 10px);
   }
