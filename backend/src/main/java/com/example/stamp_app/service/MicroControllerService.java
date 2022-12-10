@@ -1,5 +1,6 @@
 package com.example.stamp_app.service;
 
+import com.example.stamp_app.controller.response.MicroControllerGetResponse;
 import com.example.stamp_app.controller.response.MicroControllerPostResponse;
 import com.example.stamp_app.entity.Account;
 import com.example.stamp_app.entity.MicroController;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigInteger;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class MicroControllerService {
@@ -33,7 +36,7 @@ public class MicroControllerService {
         }
 
         // 対象のマイクロコントローラーがDB上に存在しなかった場合，400を返す
-        if(microController == null){
+        if (microController == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
@@ -65,5 +68,30 @@ public class MicroControllerService {
 
         return new MicroControllerPostResponse(HttpStatus.OK, microController);
 
+    }
+
+    /**
+     * アカウントに紐づくマイコンを取得
+     *
+     * @param userUuid ユーザーID
+     * @return アカウントに紐づくマイコンリスト
+     */
+    public List<MicroControllerGetResponse> getMicroControllerList(String userUuid) {
+        Account account;
+
+        try {
+            account = accountRepository.findByUuid(UUID.fromString(userUuid));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // アカウントが存在しなかった場合，400を返す
+        if (account == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        var microControllerList = account.getMicroController();
+
+        return MicroControllerGetResponse.convertMicroControllerToResponse(microControllerList);
     }
 }
