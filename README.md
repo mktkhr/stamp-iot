@@ -31,6 +31,7 @@
   - vuetify v.3.0.3
   - pinia v.2.0.27
   - axios v.1.2.0
+  - dayjs v.1.11.7
   - vue-material-design-icon v.5.1.2
   - core-js v.3.8.3
 - バックエンド
