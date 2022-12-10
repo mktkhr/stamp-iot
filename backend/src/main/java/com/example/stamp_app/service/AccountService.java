@@ -116,15 +116,15 @@ public class AccountService {
             // アカウントが存在しない場合，400を返す
             if (account == null) {
                 System.out.println("This account does not exist.");
-                return new AccountGetResponse(HttpStatus.BAD_REQUEST, null, null);
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
 
         } catch (Exception e) {
             System.out.println(e);
-            return new AccountGetResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // IDと名前のみを返す
-        return new AccountGetResponse(HttpStatus.OK, account.getId(), account.getName());
+        return new AccountGetResponse(account.getId(), account.getName(), account.getCreatedAt(), account.getUpdatedAt());
     }
 }

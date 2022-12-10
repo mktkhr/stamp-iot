@@ -11,10 +11,12 @@ export class Account {
   deletedAt: Date;
 }
 
-export type AccountInfoState = {
+export class AccountInfoState {
   id: number;
-  name: string | null;
-};
+  name?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export class AccountInfoRequestQuery {
   mailAddress: string;

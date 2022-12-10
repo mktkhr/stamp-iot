@@ -20,8 +20,12 @@ public class MicroController {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private BigInteger id;
 
+    @Column
+    @Comment(value = "端末名")
+    private String name;
+
     @NotNull
-    @Comment(value = "Macアドレス")
+    @Comment(value = "MACアドレス")
     @Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$")
     private String macAddress;
 

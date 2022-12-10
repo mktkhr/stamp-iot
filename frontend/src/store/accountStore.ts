@@ -1,17 +1,13 @@
-import { AccountInfoState, getAccountInfo } from '@/type/account/account';
+import { AccountInfoState, getAccountInfo } from '@/type/account';
 import { defineStore } from 'pinia';
 
 export const AccountStore = defineStore('AccountStore', {
   state: () => ({
-    accountId: '',
-    name: '',
+    account: new AccountInfoState(),
   }),
   getters: {
-    getAccountId: (state): string => {
-      return state.accountId;
-    },
-    getName: (state): string => {
-      return state.name;
+    getAccountInfo: (state): AccountInfoState => {
+      return state.account;
     },
   },
   actions: {
@@ -23,8 +19,7 @@ export const AccountStore = defineStore('AccountStore', {
       try {
         accountInfo = await getAccountInfo();
       } finally {
-        this.$state.accountId = accountInfo.id;
-        this.$state.name = accountInfo.name;
+        this.$state.account = accountInfo;
       }
     },
   },
