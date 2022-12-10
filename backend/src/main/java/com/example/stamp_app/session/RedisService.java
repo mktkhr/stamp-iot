@@ -2,8 +2,10 @@ package com.example.stamp_app.session;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +39,20 @@ public class RedisService {
      * @return String ユーザーUUID or null
      */
     public String getUserUuidFromSessionUuid(String key) {
-        return key == null ? null : (String) redisTemplate.opsForValue().get(key);
+        String value = null;
+
+        try{
+            value = (String) redisTemplate.opsForValue().get(key);
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // 空の場合，400を返す
+        if(value == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        return value;
     }
 
     /**

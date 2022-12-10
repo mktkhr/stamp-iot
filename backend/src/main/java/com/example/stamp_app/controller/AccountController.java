@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.UUID;
 
 import static com.example.stamp_app.constants.Constants.SESSION_VALID_TIME_IN_SEC;
@@ -88,20 +90,16 @@ public class AccountController {
      */
     @GetMapping(value = "/info")
     public ResponseEntity<AccountGetResponse> accountInfo(HttpServletRequest httpServletRequest) {
+        System.out.println(">> Account Controller(Info:GET)");
         var cookieLIst = httpServletRequest.getCookies();
 
         var sessionUuid = sessionService.getSessionUuidFromCookie(cookieLIst);
-        if(sessionUuid == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
         var userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
-        if(userUuid == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
         var accountGetResponse = accountService.getAccountInfo(userUuid);
 
-        return new ResponseEntity<>(accountGetResponse, accountGetResponse.getStatus());
+        System.out.println("<< Account Controller(Info:GET)");
+        return new ResponseEntity<>(accountGetResponse, HttpStatus.OK);
     }
 }
