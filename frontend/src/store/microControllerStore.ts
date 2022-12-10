@@ -1,4 +1,4 @@
-import { getMicroControllerInfo, MicroControllerInfoState } from '@/type/account/microController';
+import { getMicroControllerInfo, MicroControllerInfoState } from '@/type/microController';
 import { defineStore } from 'pinia';
 
 export const MicroControllerStore = defineStore('MicroControllerStore', {

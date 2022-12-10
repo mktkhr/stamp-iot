@@ -16,6 +16,8 @@ import { MicroControllerStore } from '@/store/microControllerStore';
 
 // Store
 const accountStore = AccountStore();
+const accountInfo = computed(() => accountStore.getAccountInfo);
+
 const microControllerStore = MicroControllerStore();
 microControllerStore.fetchAccountInfo();
 const microControllerList = computed(() => microControllerStore.getMicroControllerList);
@@ -50,7 +52,11 @@ const onClickRegister = () => {
     macAddressError.value = 'MACアドレスが正しく入力されていません。';
     return;
   }
-  microControllerRegister.post(accountStore.getAccountId, macAddressRef.value);
+  microControllerRegister.post(accountInfo.value.id.toString(), macAddressRef.value);
+};
+
+const onClickTile = (id: number) => {
+  console.log(id);
 };
 </script>
 
@@ -73,38 +79,48 @@ const onClickRegister = () => {
   </v-dialog>
 
   <div class="main-content">
-    <v-row class="account-row">
+    <v-row class="account-row" v-if="accountInfo">
       <InformationDetailFrame
         title="アカウント情報"
         use-account-info
         @clickButton="onClickPlusButton"
       >
         <template #content>
-          <DisplayInformation title="アカウント名" :content="accountStore.getName ?? '未設定'" />
-          <DisplayInformation title="登録日" content="2022/10/10" />
-          <DisplayInformation title="最終更新日" content="2022/10/11" />
+          <DisplayInformation title="アカウント名" :content="accountInfo.name ?? '未設定'" />
+          <DisplayInformation
+            title="登録日"
+            :content="common.convertLocalDateTime(accountInfo.createdAt)"
+          />
+          <DisplayInformation
+            title="最終更新日"
+            :content="common.convertLocalDateTime(accountInfo.updatedAt)"
+          />
         </template>
       </InformationDetailFrame>
     </v-row>
     <!-- FIXME ハードコーディングのため，後でデータに差し替え -->
-    <InformationDetailFrame
-      v-for="microController in microControllerList"
-      :title="microController.name ?? '端末名称未設定'"
-      :key="microController.id"
-    >
-      <template #content>
-        <DisplayInformation title="MACアドレス" :content="microController.macAddress" />
-        <DisplayInformation title="測定間隔(分)" :content="microController.interval.toString()" />
-        <DisplayInformation
-          title="登録日時"
-          :content="common.convertLocalDateTime(microController.createdAt)"
-        />
-        <DisplayInformation
-          title="更新日時"
-          :content="common.convertLocalDateTime(microController.updatedAt)"
-        />
-      </template>
-    </InformationDetailFrame>
+    <template v-if="microControllerList">
+      <InformationDetailFrame
+        class="micro-controller-tile"
+        v-for="microController in microControllerList"
+        :title="microController.name ?? '端末名称未設定'"
+        :key="microController.id"
+        @click="onClickTile(microController.id)"
+      >
+        <template #content>
+          <DisplayInformation title="MACアドレス" :content="microController.macAddress" />
+          <DisplayInformation title="測定間隔(分)" :content="microController.interval.toString()" />
+          <DisplayInformation
+            title="登録日時"
+            :content="common.convertLocalDateTime(microController.createdAt)"
+          />
+          <DisplayInformation
+            title="更新日時"
+            :content="common.convertLocalDateTime(microController.updatedAt)"
+          />
+        </template>
+      </InformationDetailFrame>
+    </template>
   </div>
 </template>
 
@@ -120,5 +136,8 @@ img {
 }
 .main-content {
   padding: 10px;
+}
+.micro-controller-tile {
+  cursor: pointer;
 }
 </style>
