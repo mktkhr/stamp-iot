@@ -32,7 +32,7 @@ const emit = defineEmits<Emits>();
     <div class="title-box">
       <span>{{ title }}</span>
       <button v-if="useAccountInfo" style="height: 40px">
-        <Plus id="plus-icon" style="" @click="emit('clickButton')" />
+        <Plus id="plus-icon" @click="emit('clickButton')" />
       </button>
     </div>
     <slot name="content"></slot>
@@ -52,6 +52,7 @@ button {
   margin-bottom: auto;
   padding: 0;
   color: #888;
+  cursor: pointer;
 }
 .content-box {
   width: 100%;
