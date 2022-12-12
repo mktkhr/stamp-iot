@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import LoginView from '@/views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 import HomeView from '@/views/HomeView.vue';
+import MeasuredDataView from '@/views/MeasuredDataView.vue'
 import axios from 'axios';
 import { AccountStore } from '@/store/accountStore';
 
@@ -20,6 +21,10 @@ const routes: Array<RouteRecordRaw> = [
     path: '/home',
     name: 'home',
     component: HomeView,
+  },
+  {
+    path: '/result/:microControllerId',
+    component: MeasuredDataView,
   },
 ];
 
