@@ -1,5 +1,6 @@
 package com.example.stamp_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -30,9 +31,11 @@ public class MeasuredDataMaster {
     @ManyToOne
     private MicroController microController;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "measuredDataMaster")
     private List<Sdi12Data> sdi12Data;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "measuredDataMaster")
     private List<EnvironmentalData> environmentalData;
 

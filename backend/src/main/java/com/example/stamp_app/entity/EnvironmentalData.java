@@ -1,6 +1,7 @@
 package com.example.stamp_app.entity;
 
 import com.example.stamp_app.controller.param.EnvironmentalDataParam;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -34,6 +35,7 @@ public class EnvironmentalData {
     @Column(name = "analogValue")
     private String analogValue;
 
+    @JsonBackReference
     @ManyToOne
     private MeasuredDataMaster measuredDataMaster;
 
