@@ -13,6 +13,7 @@ import common from '@/methods/common';
 import microControllerRegister from '@/methods/microControllerRegister';
 import { AccountStore } from '@/store/accountStore';
 import { MicroControllerStore } from '@/store/microControllerStore';
+import router from '@/router';
 
 // Store
 const accountStore = AccountStore();
@@ -57,6 +58,7 @@ const onClickRegister = () => {
 
 const onClickTile = (id: number) => {
   console.log(id);
+  router.push({ name: 'result', params: { microControllerId: id } });
 };
 </script>
 
