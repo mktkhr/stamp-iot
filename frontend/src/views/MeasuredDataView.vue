@@ -26,45 +26,25 @@ const changeState = (param: boolean) => {
 
 // Chart関連
 Chart.register(...registerables);
-const measuredDataList = computed(() => measuredDataStore.getMeasuredDataList);
-
-// y軸データ
-const lineChartData = computed(() => {
-  if (measuredDataList.value.sdi12Data != undefined) {
-    return measuredDataList.value.sdi12Data[0].dataList.map((data) => {
-      return data.vwc;
-    });
-  }
-  return null;
-});
-
-// x軸データ
-const lineChartLabel = computed(() => {
-  if (measuredDataList.value.sdi12Data != undefined) {
-    return measuredDataList.value.sdi12Data[0].dataList.map((data) => {
-      return data.dayOfYear;
-    });
-  }
-  return null;
-});
 
 const config = computed<ChartOptions<'line'>>(() => ({
   responsive: true,
   scales: {
-    x: { // 軸設定(https://www.chartjs.org/docs/latest/axes/)
+    x: {
+      // 軸設定(https://www.chartjs.org/docs/latest/axes/)
       type: 'linear', // 軸のタイプ指定(詳細不明だが，linearでないと全データが等間隔で表示される)
       display: true, // 表示の有無
       position: 'bottom', // 軸表示位置 top or bottom
       title: {
         display: true, // 軸タイトル表示有無
         align: 'center', // 軸タイトル表示位置 start or center or end
-        text: 'X軸タイトル', // 軸タイトル
+        text: 'DOY', // 軸タイトル
         font: {
           size: 14, // 軸タイトルフォントサイズ
         },
       },
       ticks: {
-        stepSize: 0.01, // 軸ラベル間隔
+        // stepSize: 0.01, // 軸ラベル間隔
       },
     },
     y: {
@@ -80,7 +60,7 @@ const config = computed<ChartOptions<'line'>>(() => ({
         },
       },
       ticks: {
-        stepSize: 0.1, 
+        // stepSize: 0.1,
       },
     },
   },
@@ -98,18 +78,9 @@ const config = computed<ChartOptions<'line'>>(() => ({
   },
 }));
 
+const dataset = computed(() => measuredDataStore.getSdi12DataList('soilTemp')); // ここをセレクト要素で分岐させる
 const lineData = computed<ChartData<'line'>>(() => ({
-  labels: lineChartLabel.value, // x軸データ
-  datasets: [
-    {
-      label: '凡例1', // 凡例名
-      data: lineChartData.value, // y軸データ
-      fill: true, // グラフ下の塗りつぶしの有無
-      lineTension: 0, // フィッティング具合(線形の場合は0)
-      borderColor: 'rgba(0, 0, 0, 0.5)', // 線の色
-    },
-  ],
-  options: config,
+  datasets: dataset.value,
 }));
 </script>
 
