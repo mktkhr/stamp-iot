@@ -50,13 +50,21 @@ export type EnvironmentalDataState = {
   deletedAt: Date;
 };
 
+export class MeasuredDataset {
+  label: string;
+  data: number[];
+  fill: boolean | undefined;
+  lineTension: number;
+  borderColor: string;
+  pointStyle: string;
+  pointRadius: number;
+}
+
 /**
  * マイコンIDを指定して測定結果を取得するAPI
  * @return  測定データ or null
  */
-export const getMeasuredData = async (
-  microControllerId: string
-): Promise<MeasuredDataState> => {
+export const getMeasuredData = async (microControllerId: string): Promise<MeasuredDataState> => {
   try {
     const rawResponse = await axios.get('/api/ems/measured-data', {
       params: { microControllerId: microControllerId },
