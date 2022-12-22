@@ -33,7 +33,7 @@ const toHomePage = () => {
           <div>ホーム</div>
         </button>
       </li>
-      <li class="navigator-list">
+      <!-- <li class="navigator-list">
         <button>
           <DataBase style="margin-top: auto; margin-bottom: auto" />
           <div>データ</div>
@@ -68,7 +68,7 @@ const toHomePage = () => {
           <AccountSettings style="margin-top: auto; margin-bottom: auto" />
           <div>設定</div>
         </button>
-      </li>
+      </li> -->
     </ul>
   </nav>
 </template>
