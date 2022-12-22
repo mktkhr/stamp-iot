@@ -136,9 +136,6 @@ img {
   height: 50px;
   width: auto;
 }
-.main-content {
-  padding: 10px;
-}
 .micro-controller-tile {
   cursor: pointer;
 }

@@ -208,7 +208,4 @@ const environmentalChartDataSet = computed<ChartData<'line'>>(() => ({
 </template>
 
 <style scoped>
-.main-content {
-  padding: 10px;
-}
 </style>
