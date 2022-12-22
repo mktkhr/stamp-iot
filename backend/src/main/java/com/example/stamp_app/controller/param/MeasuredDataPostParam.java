@@ -7,13 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class MeasureDataPostParam {
-
-    @NotNull
-    private String ownerUuid;
-
-    @NotNull
-    private UUID uuid;
+public class MeasuredDataPostParam {
 
     @NotNull
     private String macAddress;

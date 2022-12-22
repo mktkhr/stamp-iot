@@ -1,6 +1,7 @@
 package com.example.stamp_app.entity;
 
 import com.example.stamp_app.controller.param.Sdi12Param;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -45,6 +46,7 @@ public class Sdi12Data {
     @Column(name = "gravitationalAccelerationZAxis")
     private String gaz;
 
+    @JsonBackReference
     @ManyToOne
     private MeasuredDataMaster measuredDataMaster;
 
