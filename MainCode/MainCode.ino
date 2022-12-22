@@ -249,7 +249,7 @@ String convertEnv3ResultForPost(String result){
   }
   
   //戻り値の生成(Json文字列を生成する)
-  return resultForPost = "\"temp\":\"" + response[0] + "\"," + "\"humi\":\"" + response[1] + "\",\"airPress\":\"" + response[2] + "\",";
+  return resultForPost = "\"airPress\":\"" + response[0] + "\"," + "\"temp\":\"" + response[1] + "\",\"humi\":\"" + response[2] + "\",";
 }
 
 /**
