@@ -33,8 +33,8 @@ const props = defineProps<{
     max-height: 800px;
     border: 1px solid #888888;
     border-radius: 5px;
-    margin: calc((30vh - 50px) / 2) auto;
-    margin: calc((30dvh - 50px) / 2) auto;
+    margin: 20vh auto;
+    margin: 20dvh auto;
     box-shadow: 0px 10px 20px -5px rgba(0,0,0,0.6);
 }
 .title {
@@ -46,8 +46,8 @@ const props = defineProps<{
 
 @media screen and (max-height: 900px) {
     .form-frame {
-        margin: calc((20vh - 50px) / 2) auto;
-        margin: calc((20dvh - 50px) / 2) auto;
+        margin: 10vh auto;
+        margin: 10dvh auto;
         height: 80vh;
         height: 80dvh;
     }
