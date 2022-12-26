@@ -1,3 +1,40 @@
+<script setup lang="ts">
+import logout from '@/methods/logout';
+import router from '@/router';
+import { ref } from 'vue';
+
+interface Props {
+  hamburgerState: boolean;
+  menuState: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  hamburgerState: true,
+  menuState: false,
+});
+
+const emit = defineEmits<{
+  (e: 'clickEvent', menuState: boolean);
+}>();
+
+const showLogoutButton = ref(true);
+if (router.currentRoute.value.name == 'login' || router.currentRoute.value.name == 'register') {
+  showLogoutButton.value = false;
+}
+
+const onClickMenuButton = (): void => {
+  emit('clickEvent', !props.menuState);
+};
+
+const onClickLogout = () => {
+  if (confirm('ログアウトします。よろしいですか?')) {
+    logout.post();
+  } else {
+    return;
+  }
+};
+</script>
+
 <template>
   <header>
     <div class="header-left" v-if="hamburgerState">
@@ -13,34 +50,17 @@
       </button>
     </div>
     <div class="header-right">
+      <img
+        v-if="showLogoutButton"
+        src="@/assets/logout.png"
+        id="logout"
+        alt="logout"
+        @click="onClickLogout"
+      />
       <img src="@/assets/logo_white.png" alt="logo" />
     </div>
   </header>
 </template>
-
-<script lang="ts">
-export default {
-  props: {
-    hamburgerState: {
-      type: Boolean,
-      default: true,
-    },
-    menuState: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  setup(props, context) {
-    const onClickMenuButton = (): void => {
-      context.emit('clickEvent', !props.menuState);
-    };
-
-    return {
-      onClickMenuButton,
-    };
-  },
-};
-</script>
 
 <style scoped>
 header {
@@ -49,6 +69,7 @@ header {
   background: #999999;
   display: flex;
   position: fixed;
+  top: 0;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.6);
   z-index: 999;
 }
@@ -106,13 +127,19 @@ button {
 }
 .header-right {
   position: absolute;
+  display: flex;
   right: 0;
   height: 50px;
-  width: 70px;
+  width: auto;
+  margin-right: 10px;
 }
 .header-right img {
   margin-top: 5px;
   height: 40px;
   width: auto;
+}
+
+#logout {
+  cursor: pointer;
 }
 </style>

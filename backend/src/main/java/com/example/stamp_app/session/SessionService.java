@@ -14,11 +14,32 @@ public class SessionService {
     @Autowired
     RedisService redisService;
 
+    /**
+     * Cookieを生成する
+     *
+     * @param sessionId 登録するセッションID
+     * @return 生成したcookie
+     */
     public Cookie generateCookie(String sessionId) {
         Cookie cookie = new Cookie(COOKIE_NAME, sessionId);
         cookie.setDomain("localhost");
         cookie.setPath("/");
         cookie.setMaxAge(SESSION_VALID_TIME_IN_SEC);
+        cookie.setHttpOnly(true);
+        return cookie;
+    }
+
+    /**
+     * 期限切れのCookieを生成する
+     *
+     * @param sessionId 登録するセッションID
+     * @return 生成したcookie
+     */
+    public Cookie generateExpiredCookie(String sessionId) {
+        Cookie cookie = new Cookie(COOKIE_NAME, sessionId);
+        cookie.setDomain("localhost");
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
         cookie.setHttpOnly(true);
         return cookie;
     }
