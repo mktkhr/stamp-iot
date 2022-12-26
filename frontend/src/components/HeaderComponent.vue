@@ -27,7 +27,6 @@ const onClickMenuButton = (): void => {
 };
 
 const onClickLogout = () => {
-  console.log('logout');
   if (confirm('ログアウトします。よろしいですか?')) {
     logout.post();
   } else {
