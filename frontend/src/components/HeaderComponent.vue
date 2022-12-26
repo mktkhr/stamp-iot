@@ -1,3 +1,23 @@
+<script setup lang="ts">
+interface Props {
+  hamburgerState: boolean;
+  menuState: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  hamburgerState: true,
+  menuState: false,
+});
+
+const emit = defineEmits<{
+  (e: 'clickEvent', menuState: boolean);
+}>();
+
+const onClickMenuButton = (): void => {
+  emit('clickEvent', !props.menuState);
+};
+</script>
+
 <template>
   <header>
     <div class="header-left" v-if="hamburgerState">
@@ -17,30 +37,6 @@
     </div>
   </header>
 </template>
-
-<script lang="ts">
-export default {
-  props: {
-    hamburgerState: {
-      type: Boolean,
-      default: true,
-    },
-    menuState: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  setup(props, context) {
-    const onClickMenuButton = (): void => {
-      context.emit('clickEvent', !props.menuState);
-    };
-
-    return {
-      onClickMenuButton,
-    };
-  },
-};
-</script>
 
 <style scoped>
 header {
