@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -84,6 +83,30 @@ public class AccountController {
     }
 
     /**
+     * ログアウトAPI
+     *
+     * @return ResponseEntity
+     */
+    @PostMapping(value = "/logout")
+    public ResponseEntity<HttpStatus> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        System.out.println(">> Account Controller(logout:POST)");
+
+        var cookieList = httpServletRequest.getCookies();
+
+        var sessionUuid = sessionService.getSessionUuidFromCookie(cookieList);
+
+        // redis からセッション情報を削除
+        redisService.delete(sessionUuid);
+
+        // 有効期限切れのCookieをレスポンスにセット
+        httpServletResponse.addCookie(sessionService.generateExpiredCookie(sessionUuid));
+
+        System.out.println("<< Account Controller(logout:POST)");
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    /**
      * アカウント情報取得
      *
      * @return ユーザーIDとユーザー名
@@ -91,9 +114,9 @@ public class AccountController {
     @GetMapping(value = "/info")
     public ResponseEntity<AccountGetResponse> accountInfo(HttpServletRequest httpServletRequest) {
         System.out.println(">> Account Controller(Info:GET)");
-        var cookieLIst = httpServletRequest.getCookies();
+        var cookieList = httpServletRequest.getCookies();
 
-        var sessionUuid = sessionService.getSessionUuidFromCookie(cookieLIst);
+        var sessionUuid = sessionService.getSessionUuidFromCookie(cookieList);
 
         var userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
 
