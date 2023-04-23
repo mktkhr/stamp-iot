@@ -26,6 +26,7 @@
 ## 各種バージョン
 
 - フロントエンド
+  - node v.18.16.0
   - vue v.3.2.13
   - vue-router v.4.0.3
   - vuetify v.3.0.3
@@ -34,6 +35,8 @@
   - dayjs v.1.11.7
   - vue-material-design-icon v.5.1.2
   - core-js v.3.8.3
+  - vue-chart-3: v.3.1.8
+  - chart.js: v.3.9.1,
 - バックエンド
   - Java 17
   - spring boot v.3.0.0
