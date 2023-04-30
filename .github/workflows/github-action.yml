@@ -44,15 +44,17 @@ jobs:
         node-version: [18.16.0]
 
     steps:
+      - name: Create directory for download artifacts
+        run: mkdir -p /home/ems/tmp/frontend/${{ github.ref_name }}/dist
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
           name: dist
-          path: /home/ems/tmp/frontend/${{ github.ref_name }}
-      - name: Make directory
+          path: /home/ems/tmp/frontend/${{ github.ref_name }}/dist
+      - name: Create directory for deploy
         run: mkdir -p /home/ems/deploy/frontend/${{ github.ref_name }}
       - name: Copy artifacts
-        run: cp -rp /home/ems/tmp/frontend/${{ github.ref_name }} /home/ems/deploy/frontend/${{ github.ref_name }}
+        run: cp -rp /home/ems/tmp/frontend/${{ github.ref_name }}/* /home/ems/deploy/frontend/${{ github.ref_name }}
       - name: Link artifacts to dist
         run: ln -fns /home/ems/deploy/frontend/${{ github.ref_name }}/dist /home/ems/deploy/frontend/dist
 
