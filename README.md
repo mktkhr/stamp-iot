@@ -1,4 +1,5 @@
 # stamp-iot
+![CI parameter](https://github.com/mktkhr/stamp-iot/actions/workflows/github-action.yml/badge.svg)
 
 ---
 
