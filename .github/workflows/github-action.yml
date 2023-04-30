@@ -49,7 +49,8 @@ jobs:
         with:
           name: dist
           path: /home/ems/tmp/frontend/${{ github.ref_name }}
-
+      - name: Make directory
+        run: mkdir -p /home/ems/deploy/frontend/${{ github.ref_name }}
       - name: Copy artifacts
         run: cp -rp /home/ems/tmp/frontend/${{ github.ref_name }} /home/ems/deploy/frontend/${{ github.ref_name }}
       - name: Link artifacts to content
