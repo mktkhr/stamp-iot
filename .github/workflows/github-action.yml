@@ -2,7 +2,7 @@ name: Node.js CI/CD
 on:
   push:
     paths:
-      - './frontend/*'
+      - 'frontend/**'
 
 jobs:
   build:
