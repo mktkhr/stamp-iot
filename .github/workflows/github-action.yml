@@ -1,8 +1,8 @@
 name: Node.js CI/CD
 on:
   push:
-    # branches:
-    #   - main
+    paths:
+      - './frontend/*'
 
 jobs:
   build:
@@ -31,7 +31,7 @@ jobs:
         with:
           name: dist
           path: |
-            ./frontend//dist
+            ./frontend/dist
             !./frontend/dist/**/*.md
 
   deploy:
