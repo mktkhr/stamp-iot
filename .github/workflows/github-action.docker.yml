@@ -2,7 +2,7 @@ name: docker-compose CD
 on:
   push:
     paths:
-      - 'docker-compose-prod.yml'
+      - 'docker-compose-prod.yaml'
 
 jobs:
   deploy:
