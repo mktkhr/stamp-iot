@@ -1,0 +1,30 @@
+name: docker-compose CD
+on:
+  push:
+    paths:
+      - docker-compose-prod.yaml
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: [self-hosted]
+
+    steps:
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: docker-compose-prod.yaml
+      - name: Create directory for download artifacts
+        run: mkdir -p /home/ems/tmp/docker/${{ github.ref_name }}/
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: /home/ems/tmp/docker/${{ github.ref_name }}/
+      - name: Create directory for deploy
+        run: mkdir -p /home/ems/deploy/docker/${{ github.ref_name }}/
+      - name: Copy artifacts
+        run: cp -rp /home/ems/tmp/docker/${{ github.ref_name }}/artifact/* /home/ems/deploy/docker/${{ github.ref_name }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true

@@ -58,7 +58,6 @@ const validate = () => {
 
 const clickButton = () => {
   if (validate()) {
-    console.log("失敗");
     return;
   }
   register.post(mailAddressRef.value, passwordRef.value);

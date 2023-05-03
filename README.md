@@ -1,5 +1,6 @@
 # stamp-iot
-![CI parameter](https://github.com/mktkhr/stamp-iot/actions/workflows/github-action.yml/badge.svg)
+![frontend CI/CD main](https://github.com/mktkhr/stamp-iot/actions/workflows/github-action.frontend.yml/badge.svg?branch=main)
+![docker-compose CD main](https://github.com/mktkhr/stamp-iot/actions/workflows/github-action.docker.yml/badge.svg?branch=main)
 
 ---
 
@@ -30,7 +31,7 @@
   - node v.18.16.0
   - vue v.3.2.13
   - vue-router v.4.0.3
-  - vuetify v.3.0.3
+  - vuetify v.3.2.2
   - pinia v.2.0.27
   - axios v.1.2.0
   - dayjs v.1.11.7

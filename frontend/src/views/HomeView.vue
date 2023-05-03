@@ -57,7 +57,6 @@ const onClickRegister = () => {
 };
 
 const onClickTile = (id: number) => {
-  console.log(id);
   router.push({ name: 'result', params: { microControllerId: id } });
 };
 </script>

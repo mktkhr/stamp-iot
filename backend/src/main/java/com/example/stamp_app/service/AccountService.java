@@ -71,32 +71,32 @@ public class AccountService {
      */
     public AccountLoginResponse login(LoginPostParam loginPostParam) {
 
-        boolean isCorrectPassword;
+        Account loginUser = new Account();
 
         try {
-            Account loginUser = accountRepository.findByEmail(loginPostParam.getEmail());
-
-            // 対象のアカウントが存在しない場合，400を返す
-            if (loginUser == null) {
-                System.out.println("This account does not exist.");
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            }
-
-            isCorrectPassword = loginUser.getPassword().matches(md5DigestAsHex(loginPostParam.getPassword().getBytes()));
-
-            // パスワードが合致しない場合，401を返す
-            if (!isCorrectPassword) {
-                System.out.println("Account Information are not correct.");
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-            }
-
-            System.out.println("Successfully logged in.");
-            return new AccountLoginResponse(HttpStatus.OK, loginUser);
+            loginUser = accountRepository.findByEmail(loginPostParam.getEmail());
 
         } catch (Exception e) {
             System.out.println(e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        // 対象のアカウントが存在しない場合，400を返す
+        if (loginUser == null) {
+            System.out.println("This account does not exist.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        boolean isCorrectPassword = loginUser.getPassword().matches(md5DigestAsHex(loginPostParam.getPassword().getBytes()));
+
+        // パスワードが合致しない場合，401を返す
+        if (!isCorrectPassword) {
+            System.out.println("Account Information are not correct.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        System.out.println("Successfully logged in.");
+        return new AccountLoginResponse(HttpStatus.OK, loginUser);
 
     }
 
