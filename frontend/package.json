@@ -1,10 +1,11 @@
 {
-  "name": "frontend",
+  "name": "stamp-iot",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build:dev": "vue-cli-service build --mode dev",
+    "build:prod": "vue-cli-service build --mode prod",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
