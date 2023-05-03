@@ -18,7 +18,7 @@
     "vue-chart-3": "^3.1.8",
     "vue-material-design-icons": "^5.1.2",
     "vue-router": "^4.0.3",
-    "vuetify": "^3.0.3"
+    "vuetify": "^3.2.2"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",

@@ -30,7 +30,7 @@
   - node v.18.16.0
   - vue v.3.2.13
   - vue-router v.4.0.3
-  - vuetify v.3.0.3
+  - vuetify v.3.2.2
   - pinia v.2.0.27
   - axios v.1.2.0
   - dayjs v.1.11.7
