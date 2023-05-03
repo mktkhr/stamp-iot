@@ -6,25 +6,30 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db-store:/var/lib/postgresql/data
+      - postgres-db:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "admin"
-      POSTGRES_DB: "stamp_db"
+      POSTGRES_DB: "ems_db"
 
   redis:
     image: redis:7
+    container_name: redis
     ports:
       - "6379:6379"
+    volumes:
+      - redis-db:/data
 
   redisinsight:
-    image: redislabs/redisinsight:1.12.0
+    image: redislabs/redisinsight:latest
     ports:
-      - 8005:8001
+      - 8001:8001
     volumes:
       - redisinsight:/db
     depends_on:
       - redis
+
 volumes:
-  db-store:
+  postgres-db:
+  redis-db:
   redisinsight:
