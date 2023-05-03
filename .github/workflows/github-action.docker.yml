@@ -1,8 +1,6 @@
 name: docker-compose CD
 on:
   push:
-    paths:
-      - 'docker-compose-prod.yaml'
 
 jobs:
   deploy:
@@ -13,14 +11,13 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          files: docker-compose-prod.yml
+          path: docker-compose-prod.yaml
       - name: Create directory for download artifacts
         run: mkdir -p /home/ems/tmp/docker/${{ github.ref_name }}/
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
-          name: docker-compose-prod.yml
-          path: /home/ems/tmp/docker/
+          path: /home/ems/tmp/docker/${{ github.ref_name }}/
       - name: Create directory for deploy
         run: mkdir -p /home/ems/deploy/docker/${{ github.ref_name }}/
       - name: Copy artifacts
