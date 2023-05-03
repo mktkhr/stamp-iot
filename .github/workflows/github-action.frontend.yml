@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - 'frontend/**'
-      - '.github/workflows/**'
+      - '.github/workflows/github-action.frontend.yml'
 
 jobs:
   build:
