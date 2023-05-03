@@ -23,7 +23,7 @@ jobs:
       - name: Create directory for deploy
         run: mkdir -p /home/ems/deploy/docker/${{ github.ref_name }}/
       - name: Copy artifacts
-        run: cp -rp /home/ems/tmp/docker/${{ github.ref_name }}/* /home/ems/deploy/docker/${{ github.ref_name }}
+        run: cp -rp /home/ems/tmp/docker/${{ github.ref_name }}/artifact/* /home/ems/deploy/docker/${{ github.ref_name }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
