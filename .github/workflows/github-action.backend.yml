@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Build/Test
     runs-on: [self-hosted]
 
     steps:
@@ -21,13 +21,6 @@ jobs:
       - name: Run build
         run: ./gradlew build
         working-directory: ./backend
-
-  test:
-    name: Test
-    runs-on: [self-hosted]
-    needs: build
-
-    steps:
       - name: Run unit test
         run: ./gradlew test
         working-directory: ./backend
