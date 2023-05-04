@@ -1,0 +1,46 @@
+name: Java CI
+on:
+  push:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/github-action.backend.yml'
+
+jobs:
+  build:
+    name: Build
+    runs-on: [self-hosted]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: 'gradle'
+      - name: Run build
+        run: ./gradlew build
+
+  test:
+    name: Test
+    runs-on: [self-hosted]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: 'gradle'
+      - name: Run unit test
+        run: ./gradlew test
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v2
+        if: cancelled() != true
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
