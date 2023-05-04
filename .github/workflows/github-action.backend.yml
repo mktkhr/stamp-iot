@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build/Test
+    name: Java Build/Test
     runs-on: [self-hosted]
 
     steps:
