@@ -35,6 +35,25 @@ jobs:
         with:
           path: ./backend/build/libs/server.jar
 
+  deploy:
+    name: Java Deploy
+    runs-on: [self-hosted]
+    needs: build
+
+    steps:
+      - name: Create directory for download artifacts
+        run: mkdir -p /home/ems/tmp/backend/${{ github.ref_name }}
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: /home/ems/tmp/backend/${{ github.ref_name }}
+      - name: Create directory for deploy
+        run: mkdir -p /home/ems/deploy/backend/${{ github.ref_name }}
+      - name: Copy artifacts
+        run: cp -rp /home/ems/tmp/backend/${{ github.ref_name }}/server.jar /home/ems/deploy/backend/${{ github.ref_name }}
+      - name: Link artifacts to server.jar
+        run: ln -fns /home/ems/deploy/backend/${{ github.ref_name }}/server.jar /home/ems/deploy/backend/server.jar
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
