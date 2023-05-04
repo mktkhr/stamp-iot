@@ -30,6 +30,11 @@ jobs:
         with:
           report_paths: '**/build/test-results/test/TEST-*.xml'
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: ./backend/build/libs/server.jar
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
