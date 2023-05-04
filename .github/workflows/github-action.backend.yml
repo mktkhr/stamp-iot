@@ -18,10 +18,9 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
           cache: 'gradle'
-      - name: Make Gradle executable
-        run: chmod +x ./gradlew
       - name: Run build
         run: ./gradlew build
+        working-directory: ./backend
 
   test:
     name: Test
@@ -35,10 +34,9 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
           cache: 'gradle'
-      - name: Make Gradle executable
-        run: chmod +x ./gradlew
       - name: Run unit test
         run: ./gradlew test
+        working-directory: ./backend
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v2
         if: cancelled() != true
