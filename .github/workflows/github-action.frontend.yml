@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Node.js Build
     runs-on: [self-hosted]
 
     strategy:
@@ -36,7 +36,7 @@ jobs:
             !./frontend/dist/**/*.md
 
   deploy:
-    name: Deploy
+    name: Node.js Deploy
     runs-on: [self-hosted]
     needs: build
 

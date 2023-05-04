@@ -1,6 +1,7 @@
 # stamp-iot
 ![frontend CI/CD main](https://github.com/mktkhr/stamp-iot/actions/workflows/github-action.frontend.yml/badge.svg?branch=main)
 ![docker-compose CD main](https://github.com/mktkhr/stamp-iot/actions/workflows/github-action.docker.yml/badge.svg?branch=main)
+![backend CI/CD main](https://github.com/mktkhr/stamp-iot/actions/workflows/github-action.backend.yml/badge.svg?branch=main)
 
 ---
 
