@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - docker-compose-prod.yaml
+      - '.github/workflows/github-action.docker.yml'
 
 jobs:
   deploy:
