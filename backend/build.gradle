@@ -23,12 +23,18 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
 }
 
 jar {
 	archiveFileName = 'server.jar'
+}
+
+test {
+	useJUnitPlatform()
+	testLogging {
+		showStandardStreams true
+		events 'skipped', 'passed', 'failed'
+		exceptionFormat 'full'
+	}
 }
