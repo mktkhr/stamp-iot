@@ -8,8 +8,8 @@ services:
     volumes:
       - postgres-db:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: ${{ POSTGRES_DB_USER }}
-      POSTGRES_PASSWORD: ${{ POSTGRES_DB_PASS }}
+      POSTGRES_USER: ${POSTGRES_DB_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASS}
       POSTGRES_DB: "ems_db"
 
   redis:
