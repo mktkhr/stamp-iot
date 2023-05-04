@@ -24,6 +24,8 @@ jobs:
         run: mkdir -p /home/ems/deploy/docker/${{ github.ref_name }}/
       - name: Copy artifacts
         run: cp -rp /home/ems/tmp/docker/${{ github.ref_name }}/artifact/* /home/ems/deploy/docker/${{ github.ref_name }}
+      - name: Link artifacts to docker-compose-prod.yaml
+        run: ln -fns /home/ems/deploy/docker/${{ github.ref_name }}/docker-compose-prod.yaml /home/ems/deploy/docker/docker-compose-prod.yaml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
