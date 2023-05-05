@@ -45,7 +45,7 @@ services:
     ports:
       - 8082:8082
     volumes:
-      - /home/ems/deploy/backend/server:/usr/src:cached
+      - /home/ems/deploy/backend/jar:/usr/src:cached
 
 volumes:
   postgres-db:
