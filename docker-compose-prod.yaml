@@ -38,6 +38,8 @@ services:
     volumes:
       - /home/ems/deploy/nginx/nginx.conf:/etc/nginx/nginx.conf
       - /home/ems/deploy/frontend/dist:/usr/share/nginx/dist
+    depends_on:
+      - java
 
   java:
     image: amazoncorretto:17
