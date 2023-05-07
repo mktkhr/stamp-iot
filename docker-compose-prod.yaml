@@ -3,8 +3,8 @@ services:
   postgres:
     image: postgres:14
     container_name: postgres
-    ports:
-      - "5432:5432"
+    expose:
+      - '5432'
     volumes:
       - postgres-db:/var/lib/postgresql/data
     environment:
@@ -15,8 +15,8 @@ services:
   redis:
     image: redis:7
     container_name: redis
-    ports:
-      - "6379:6379"
+    expose:
+      - '6379'
     volumes:
       - redis-db:/data
 
@@ -24,7 +24,7 @@ services:
     image: redislabs/redisinsight:latest
     container_name: redisinsight
     ports:
-      - 8001:8001
+      - '8001:8001'
     volumes:
       - redisinsight:/db
     depends_on:
@@ -34,7 +34,7 @@ services:
     image: nginx:latest
     container_name: nginx
     ports:
-      - 8080:80
+      - '8080:80'
     volumes:
       - /home/ems/deploy/nginx/nginx.conf:/etc/nginx/nginx.conf
       - /home/ems/deploy/frontend/dist:/usr/share/nginx/dist
@@ -45,19 +45,19 @@ services:
     image: amazoncorretto:17
     container_name: java
     tty: true
-    env_file:
-      - /home/ems/deploy/docker/.env
     build:
       context: /home/ems/deploy
       dockerfile: /home/ems/deploy/docker/java/Dockerfile
       args:
         - "POSTGRES_DB_USER=${POSTGRES_DB_USER}"
         - "POSTGRES_DB_PASS=${POSTGRES_DB_PASS}"
+        - "REDIS_HOST=${REDIS_HOST}"
+        - "REDIS_PORT=${REDIS_PORT}"
     depends_on:
       - postgres
       - redis
     ports:
-      - 8082:8082
+      - '8082:8082'
     volumes:
       - /home/ems/deploy/backend/jar:/usr/src
 
