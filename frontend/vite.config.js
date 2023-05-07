@@ -1,9 +1,8 @@
-const { defineConfig } = require('@vue/cli-service');
-module.exports = defineConfig({
-  transpileDependencies: true,
-});
+import vue from '@vitejs/plugin-vue'
+import path from 'path'
 
-module.exports = {
+export default {
+  plugins: [vue()],
   devServer: {
     port: 8080,
     proxy: {
@@ -14,4 +13,9 @@ module.exports = {
       },
     },
   },
-};
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  }
+}
