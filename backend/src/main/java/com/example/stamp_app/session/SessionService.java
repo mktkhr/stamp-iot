@@ -1,6 +1,7 @@
 package com.example.stamp_app.session;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,8 @@ import static com.example.stamp_app.constants.Constants.*;
 public class SessionService {
     @Autowired
     RedisService redisService;
+    @Value("${domain}")
+    public String domain;
 
     /**
      * Cookieを生成する
@@ -22,7 +25,7 @@ public class SessionService {
      */
     public Cookie generateCookie(String sessionId) {
         Cookie cookie = new Cookie(COOKIE_NAME, sessionId);
-        cookie.setDomain("localhost");
+        cookie.setDomain(domain);
         cookie.setPath("/");
         cookie.setMaxAge(SESSION_VALID_TIME_IN_SEC);
         cookie.setHttpOnly(true);
@@ -37,7 +40,7 @@ public class SessionService {
      */
     public Cookie generateExpiredCookie(String sessionId) {
         Cookie cookie = new Cookie(COOKIE_NAME, sessionId);
-        cookie.setDomain("localhost");
+        cookie.setDomain(domain);
         cookie.setPath("/");
         cookie.setMaxAge(0);
         cookie.setHttpOnly(true);

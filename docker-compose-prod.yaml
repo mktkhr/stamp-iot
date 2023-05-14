@@ -4,19 +4,19 @@ services:
     image: postgres:14
     container_name: postgres
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres-db:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: ${{ POSTGRES_DB_USER }}
-      POSTGRES_PASSWORD: ${{ POSTGRES_DB_PASS }}
+      POSTGRES_USER: ${POSTGRES_DB_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASS}
       POSTGRES_DB: "ems_db"
 
   redis:
     image: redis:7
     container_name: redis
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis-db:/data
 
@@ -24,7 +24,7 @@ services:
     image: redislabs/redisinsight:latest
     container_name: redisinsight
     ports:
-      - 8001:8001
+      - '8001:8001'
     volumes:
       - redisinsight:/db
     depends_on:
@@ -34,18 +34,21 @@ services:
     image: nginx:latest
     container_name: nginx
     ports:
-      - 8080:80
+      - '8080:80'
+      - '443:443'
+    extra_hosts:
+      - "host.docker.internal:host-gateway" #コンテナからホストにアクセスするために必要
     volumes:
       - /home/ems/deploy/nginx/nginx.conf:/etc/nginx/nginx.conf
       - /home/ems/deploy/frontend/dist:/usr/share/nginx/dist
+      - /home/ems/ssl:/etc/ssl
 
-  java:
-    image: amazoncorretto:17
-    container_name: java
-    ports:
-      - 8082:8082
-    volumes:
-      - /home/ems/deploy/backend/server:/usr/src:cached
+  certbot:
+      image: certbot/certbot:v1.7.0
+      volumes:
+        - /home/ems/ssl:/etc/letsencrypt
+        - /home/ems/deploy/frontend/dist:/usr/share/nginx/dist
+      command: ["--version"]
 
 volumes:
   postgres-db:

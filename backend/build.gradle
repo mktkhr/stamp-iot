@@ -5,7 +5,6 @@ plugins {
 }
 
 group = 'com.example'
-version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
@@ -26,10 +25,6 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
 }
 
-jar {
-	archiveFileName = 'server.jar'
-}
-
 test {
 	useJUnitPlatform()
 	testLogging {
@@ -37,4 +32,8 @@ test {
 		events 'skipped', 'passed', 'failed'
 		exceptionFormat 'full'
 	}
+}
+
+jar {
+	enabled = false
 }

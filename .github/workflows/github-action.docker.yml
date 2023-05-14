@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - docker-compose-prod.yaml
+      - '.github/workflows/github-action.docker.yml'
 
 jobs:
   deploy:
@@ -10,6 +11,7 @@ jobs:
     runs-on: [self-hosted]
 
     steps:
+      - uses: actions/checkout@v3
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:

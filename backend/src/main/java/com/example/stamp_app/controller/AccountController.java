@@ -9,6 +9,7 @@ import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,6 +35,8 @@ public class AccountController {
     SessionService sessionService;
     @Autowired
     RedisService redisService;
+    @Value("${spring.redis.host}")
+    public String host;
 
     /**
      * アカウント登録API
