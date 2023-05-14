@@ -35,11 +35,20 @@ services:
     container_name: nginx
     ports:
       - '8080:80'
+      - '443:443'
     extra_hosts:
       - "host.docker.internal:host-gateway" #コンテナからホストにアクセスするために必要
     volumes:
       - /home/ems/deploy/nginx/nginx.conf:/etc/nginx/nginx.conf
       - /home/ems/deploy/frontend/dist:/usr/share/nginx/dist
+      - /home/ems/ssl:/etc/ssl
+
+  certbot:
+      image: certbot/certbot:v1.7.0
+      volumes:
+        - /home/ems/ssl:/etc/letsencrypt
+        - /home/ems/deploy/frontend/dist:/usr/share/nginx/dist
+      command: ["--version"]
 
 volumes:
   postgres-db:
