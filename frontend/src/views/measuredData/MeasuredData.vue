@@ -184,8 +184,6 @@ const environmentalChartDataSet = computed<ChartData<'line'>>(() => ({
 </script>
 
 <template>
-  <HeaderComponent hamburgerState :menuState="menuStateRef" @clickEvent="changeState" />
-  <NavigatorComponent :menuState="menuStateRef" />
   <div class="main-content">
     <div class="graph-wrapper">
       <LineChart ref="lineRef" :chartData="sdi12ChartDataSet" :options="sdi12ChartConfig" />

@@ -7,11 +7,6 @@ import CommonButton from '@/components/common/CommonButton.vue';
 import validation from '@/methods/validation';
 import login from '@/methods/login';
 
-const menuStateRef = ref<boolean>();
-const changeState = (param: boolean) => {
-  menuStateRef.value = param;
-};
-
 const mailAddressRef = ref<string>();
 const passwordRef = ref<string>();
 const mailAddressError = ref<string>('');
@@ -54,7 +49,6 @@ const clickButton = () => {
 </script>
 
 <template>
-  <HeaderComponent :hamburgerState="false" :menuState="menuStateRef" @clickEvent="changeState" />
   <FormWindow title="ログイン">
     <template #icon>
       <img src="@/assets/logo_blue.png" alt="logo" />

@@ -4,7 +4,7 @@ import router from '@/router';
 import { ref } from 'vue';
 
 interface Props {
-  hamburgerState: boolean;
+  showHamburgerMenu: boolean;
   menuState: boolean;
 }
 
@@ -37,7 +37,7 @@ const onClickLogout = () => {
 
 <template>
   <header>
-    <div class="header-left" v-if="hamburgerState">
+    <div class="header-left" v-if="showHamburgerMenu">
       <button
         class="hamburger"
         id="hamburger"
