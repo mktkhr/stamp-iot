@@ -38,7 +38,6 @@ const selectedEnvironmentalOption = ref('');
 // Chart関連
 Chart.register(...registerables);
 
-
 // SDI-12グラフの設定
 const sdi12ChartConfig = computed<ChartOptions<'line'>>(() => ({
   responsive: true,
@@ -160,7 +159,9 @@ const onChangeSdi12Select = (value: string) => {
 };
 
 // SDI-12グラフ用データ
-const sdi12ChartData = computed(() => measuredDataStore.getSdi12DataList(selectedSdi12Option.value));
+const sdi12ChartData = computed(() =>
+  measuredDataStore.getSdi12DataList(selectedSdi12Option.value)
+);
 const sdi12ChartDataSet = computed<ChartData<'line'>>(() => ({
   datasets: sdi12ChartData.value,
 }));
@@ -174,7 +175,9 @@ const onChangeEnvironmentalSelect = (value: string) => {
 };
 
 // 環境データグラフ用データ
-const environmentalChartData = computed(() => measuredDataStore.getEnvironmentDataList(selectedEnvironmentalOption.value));
+const environmentalChartData = computed(() =>
+  measuredDataStore.getEnvironmentDataList(selectedEnvironmentalOption.value)
+);
 const environmentalChartDataSet = computed<ChartData<'line'>>(() => ({
   datasets: environmentalChartData.value,
 }));
@@ -207,5 +210,4 @@ const environmentalChartDataSet = computed<ChartData<'line'>>(() => ({
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
