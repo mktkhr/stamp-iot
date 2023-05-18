@@ -39,5 +39,6 @@ $header-height: 50px;
   height: calc(100vh - $header-height);
   width: 100vw;
   margin-top: $header-height;
+  position: relative;
 }
 </style>

@@ -1,59 +1,56 @@
 <script setup lang="ts">
-
 const props = defineProps<{
-    title?: string
-}>()
-
+  title?: string;
+}>();
 </script>
 
 <template>
-    <div class="form-frame">
-        <slot name="icon"></slot>
-        <div class="title">
-            <span v-if="title">{{props.title}}</span>
-        </div>
-        <slot name="mailAddress"></slot>
-        <slot name="password"></slot>
-        <slot name="passwordConfirm"></slot>
-        <div>
-            <slot name="button"></slot>
-        </div>
-        <div>
-            <slot name="link"></slot>
-        </div>
+  <div class="form-frame">
+    <slot name="icon"></slot>
+    <div class="title">
+      <span v-if="title">{{ props.title }}</span>
     </div>
+    <slot name="mailAddress"></slot>
+    <slot name="password"></slot>
+    <slot name="passwordConfirm"></slot>
+    <div>
+      <slot name="button"></slot>
+    </div>
+    <div>
+      <slot name="link"></slot>
+    </div>
+  </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .form-frame {
-    width: 80%;
-    max-width: 600px;
-    height: 60vh;
-    height: 60dvh;
-    max-height: 800px;
-    border: 1px solid #888888;
-    border-radius: 5px;
-    margin: 20vh auto;
-    margin: 20dvh auto;
-    box-shadow: 0px 10px 20px -5px rgba(0,0,0,0.6);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 80%;
+  max-width: 600px;
+  height: 60%;
+  max-height: 800px;
+  margin: auto;
+  border: 1px solid #888888;
+  border-radius: 5px;
+  box-shadow: 0px 10px 20px -5px rgba(0, 0, 0, 0.6);
 }
 .title {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 .title span {
-    font-size: 25px;
+  font-size: 25px;
 }
 
 @media screen and (max-height: 900px) {
-    .form-frame {
-        margin: 10vh auto;
-        margin: 10dvh auto;
-        height: 80vh;
-        height: 80dvh;
-    }
-    .title span {
-        font-size: 20px;
-    }
+  .form-frame {
+    height: 80%;
+  }
+  .title span {
+    font-size: 20px;
+  }
 }
-
 </style>

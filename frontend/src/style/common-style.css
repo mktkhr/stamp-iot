@@ -30,7 +30,7 @@ p {
 }
 
 .main-content {
-  padding: 50px 10px 10px 10px;
+  padding: 10px;
   -ms-overflow-style: none; /* IE, Edge スクロールバー非表示 */
   scrollbar-width: none; /* Firefox スクロールバー非表示 */
 }
