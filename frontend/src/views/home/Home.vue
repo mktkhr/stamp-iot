@@ -62,7 +62,6 @@ const onClickTile = (id: number) => {
 </script>
 
 <template>
-  <HeaderComponent hamburgerState :menuState="menuStateRef" @clickEvent="changeState" />
   <NavigatorComponent :menuState="menuStateRef" />
   <v-dialog v-model="isShowModal" width="80%" max-width="500px">
     <ModalWindow

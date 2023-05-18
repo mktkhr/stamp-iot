@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { watch, ref } from 'vue';
 import router from '@/router';
 
 import HeaderComponent from '@/components/HeaderComponent.vue';
@@ -11,9 +11,14 @@ const changeState = (param: boolean) => {
 };
 
 // ハンバーガーメニューの非表示設定
-const showHamburgerMenu = computed(
-  () => !(router.currentRoute.value.name == 'login' || router.currentRoute.value.name == 'register')
-);
+const showHamburgerMenu = ref(false);
+watch(router.currentRoute, () => {
+  if (router.currentRoute.value.name === 'login' || router.currentRoute.value.name === 'register') {
+    showHamburgerMenu.value = false;
+  } else {
+    showHamburgerMenu.value = true;
+  }
+});
 </script>
 
 <template>
@@ -22,7 +27,7 @@ const showHamburgerMenu = computed(
     :menuState="menuStateRef"
     @clickEvent="changeState"
   />
-  <NavigatorComponent :menuState="menuStateRef" />
+  <NavigatorComponent :menuState="menuStateRef" v-if="showHamburgerMenu" />
   <div class="main-view">
     <router-view />
   </div>

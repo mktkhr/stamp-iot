@@ -37,12 +37,13 @@ const onClickLogout = () => {
 
 <template>
   <header>
-    <div class="header-left" v-if="showHamburgerMenu">
+    <div class="header-left">
       <button
         class="hamburger"
         id="hamburger"
         v-bind:class="{ active: menuState }"
         v-on:click="onClickMenuButton"
+        v-if="showHamburgerMenu"
       >
         <span></span>
         <span></span>
@@ -62,7 +63,7 @@ const onClickLogout = () => {
   </header>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 header {
   width: 100%;
   height: 50px;
