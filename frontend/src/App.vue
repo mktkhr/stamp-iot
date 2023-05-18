@@ -13,6 +13,7 @@ const changeState = (param: boolean) => {
 // ハンバーガーメニューの非表示設定
 const showHamburgerMenu = ref(false);
 watch(router.currentRoute, () => {
+  menuStateRef.value = false; // 画面遷移時にメニューを隠す
   if (router.currentRoute.value.name === 'login' || router.currentRoute.value.name === 'register') {
     showHamburgerMenu.value = false;
   } else {
