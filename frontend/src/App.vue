@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { watch, ref } from 'vue';
+import { watch, ref, computed } from 'vue';
 import router from '@/router';
 
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import NavigatorComponent from '@/components/NavigatorComponent.vue';
+
+import { SpinnerStore } from './store/spinnerStore';
+
+// スピナー表示状態管理
+const spinnerStore = SpinnerStore();
+const showSpinner = computed(() => spinnerStore.getStatus);
 
 const menuStateRef = ref(false);
 const changeState = (param: boolean) => {
@@ -29,6 +35,9 @@ watch(router.currentRoute, () => {
     @clickEvent="changeState"
   />
   <NavigatorComponent :menuState="menuStateRef" v-if="showHamburgerMenu" />
+  <div v-if="showSpinner" class="spinner">
+    <v-progress-circular color="blue" indeterminate />
+  </div>
   <div class="main-view">
     <router-view />
   </div>
@@ -41,5 +50,19 @@ $header-height: 50px;
   width: 100vw;
   margin-top: $header-height;
   position: relative;
+}
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  z-index: 9999;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(#000, 0.5);
 }
 </style>
