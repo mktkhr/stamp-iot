@@ -1,54 +1,24 @@
 <script setup lang="ts">
-import HeaderComponent from '@/components/HeaderComponent.vue';
-import { ref } from 'vue';
 import FormWindow from '@/components/common/FormWindow.vue';
 import InformationInput from '@/components/common/InformationInput.vue';
 import CommonButton from '@/components/common/CommonButton.vue';
-import validation from '@/methods/validation';
-import login from '@/methods/login';
+import NotificationBar from '@/components/common/NotificationBar.vue';
+import { useLogin } from './composable';
 
-const mailAddressRef = ref<string>();
-const passwordRef = ref<string>();
-const mailAddressError = ref<string>('');
-const passwordError = ref<string>('');
-
-const getMailAddress = (value: string) => {
-  mailAddressRef.value = value;
-};
-
-const getPassword = (value: string) => {
-  passwordRef.value = value;
-};
-
-const validate = () => {
-  mailAddressError.value = '';
-  passwordError.value = '';
-  const mailAddressValidateFlag = !validation.mailAddressValidate(mailAddressRef.value);
-  const passwordValidateFlag = passwordRef.value == ''; // セキュリティ確保のため，パスワードは空チェックのみとする
-
-  if (mailAddressValidateFlag) {
-    mailAddressError.value = 'メールアドレスが正しく入力されていません。';
-  }
-  if (passwordValidateFlag) {
-    passwordError.value = 'パスワードを入力して下さい。';
-  }
-
-  return mailAddressValidateFlag || passwordValidateFlag;
-};
-
-const clickButton = () => {
-  mailAddressError.value = '';
-  passwordError.value = '';
-
-  if (validate()) {
-    console.log('ログイン失敗');
-    return;
-  }
-  login.post(mailAddressRef.value, passwordRef.value);
-};
+const {
+  mailAddressError,
+  passwordError,
+  showNotification,
+  notificationMessage,
+  notificationType,
+  getMailAddress,
+  getPassword,
+  onClickLoginButton,
+} = useLogin();
 </script>
 
 <template>
+  <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
   <FormWindow title="ログイン">
     <template #icon>
       <img src="@/assets/logo_blue.png" alt="logo" />
@@ -64,7 +34,7 @@ const clickButton = () => {
       <InformationInput password :error-message="passwordError" @input-value="getPassword" />
     </template>
     <template #button>
-      <CommonButton button-title="ログイン" @click-button="clickButton" />
+      <CommonButton button-title="ログイン" @click-button="onClickLoginButton" />
     </template>
     <template #link>
       <RouterLink to="/register" class="link">新規登録はこちら</RouterLink>
