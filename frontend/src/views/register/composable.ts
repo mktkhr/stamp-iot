@@ -1,16 +1,17 @@
 import { ref } from 'vue';
-import router from '@/router';
-
 import validation from '@/methods/validation';
 import { AccountStore } from '@/store/accountStore';
-import { StatusCode } from '@/constants/statusCode';
 import { NotificationType } from '@/constants/notificationType';
+import router from '@/router';
+import { StatusCode } from '@/constants/statusCode';
 
-export const useLogin = () => {
+export const useRegister = () => {
   const mailAddressRef = ref('');
   const passwordRef = ref('');
+  const passwordConfirmRef = ref('');
   const mailAddressError = ref('');
   const passwordError = ref('');
+  const passwordConfirmError = ref('');
   const showNotification = ref(false);
   const notificationMessage = ref('');
   const notificationType = ref(NotificationType.INFO);
@@ -25,32 +26,36 @@ export const useLogin = () => {
     passwordRef.value = value;
   };
 
-  /**
-   * ログイン入力情報のバリデーション
-   */
-  const validate = (): boolean => {
+  const getPasswordConfirm = (value: string) => {
+    passwordConfirmRef.value = value;
+  };
+
+  const validate = () => {
     mailAddressError.value = '';
     passwordError.value = '';
+    passwordConfirmError.value = '';
     const mailAddressValidateFlag = !validation.mailAddressValidate(mailAddressRef.value);
-    const passwordValidateFlag = passwordRef.value == ''; // セキュリティ確保のため，パスワードは空チェックのみとする
+    const passwordValidateFlag = !validation.passwordValidate(passwordRef.value);
+    const passwordConfirmValidateFlag = !validation.passwordValidate(passwordConfirmRef.value);
 
     if (mailAddressValidateFlag) {
       mailAddressError.value = 'メールアドレスが正しく入力されていません。';
     }
     if (passwordValidateFlag) {
-      passwordError.value = 'パスワードを入力して下さい。';
+      passwordError.value = '1文字以上の大文字を含む,8~24文字のパスワードを入力して下さい。';
+    }
+    if (passwordConfirmValidateFlag) {
+      passwordConfirmError.value = '1文字以上の大文字を含む,8~24文字のパスワードを入力して下さい。';
+    }
+    if (passwordRef.value != passwordConfirmRef.value) {
+      passwordConfirmError.value = 'パスワードが一致していません。';
+      return false;
     }
 
-    return mailAddressValidateFlag || passwordValidateFlag;
+    return mailAddressValidateFlag || passwordValidateFlag || passwordConfirmValidateFlag;
   };
 
-  /**
-   * ログインボタン押下時の処理
-   */
-  const onClickLoginButton = async (): Promise<void> => {
-    mailAddressError.value = '';
-    passwordError.value = '';
-
+  const onClickRegister = async () => {
     if (validate()) {
       notificationMessage.value = '入力内容に誤りがあります。';
       notificationType.value = NotificationType.ERROR;
@@ -59,40 +64,44 @@ export const useLogin = () => {
       return;
     }
     await accountStore
-      .login(mailAddressRef.value, passwordRef.value)
+      .register(mailAddressRef.value, passwordRef.value)
       .then(() => {
-        notificationMessage.value = 'ログインに成功しました。';
+        notificationMessage.value = '登録に成功しました。ログイン画面に遷移します。';
         notificationType.value = NotificationType.SUCCESS;
         showNotification.value = true;
         setTimeout(() => {
           showNotification.value = false;
-          router.replace('/home');
+          router.replace('/login');
         }, 1500);
       })
       .catch((e) => {
         const statusCode = e.response.status.toString();
-        if (statusCode === StatusCode.BAD_REQUEST || statusCode === StatusCode.UNAUTHORIZED) {
-          notificationMessage.value = 'アカウント情報が間違っています。';
+        if (statusCode === StatusCode.BAD_REQUEST) {
+          notificationMessage.value = 'エラーが発生しました。再度入力してください。';
+        } else if (statusCode === StatusCode.FORBIDDEN) {
+          notificationMessage.value = 'このメールアドレスは既に使用されています。';
         } else if (statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
           notificationMessage.value = 'エラーが発生しました。時間をおいて再度お試しください。';
         } else {
           notificationMessage.value =
             '予期せぬエラーが発生しました。時間をおいて再度お試しください。';
         }
-        notificationMessage.value = '入力内容に誤りがあります。';
         notificationType.value = NotificationType.ERROR;
         showNotification.value = true;
         setTimeout(() => (showNotification.value = false), 3000);
       });
   };
+
   return {
     mailAddressError,
     passwordError,
+    passwordConfirmError,
     showNotification,
     notificationMessage,
     notificationType,
     getMailAddress,
     getPassword,
-    onClickLoginButton,
+    getPasswordConfirm,
+    onClickRegister,
   };
 };

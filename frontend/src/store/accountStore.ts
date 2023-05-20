@@ -1,4 +1,4 @@
-import { login } from '@/methods/account';
+import { login, logout, register } from '@/methods/account';
 import { AccountInfoState, getAccountInfo } from '@/type/account';
 import { defineStore } from 'pinia';
 import { SpinnerStore } from './spinnerStore';
@@ -30,6 +30,30 @@ export const AccountStore = defineStore('AccountStore', {
 
       try {
         await login(mailAddress, password);
+      } catch (e) {
+        throw e;
+      } finally {
+        spinnerStore.hideSpinner();
+      }
+    },
+    async logout() {
+      const spinnerStore = SpinnerStore();
+      spinnerStore.showSpinner();
+
+      try {
+        await logout();
+      } catch (e) {
+        throw e;
+      } finally {
+        spinnerStore.hideSpinner();
+      }
+    },
+    async register(mailAddress: string, password: string) {
+      const spinnerStore = SpinnerStore();
+      spinnerStore.showSpinner();
+
+      try {
+        await register(mailAddress, password);
       } catch (e) {
         throw e;
       } finally {

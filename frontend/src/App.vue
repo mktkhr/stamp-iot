@@ -6,14 +6,43 @@ import HeaderComponent from '@/components/HeaderComponent.vue';
 import NavigatorComponent from '@/components/NavigatorComponent.vue';
 
 import { SpinnerStore } from './store/spinnerStore';
+import { AccountStore } from './store/accountStore';
+import { StatusCode } from './constants/statusCode';
+import { NotificationType } from './constants/notificationType';
 
 // スピナー表示状態管理
 const spinnerStore = SpinnerStore();
 const showSpinner = computed(() => spinnerStore.getStatus);
 
+const accountStore = AccountStore();
+
+const showNotification = ref(false);
+const notificationMessage = ref('');
+const notificationType = ref(NotificationType.INFO);
+
 const menuStateRef = ref(false);
 const changeState = (param: boolean) => {
   menuStateRef.value = param;
+};
+
+const onClickLogout = async () => {
+  await accountStore
+    .logout()
+    .then(() => {
+      router.replace('/login');
+    })
+    .catch((e) => {
+      const statusCode = e.response.status.toString();
+      if (statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
+        notificationMessage.value = 'エラーが発生しました。時間をおいて再度お試しください。';
+      } else {
+        notificationMessage.value =
+          '予期せぬエラーが発生しました。時間をおいて再度お試しください。';
+      }
+      notificationType.value = NotificationType.ERROR;
+      showNotification.value = true;
+      setTimeout(() => (showNotification.value = false), 3000);
+    });
 };
 
 // ハンバーガーメニューの非表示設定
@@ -33,12 +62,14 @@ watch(router.currentRoute, () => {
     :showHamburgerMenu="showHamburgerMenu"
     :menuState="menuStateRef"
     @clickEvent="changeState"
+    @onClickLogout="onClickLogout"
   />
   <NavigatorComponent :menuState="menuStateRef" v-if="showHamburgerMenu" />
   <div v-if="showSpinner" class="spinner">
     <v-progress-circular color="blue" indeterminate />
   </div>
   <div class="main-view">
+    <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
     <router-view />
   </div>
 </template>

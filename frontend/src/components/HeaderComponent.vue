@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import logout from '@/methods/logout';
-import router from '@/router';
 import { ref } from 'vue';
+import router from '@/router';
 
 interface Props {
   showHamburgerMenu: boolean;
@@ -15,6 +14,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'clickEvent', menuState: boolean);
+  (e: 'onClickLogout');
 }>();
 
 const showLogoutButton = ref(true);
@@ -26,9 +26,9 @@ const onClickMenuButton = (): void => {
   emit('clickEvent', !props.menuState);
 };
 
-const onClickLogout = () => {
+const onClickLogout = async () => {
   if (confirm('ログアウトします。よろしいですか?')) {
-    logout.post();
+    emit('onClickLogout');
   } else {
     return;
   }
