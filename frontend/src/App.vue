@@ -4,6 +4,7 @@ import router from '@/router';
 
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import NavigatorComponent from '@/components/NavigatorComponent.vue';
+import NotificationBar from '@/components/common/NotificationBar.vue';
 
 import { SpinnerStore } from './store/spinnerStore';
 import { AccountStore } from './store/accountStore';

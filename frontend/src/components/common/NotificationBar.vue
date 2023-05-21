@@ -52,5 +52,7 @@ withDefaults(defineProps<Props>(), {
 .v-alert {
   padding: 0 10px;
   border-radius: 0 0 2px 2px;
+  position: absolute;
+  top: 0;
 }
 </style>

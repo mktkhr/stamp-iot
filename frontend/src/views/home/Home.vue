@@ -1,68 +1,32 @@
 <script setup lang="ts">
-import HeaderComponent from '@/components/HeaderComponent.vue';
-import { computed, ref } from 'vue';
-import NavigatorComponent from '@/components/NavigatorComponent.vue';
+import NotificationBar from '@/components/common/NotificationBar.vue';
 import InformationDetailFrame from '@/components/common/InformationDetailFrame.vue';
 import DisplayInformation from '@/components/common/DisplayInformation.vue';
 import ModalWindow from '@/components/common/ModalWindow.vue';
 import InformationInput from '@/components/common/InformationInput.vue';
 import CommonButton from '@/components/common/CommonButton.vue';
 
-import validation from '@/methods/validation';
 import common from '@/methods/common';
-import microControllerRegister from '@/methods/microControllerRegister';
-import { AccountStore } from '@/store/accountStore';
-import { MicroControllerStore } from '@/store/microControllerStore';
-import router from '@/router';
+import { useHome } from './composable';
 
-// Store
-const accountStore = AccountStore();
-const accountInfo = computed(() => accountStore.getAccountInfo);
-
-const microControllerStore = MicroControllerStore();
-microControllerStore.fetchAccountInfo();
-const microControllerList = computed(() => microControllerStore.getMicroControllerList);
-
-const menuStateRef = ref<boolean>();
-const changeState = (param: boolean) => {
-  menuStateRef.value = param;
-};
-
-const isShowModal = ref<boolean>(false);
-const macAddressError = ref<string>('');
-const macAddressRef = ref<string>('');
-
-const onClickPlusButton = () => {
-  isShowModal.value = true;
-};
-
-const onClickSubmit = () => {
-  isShowModal.value = false;
-};
-
-const getMacAddress = (value: string) => {
-  macAddressRef.value = value;
-};
-
-const onClickRegister = () => {
-  macAddressError.value = '';
-
-  const macAddressValidateFlag = !validation.macAddressValidate(macAddressRef.value);
-
-  if (macAddressValidateFlag) {
-    macAddressError.value = 'MACアドレスが正しく入力されていません。';
-    return;
-  }
-  microControllerRegister.post(accountInfo.value.id.toString(), macAddressRef.value);
-};
-
-const onClickTile = (id: number) => {
-  router.push({ name: 'result', params: { microControllerId: id } });
-};
+const {
+  accountInfo,
+  microControllerList,
+  isShowModal,
+  macAddressError,
+  showNotification,
+  notificationMessage,
+  notificationType,
+  onClickPlusButton,
+  onClickSubmit,
+  getMacAddress,
+  onClickRegister,
+  onClickTile,
+} = useHome();
 </script>
 
 <template>
-  <NavigatorComponent :menuState="menuStateRef" />
+  <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
   <v-dialog v-model="isShowModal" width="80%" max-width="500px">
     <ModalWindow
       @click-button="onClickSubmit"
@@ -98,7 +62,6 @@ const onClickTile = (id: number) => {
         </template>
       </InformationDetailFrame>
     </v-row>
-    <!-- FIXME ハードコーディングのため，後でデータに差し替え -->
     <template v-if="microControllerList">
       <InformationDetailFrame
         class="micro-controller-tile"
