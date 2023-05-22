@@ -3,6 +3,7 @@ import axios from 'axios';
 
 export class MicroController {
   id: number;
+  uuid: string;
   name: string;
   macAddress: string;
   interval: number;
@@ -13,6 +14,7 @@ export class MicroController {
 
 export type MicroControllerInfoState = {
   id: number;
+  uuid: string;
   name: string | null;
   macAddress: string;
   interval: number;
@@ -33,8 +35,8 @@ export const microControllerGet = async (): Promise<Array<MicroController>> => {
     const rawResponse = await axios.get('/api/ems/micro-controller/info');
     const response: Array<MicroController> = rawResponse.data;
     return response;
-  } catch {
-    return null;
+  } catch (e) {
+    throw e;
   }
 };
 

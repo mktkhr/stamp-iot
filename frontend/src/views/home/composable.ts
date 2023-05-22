@@ -100,8 +100,8 @@ export const useHome = () => {
     register();
   };
 
-  const onClickTile = (id: number) => {
-    router.push({ name: 'result', params: { microControllerId: id } });
+  const onClickTile = (uuid: string) => {
+    router.push({ name: 'result', params: { microControllerUuid: uuid } });
   };
 
   return {

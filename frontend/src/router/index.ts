@@ -23,8 +23,9 @@ const routes: Array<RouteRecordRaw> = [
     component: Home,
   },
   {
-    path: '/result/:microControllerId',
+    path: '/result/:microControllerUuid',
     name: 'result',
+    props: true,
     component: MeasuredData,
   },
 ];

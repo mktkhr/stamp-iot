@@ -12,9 +12,9 @@ import {
 import { NotificationType } from '@/constants/notificationType';
 import { StatusCode } from '@/constants/statusCode';
 
-export const useMeasuredData = () => {
-  const fetchMeasuredData = async () => {
-    await measuredDataStore.fetchMeasuredData(microControllerId).catch((e) => {
+export const useMeasuredData = (microControllerUuid: string) => {
+  const fetchMeasuredData = async (microControllerUuid: string) => {
+    await measuredDataStore.fetchMeasuredData(microControllerUuid).catch((e) => {
       const statusCode = e.response.status.toString();
       if (statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
         notificationMessage.value = 'エラーが発生しました。時間をおいて再度お試しください。';
@@ -28,13 +28,9 @@ export const useMeasuredData = () => {
     });
   };
 
-  // Route
-  const route = useRoute();
-  const microControllerId = route.params.microControllerId[0];
-
   // Store
   const measuredDataStore = MeasuredDataStore();
-  fetchMeasuredData();
+  fetchMeasuredData(microControllerUuid);
   const microControllerStore = MicroControllerStore();
   microControllerStore.fetchMicroControllerList();
 

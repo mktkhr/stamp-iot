@@ -24,13 +24,13 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
     /**
      * Cookieの情報を基にredisからアカウントUUIDを取得し，アカウントUUIDからマイコンリストをもらってstoreに保存
      */
-    async fetchMeasuredData(microControllerId: string) {
+    async fetchMeasuredData(microControllerUuid: string) {
       const spinnerStore = SpinnerStore();
       spinnerStore.showSpinner();
 
       let measuredDataList: MeasuredDataState;
       try {
-        measuredDataList = await fetchMeasuredData(microControllerId);
+        measuredDataList = await fetchMeasuredData(microControllerUuid);
         this.measuredDataList = measuredDataList;
       } catch (e) {
         throw e;
