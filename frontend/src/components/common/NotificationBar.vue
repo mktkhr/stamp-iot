@@ -50,9 +50,10 @@ withDefaults(defineProps<Props>(), {
 <style lang="scss" scoped>
 // density="compact" で高さが十分に小さくならないため，vuetify のデフォルト値を上書き
 .v-alert {
-  padding: 0 10px;
+  padding: 0;
   border-radius: 0 0 2px 2px;
   position: absolute;
   top: 0;
+  width: 100%;
 }
 </style>
