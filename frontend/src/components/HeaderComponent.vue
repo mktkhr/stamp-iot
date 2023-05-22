@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 import router from '@/router';
 
 interface Props {
@@ -17,10 +17,12 @@ const emit = defineEmits<{
   (e: 'onClickLogout');
 }>();
 
-const showLogoutButton = ref(true);
-if (router.currentRoute.value.name == 'login' || router.currentRoute.value.name == 'register') {
-  showLogoutButton.value = false;
-}
+const showLogoutButton = computed(() => {
+  if (router.currentRoute.value.name == 'login' || router.currentRoute.value.name == 'register') {
+    return false;
+  }
+  return true;
+});
 
 const onClickMenuButton = (): void => {
   emit('clickEvent', !props.menuState);
