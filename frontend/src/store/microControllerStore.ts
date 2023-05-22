@@ -1,5 +1,7 @@
-import { getMicroControllerInfo, MicroControllerInfoState } from '@/type/microController';
+
 import { defineStore } from 'pinia';
+import { SpinnerStore } from './spinnerStore';
+import { MicroControllerInfoState, microControllerGet, microControllerRegister } from '@/methods/microController';
 
 export const MicroControllerStore = defineStore('MicroControllerStore', {
   state: () => ({
@@ -14,12 +16,25 @@ export const MicroControllerStore = defineStore('MicroControllerStore', {
     /**
      * Cookieの情報を基にredisからアカウントUUIDを取得し，アカウントUUIDからマイコンリストをもらってstoreに保存
      */
-    async fetchAccountInfo() {
+    async fetchMicroControllerList() {
       let microControllerList: Array<MicroControllerInfoState>;
       try {
-        microControllerList = await getMicroControllerInfo();
+        microControllerList = await microControllerGet();
       } finally {
         this.$state.microControllerList = microControllerList;
+      }
+    },
+
+    async register(userId: string, macAddress: string) {
+      const spinnerStore = SpinnerStore();
+      spinnerStore.showSpinner();
+
+      try {
+        await microControllerRegister(userId, macAddress);
+      } catch (e) {
+        throw e;
+      } finally {
+        spinnerStore.hideSpinner();
       }
     },
   },

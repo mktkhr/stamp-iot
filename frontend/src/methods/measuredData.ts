@@ -203,14 +203,14 @@ export const convertEnvironmentalKeyWordToTitle = (dataType: string) => {
  * マイコンIDを指定して測定結果を取得するAPI
  * @return  測定データ or null
  */
-export const getMeasuredData = async (microControllerId: string): Promise<MeasuredDataState> => {
+export const fetchMeasuredData = async (microControllerId: string): Promise<MeasuredDataState> => {
   try {
     const rawResponse = await axios.get('/api/ems/measured-data', {
       params: { microControllerId: microControllerId },
     });
     const response: MeasuredDataState = rawResponse.data;
     return response;
-  } catch {
-    return null;
+  } catch (e) {
+    throw e;
   }
 };

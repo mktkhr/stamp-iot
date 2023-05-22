@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import LoginView from '@/views/LoginView.vue';
-import RegisterView from '@/views/RegisterView.vue';
-import HomeView from '@/views/HomeView.vue';
-import MeasuredDataView from '@/views/MeasuredDataView.vue';
+import Login from '@/views/login/Login.vue';
+import Register from '@/views/register/Register.vue';
+import Home from '@/views/home/Home.vue';
+import MeasuredData from '@/views/measuredData/MeasuredData.vue';
 import axios from 'axios';
 import { AccountStore } from '@/store/accountStore';
 
@@ -10,22 +10,22 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
     name: 'login',
-    component: LoginView,
+    component: Login,
   },
   {
     path: '/register',
     name: 'register',
-    component: RegisterView,
+    component: Register,
   },
   {
     path: '/home',
     name: 'home',
-    component: HomeView,
+    component: Home,
   },
   {
     path: '/result/:microControllerId',
     name: 'result',
-    component: MeasuredDataView,
+    component: MeasuredData,
   },
 ];
 

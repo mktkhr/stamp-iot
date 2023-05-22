@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import logout from '@/methods/logout';
+import { computed } from 'vue';
 import router from '@/router';
-import { ref } from 'vue';
 
 interface Props {
-  hamburgerState: boolean;
+  showHamburgerMenu: boolean;
   menuState: boolean;
 }
 
@@ -15,20 +14,23 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'clickEvent', menuState: boolean);
+  (e: 'onClickLogout');
 }>();
 
-const showLogoutButton = ref(true);
-if (router.currentRoute.value.name == 'login' || router.currentRoute.value.name == 'register') {
-  showLogoutButton.value = false;
-}
+const showLogoutButton = computed(() => {
+  if (router.currentRoute.value.name == 'login' || router.currentRoute.value.name == 'register') {
+    return false;
+  }
+  return true;
+});
 
 const onClickMenuButton = (): void => {
   emit('clickEvent', !props.menuState);
 };
 
-const onClickLogout = () => {
+const onClickLogout = async () => {
   if (confirm('ログアウトします。よろしいですか?')) {
-    logout.post();
+    emit('onClickLogout');
   } else {
     return;
   }
@@ -37,12 +39,13 @@ const onClickLogout = () => {
 
 <template>
   <header>
-    <div class="header-left" v-if="hamburgerState">
+    <div class="header-left">
       <button
         class="hamburger"
         id="hamburger"
         v-bind:class="{ active: menuState }"
         v-on:click="onClickMenuButton"
+        v-if="showHamburgerMenu"
       >
         <span></span>
         <span></span>
@@ -62,7 +65,7 @@ const onClickLogout = () => {
   </header>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 header {
   width: 100%;
   height: 50px;
