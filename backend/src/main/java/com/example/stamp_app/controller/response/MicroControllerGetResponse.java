@@ -7,11 +7,14 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class MicroControllerGetResponse {
 
     private BigInteger id;
+
+    private UUID uuid;
 
     private String name;
 
@@ -29,6 +32,7 @@ public class MicroControllerGetResponse {
         microControllerList.forEach((microController) -> {
             var microControllerGetResponse = new MicroControllerGetResponse();
             microControllerGetResponse.setId(microController.getId());
+            microControllerGetResponse.setUuid(microController.getUuid());
             microControllerGetResponse.setName(microController.getName());
             microControllerGetResponse.setInterval(microController.getInterval());
             microControllerGetResponse.setMacAddress(microController.getMacAddress());

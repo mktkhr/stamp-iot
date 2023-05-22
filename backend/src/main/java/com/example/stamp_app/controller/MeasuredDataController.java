@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping(value = "/ems/measured-data")
@@ -46,13 +47,13 @@ public class MeasuredDataController {
     /**
      * アカウントIDとマイコンIDを指定して測定結果を取得するAPI
      *
-     * @param microControllerId マイコンID
+     * @param microControllerUuid マイコンID
      * @return 測定結果
      */
     @GetMapping
-    public ResponseEntity<MeasuredDataGetResponse> getMeasuredData(@RequestParam BigInteger microControllerId, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<MeasuredDataGetResponse> getMeasuredData(@RequestParam String microControllerUuid, HttpServletRequest httpServletRequest) {
         System.out.println(">> Measured Data Controller(POST)");
-        System.out.println("RequestParam: microControllerId:" + microControllerId);
+        System.out.println("RequestParam: microControllerUuid:" + microControllerUuid);
 
         var cookieLIst = httpServletRequest.getCookies();
 
@@ -60,7 +61,7 @@ public class MeasuredDataController {
 
         var userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
 
-        var response = measuredDataService.getMeasuredData(userUuid, microControllerId);
+        var response = measuredDataService.getMeasuredData(userUuid, microControllerUuid);
 
         System.out.println("<< Measured Data Controller(POST)");
         return new ResponseEntity<>(response, HttpStatus.OK);

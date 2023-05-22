@@ -9,5 +9,5 @@ import java.util.UUID;
 public interface MicroControllerRepository extends JpaRepository<MicroController, UUID> {
     MicroController findByMacAddress(String macAddress);
 
-    MicroController findById(BigInteger id);
+    MicroController findByUuid(UUID uuid);
 }
