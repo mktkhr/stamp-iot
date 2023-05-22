@@ -1,10 +1,11 @@
 import {
   EnvironmentalDataState,
-  getMeasuredData,
+  fetchMeasuredData,
   MeasuredDataState,
   Sdi12DataState,
-} from '@/type/measuredData';
+} from '@/methods/measuredData';
 import { defineStore } from 'pinia';
+import { SpinnerStore } from './spinnerStore';
 
 export const MeasuredDataStore = defineStore('MeasuredDataStore', {
   state: () => ({
@@ -24,11 +25,17 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
      * Cookieの情報を基にredisからアカウントUUIDを取得し，アカウントUUIDからマイコンリストをもらってstoreに保存
      */
     async fetchMeasuredData(microControllerId: string) {
+      const spinnerStore = SpinnerStore();
+      spinnerStore.showSpinner();
+
       let measuredDataList: MeasuredDataState;
       try {
-        measuredDataList = await getMeasuredData(microControllerId);
-      } finally {
+        measuredDataList = await fetchMeasuredData(microControllerId);
         this.measuredDataList = measuredDataList;
+      } catch (e) {
+        throw e;
+      } finally {
+        spinnerStore.hideSpinner();
       }
     },
 
