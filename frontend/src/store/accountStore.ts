@@ -1,5 +1,5 @@
 import { login, logout, register } from '@/methods/account';
-import { AccountInfoState, getAccountInfo } from '@/type/account';
+import { AccountInfoState, getAccountInfo } from '@/methods/account';
 import { defineStore } from 'pinia';
 import { SpinnerStore } from './spinnerStore';
 
