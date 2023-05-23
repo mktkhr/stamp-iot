@@ -52,7 +52,11 @@ jobs:
       - name: Copy artifacts
         run: cp -rp /home/ems/tmp/backend/${{ github.ref_name }}/* /home/ems/deploy/backend/${{ github.ref_name }}
       - name: Link artifacts to server
-        run: ln -fns /home/ems/deploy/backend/feature/67/artifact/server.jar /home/ems/deploy/backend
+        run: ln -fns /home/ems/deploy/backend/${{ github.ref_name }}/artifact/server.jar /home/ems/deploy/backend/server.jar
+      - name: Kill existing Java task
+        run: sudo systemctl stop java
+      - name: Run boot script
+        run: sudo systemctl start java
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
