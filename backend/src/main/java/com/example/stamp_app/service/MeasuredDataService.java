@@ -126,14 +126,14 @@ public class MeasuredDataService {
      * マイコンIDを指定して，対象の測定結果を取得
      *
      * @param userUuid　ユーザーID
-     * @param microControllerId マイコンID
+     * @param microControllerUuid マイコンUUID
      * @return 測定結果リスト
      */
-    public MeasuredDataGetResponse getMeasuredData(String userUuid, BigInteger microControllerId) {
+    public MeasuredDataGetResponse getMeasuredData(String userUuid, String microControllerUuid) {
         MicroController microController = null;
 
         try{
-            microController = microControllerRepository.findById(microControllerId);
+            microController = microControllerRepository.findByUuid(UUID.fromString(microControllerUuid));
         }catch(Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -153,6 +153,8 @@ public class MeasuredDataService {
 
         // SDI-12の測定データ成形
         List<Sdi12DataGetResponse> sdi12DataGetResponseList = new ArrayList<>();
+
+        var microControllerId = microController.getId();
 
         // アカウントとマイコンIDに紐づくSDI-12アドレスのリストを取得する(マイコンに紐づくアカウントが変更された場合を考慮)
         var sdi12AddressList = sdi12DataRepository.findSdiAddressGroupBySdiAddress(UUID.fromString(userUuid), microControllerId);

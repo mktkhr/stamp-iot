@@ -67,8 +67,8 @@ const {
         class="micro-controller-tile"
         v-for="microController in microControllerList"
         :title="microController.name ?? '端末名称未設定'"
-        :key="microController.id"
-        @click="onClickTile(microController.id)"
+        :key="microController.uuid"
+        @click="onClickTile(microController.uuid)"
       >
         <template #content>
           <DisplayInformation title="MACアドレス" :content="microController.macAddress" />

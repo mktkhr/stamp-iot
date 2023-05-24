@@ -4,6 +4,10 @@ import InformationSelect from '@/components/common/InformationSelect.vue';
 import { LineChart } from 'vue-chart-3';
 import { useMeasuredData } from './composable';
 
+const props = defineProps<{
+  microControllerUuid: string;
+}>();
+
 const {
   showNotification,
   notificationMessage,
@@ -16,7 +20,7 @@ const {
   sdi12ChartDataSet,
   onChangeEnvironmentalSelect,
   environmentalChartDataSet,
-} = useMeasuredData();
+} = useMeasuredData(props.microControllerUuid);
 </script>
 
 <template>

@@ -79,6 +79,7 @@ watch(router.currentRoute, () => {
 $header-height: 50px;
 .main-view {
   height: calc(100vh - $header-height);
+  height: calc(100svh - $header-height);
   width: 100vw;
   margin-top: $header-height;
   position: relative;
@@ -89,6 +90,7 @@ $header-height: 50px;
   align-items: center;
   width: 100%;
   height: 100vh;
+  height: 100svh;
   z-index: 9999;
   position: absolute;
   top: 0;
