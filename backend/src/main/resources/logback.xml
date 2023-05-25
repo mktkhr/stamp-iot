@@ -3,15 +3,16 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
     <timestamp key="LOG_DATE" datePattern="yyyyMMdd"/>
-    <property name="LOG_FILE" value="logs/application.log" />
+    <property name="LOG_FILE" value="application.log" />
+    <property name="LOG_DIR" value="logs/" />
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder>
             <pattern>${FILE_LOG_PATTERN}</pattern>
         </encoder>
-        <file>${LOG_FILE}</file>
+        <file>${LOG_DIR}${LOG_FILE}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>%d{yyyyMMdd}-${LOG_FILE}</fileNamePattern>
+            <fileNamePattern>${LOG_DIR}%d{yyyyMMdd}.${LOG_FILE}</fileNamePattern>
             <maxHistory>5</maxHistory>
         </rollingPolicy>
     </appender>
