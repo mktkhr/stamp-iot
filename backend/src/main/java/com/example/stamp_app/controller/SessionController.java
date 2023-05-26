@@ -30,7 +30,6 @@ public class SessionController {
      */
     @PostMapping
     public ResponseEntity<HttpStatus> addAccount(HttpServletRequest request, HttpServletResponse httpServletResponse) {
-        System.out.println(">> Session Controller(POST)");
 
         var cookieList = request.getCookies();
 
@@ -38,7 +37,6 @@ public class SessionController {
 
         String UserUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
 
-        System.out.println("<< Session Controller(POST)");
         if (UserUuid == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
