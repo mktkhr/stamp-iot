@@ -1,6 +1,5 @@
 package com.example.stamp_app.service;
 
-import com.example.stamp_app.controller.param.MeasuredDataGetParam;
 import com.example.stamp_app.controller.param.MeasuredDataPostParam;
 import com.example.stamp_app.controller.response.measuredDataGetResponse.EnvironmentalDataGetResponse;
 import com.example.stamp_app.controller.response.measuredDataGetResponse.MeasuredDataGetResponse;
@@ -8,12 +7,12 @@ import com.example.stamp_app.controller.response.measuredDataGetResponse.Sdi12Da
 import com.example.stamp_app.controller.response.measuredDataGetResponse.VoltageDataGetResponse;
 import com.example.stamp_app.entity.*;
 import com.example.stamp_app.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class MeasuredDataService {
 
     @Autowired
@@ -45,38 +45,33 @@ public class MeasuredDataService {
      * @param measuredDataPostParam 測定データ
      * @return HttpStatus
      */
-    public HttpStatus addMeasuredData(MeasuredDataPostParam measuredDataPostParam){
+    public HttpStatus addMeasuredData(MeasuredDataPostParam measuredDataPostParam) {
 
         MicroController microController;
 
-        // 必要なパラメータが不足していた場合
-        if(measuredDataPostParam.getMacAddress() == null){
-            return HttpStatus.BAD_REQUEST;
-        }
-
         // マイコンと所有者の一致確認
-        try{
+        try {
             // microControllerをprintしてはいけない理由(https://blogenist.jp/2020/12/17/11185/#i)
             microController = microControllerRepository.findByMacAddress(measuredDataPostParam.getMacAddress());
 
-            // DBに登録されていないマイコンの場合
-            if(microController == null){
-                System.out.println("登録されていないマイコン 403");
-                return HttpStatus.FORBIDDEN;
-            }
-
-            var accountId = microController.getAccount().getUuid().toString();
-            System.out.println("登録対象のアカウントID: " + accountId);
-
-            // 所有者UUIDがnullの場合401を返す
-            if(accountId == null){
-                System.out.println("所有者の不一致 401");
-                return HttpStatus.UNAUTHORIZED;
-            }
-
-        } catch(Exception e) {
-            System.out.println("500: " + e);
+        } catch (Exception e) {
+            log.error(e.toString());
             return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        // DBに登録されていないマイコンの場合
+        if (microController == null) {
+            log.error("登録されていないマイコン");
+            return HttpStatus.FORBIDDEN;
+        }
+
+        var accountId = microController.getAccount().getUuid().toString();
+        log.info("登録対象のアカウントID: " + accountId);
+
+        // 所有者UUIDがnullの場合401を返す
+        if (accountId == null) {
+            log.error("所有者の不一致");
+            return HttpStatus.UNAUTHORIZED;
         }
 
         // 測定時刻，DOYの算出
@@ -101,50 +96,49 @@ public class MeasuredDataService {
         measuredDataMaster.setMicroController(microController);
 
         // 測定データの保存
-        try{
+        try {
             measuredDataMasterRepository.save(measuredDataMaster);
 
-            for(var sdi12Param: sdi12ParamList){
+            for (var sdi12Param : sdi12ParamList) {
                 Sensor sensor = sensorRepository.findById(sdi12Param.getSensorId());
                 sdi12DataRepository.save(Sdi12Data.createSdi12Data(sdi12Param, measuredDataMaster, sensor));
             }
 
-            for(var environmentalDataParam: environmentalDataList){
+            for (var environmentalDataParam : environmentalDataList) {
                 environmentalDataRepository.save(EnvironmentalData.createEnvironmentalData(environmentalDataParam, measuredDataMaster));
             }
 
-        }catch(Exception e){
-            System.out.println("500: " + e);
+        } catch (Exception e) {
+            log.error("500: " + e);
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }
-
-        System.out.println("200: 測定値の保存に成功");
+        
         return HttpStatus.OK;
     }
 
     /**
      * マイコンIDを指定して，対象の測定結果を取得
      *
-     * @param userUuid　ユーザーID
+     * @param userUuid            　ユーザーID
      * @param microControllerUuid マイコンUUID
      * @return 測定結果リスト
      */
     public MeasuredDataGetResponse getMeasuredData(String userUuid, String microControllerUuid) {
         MicroController microController = null;
 
-        try{
+        try {
             microController = microControllerRepository.findByUuid(UUID.fromString(microControllerUuid));
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // マイコンが存在しない場合，400を返す
-        if(microController == null){
+        if (microController == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         // マイコン保有者IDとパラメータ内のユーザーIDが異なる場合，403を返す
-        if(!Objects.equals(microController.getAccount().getUuid(), UUID.fromString(userUuid))){
+        if (!Objects.equals(microController.getAccount().getUuid(), UUID.fromString(userUuid))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
@@ -167,10 +161,10 @@ public class MeasuredDataService {
 
             // マイコンIDとユーザーUUIDがリクエストと一致するデータを取得し，Sdi12DataAndDoyに変換
             var convertedSdi12MeasuredDataList = sdi12DataList.stream().filter((measuredData) ->
-                    Objects.equals(measuredData.getMeasuredDataMaster().getMicroController().getId(), microControllerId)
-                        && Objects.equals(measuredData.getMeasuredDataMaster().getMicroController().getAccount().getUuid().toString(), userUuid))
-                            .map((data) -> Sdi12DataGetResponse.convertFromSdi12Data(data,data.getMeasuredDataMaster().getId(), data.getMeasuredDataMaster().getDayOfYear()))
-                                .toList();
+                            Objects.equals(measuredData.getMeasuredDataMaster().getMicroController().getId(), microControllerId)
+                                    && Objects.equals(measuredData.getMeasuredDataMaster().getMicroController().getAccount().getUuid().toString(), userUuid))
+                    .map((data) -> Sdi12DataGetResponse.convertFromSdi12Data(data, data.getMeasuredDataMaster().getId(), data.getMeasuredDataMaster().getDayOfYear()))
+                    .toList();
 
             sdi12DataGetResponse.setSdiAddress(sdi12Address);
             sdi12DataGetResponse.setDataList(convertedSdi12MeasuredDataList);
@@ -185,10 +179,10 @@ public class MeasuredDataService {
 
         // アカウントIDとマイコンIDに紐づく環境データを取得
         var convertedEnvironmentalMeasuredDataList = environmentalDataList.stream().filter((measuredData) ->
-                Objects.equals(measuredData.getMeasuredDataMaster().getMicroController().getId(), microControllerId)
-                    && Objects.equals(measuredData.getMeasuredDataMaster().getMicroController().getAccount().getUuid().toString(), userUuid))
-                        .map((data) -> EnvironmentalDataGetResponse.convertFromEnvironmentalData(data, data.getMeasuredDataMaster().getId(), data.getMeasuredDataMaster().getDayOfYear()))
-                                .toList();
+                        Objects.equals(measuredData.getMeasuredDataMaster().getMicroController().getId(), microControllerId)
+                                && Objects.equals(measuredData.getMeasuredDataMaster().getMicroController().getAccount().getUuid().toString(), userUuid))
+                .map((data) -> EnvironmentalDataGetResponse.convertFromEnvironmentalData(data, data.getMeasuredDataMaster().getId(), data.getMeasuredDataMaster().getDayOfYear()))
+                .toList();
 
         measuredDataGetResponse.setEnvironmentalData(convertedEnvironmentalMeasuredDataList);
 
@@ -196,10 +190,10 @@ public class MeasuredDataService {
         var voltageDataList = measuredDataMasterRepository.findAll();
 
         var convertedVoltageMeasuredDataList = voltageDataList.stream().filter((measuredData) ->
-                Objects.equals(measuredData.getMicroController().getId(), microControllerId)
-                    && Objects.equals(measuredData.getMicroController().getAccount().getUuid().toString(), userUuid))
-                        .map(VoltageDataGetResponse::convertFromMeasuredDataMaster)
-                            .toList();
+                        Objects.equals(measuredData.getMicroController().getId(), microControllerId)
+                                && Objects.equals(measuredData.getMicroController().getAccount().getUuid().toString(), userUuid))
+                .map(VoltageDataGetResponse::convertFromMeasuredDataMaster)
+                .toList();
 
         measuredDataGetResponse.setVoltageData(convertedVoltageMeasuredDataList);
 
