@@ -7,6 +7,7 @@ import com.example.stamp_app.controller.response.measuredDataGetResponse.Sdi12Da
 import com.example.stamp_app.controller.response.measuredDataGetResponse.VoltageDataGetResponse;
 import com.example.stamp_app.entity.*;
 import com.example.stamp_app.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,9 +44,9 @@ public class MeasuredDataService {
      * 測定データ追加Service
      *
      * @param measuredDataPostParam 測定データ
-     * @return HttpStatus
      */
-    public HttpStatus addMeasuredData(MeasuredDataPostParam measuredDataPostParam) {
+    @Transactional(rollbackOn = Exception.class)
+    public void addMeasuredData(MeasuredDataPostParam measuredDataPostParam) throws ResponseStatusException {
 
         MicroController microController;
 
@@ -56,13 +57,13 @@ public class MeasuredDataService {
 
         } catch (Exception e) {
             log.error(e.toString());
-            return HttpStatus.INTERNAL_SERVER_ERROR;
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // DBに登録されていないマイコンの場合
         if (microController == null) {
             log.error("登録されていないマイコン");
-            return HttpStatus.FORBIDDEN;
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
         var accountId = microController.getAccount().getUuid().toString();
@@ -71,7 +72,7 @@ public class MeasuredDataService {
         // 所有者UUIDがnullの場合401を返す
         if (accountId == null) {
             log.error("所有者の不一致");
-            return HttpStatus.UNAUTHORIZED;
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
         // 測定時刻，DOYの算出
@@ -109,11 +110,10 @@ public class MeasuredDataService {
             }
 
         } catch (Exception e) {
-            log.error("500: " + e);
-            return HttpStatus.INTERNAL_SERVER_ERROR;
+            log.error(e.toString());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
-        return HttpStatus.OK;
+
     }
 
     /**

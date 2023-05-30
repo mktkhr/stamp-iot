@@ -12,10 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigInteger;
-import java.util.List;
-import java.util.UUID;
-
 @Controller
 @RequestMapping(value = "/ems/measured-data")
 public class MeasuredDataController {
@@ -36,9 +32,9 @@ public class MeasuredDataController {
     @PostMapping
     public ResponseEntity<HttpStatus> addMeasuredData(@RequestBody MeasuredDataPostParam measuredDataPostParam) {
 
-        var response = measuredDataService.addMeasuredData(measuredDataPostParam);
+        measuredDataService.addMeasuredData(measuredDataPostParam);
 
-        return new ResponseEntity<>(response);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
