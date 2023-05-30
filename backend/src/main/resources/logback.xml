@@ -3,8 +3,8 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
     <timestamp key="LOG_DATE" datePattern="yyyyMMdd"/>
-    <property name="LOG_FILE" value="application.log" />
-    <property name="LOG_DIR" value="logs/" />
+    <property name="LOG_FILE" value="application.log"/>
+    <property name="LOG_DIR" value="./logs/"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder>
@@ -61,15 +61,15 @@
     <!-- dev では INFO 以上を出力 -->
     <springProfile name="dev">
         <root level="INFO">
-            <appender-ref ref="STDOUT" />
-            <appender-ref ref="STDERR" />
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="STDERR"/>
         </root>
     </springProfile>
 
     <!-- production では WARN 以上を出力 -->
     <springProfile name="prod">
         <root level="WARN">
-            <appender-ref ref="STDERR" />
+            <appender-ref ref="STDERR"/>
         </root>
     </springProfile>
 
