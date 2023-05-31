@@ -9,6 +9,7 @@ jobs:
   build:
     name: Java Build/Test
     runs-on: [self-hosted]
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v3
@@ -54,9 +55,13 @@ jobs:
       - name: Link artifacts to server
         run: ln -fns /home/ems/deploy/backend/${{ github.ref_name }}/artifact/server.jar /home/ems/deploy/backend/server.jar
       - name: Kill existing Java task
-        run: sudo systemctl stop java
+        env:
+          EMS_PASS: ${{secrets.EMS_PASS}}
+        run: echo $EMS_PASS | sudo -S systemctl stop java > /dev/null 2>&1
       - name: Run boot script
-        run: sudo systemctl start java
+        env:
+          EMS_PASS: ${{secrets.EMS_PASS}}
+        run: echo $EMS_PASS | sudo -S systemctl start java > /dev/null 2>&1
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

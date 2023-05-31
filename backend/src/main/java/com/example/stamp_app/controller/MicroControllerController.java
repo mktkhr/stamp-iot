@@ -34,12 +34,9 @@ public class MicroControllerController {
      */
     @PostMapping
     public ResponseEntity<String> addMicroControllerRelation(@RequestBody MicroControllerPostParam microControllerPostParam) {
-        System.out.println(">> MicroController Controller(micro-controller:POST)");
-        System.out.println("RequestBody:" + microControllerPostParam);
 
         MicroControllerPostResponse microControllerPostResponse = microControllerService.addMicroControllerRelation(microControllerPostParam.getUserId(), microControllerPostParam.getMacAddress());
 
-        System.out.println("<< MicroController Controller(micro-controller:POST)");
         return new ResponseEntity<>(microControllerPostResponse.getMicroController().getMacAddress(), microControllerPostResponse.getStatus());
     }
 
@@ -48,7 +45,7 @@ public class MicroControllerController {
      */
     @GetMapping(value = "/info")
     public ResponseEntity<List<MicroControllerGetResponse>> getMicroControllerInfo(HttpServletRequest httpServletRequest) {
-        System.out.println(">> MicroController Controller(micro-controller:GET)");
+
         var cookieLIst = httpServletRequest.getCookies();
 
         var sessionUuid = sessionService.getSessionUuidFromCookie(cookieLIst);
@@ -63,7 +60,6 @@ public class MicroControllerController {
 
         var microControllerList = microControllerService.getMicroControllerList(userUuid);
 
-        System.out.println("<< MicroController Controller(micro-controller:GET)");
         return new ResponseEntity<>(microControllerList, HttpStatus.OK);
     }
 }

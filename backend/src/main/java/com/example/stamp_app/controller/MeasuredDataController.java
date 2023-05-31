@@ -12,10 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigInteger;
-import java.util.List;
-import java.util.UUID;
-
 @Controller
 @RequestMapping(value = "/ems/measured-data")
 public class MeasuredDataController {
@@ -35,13 +31,10 @@ public class MeasuredDataController {
      */
     @PostMapping
     public ResponseEntity<HttpStatus> addMeasuredData(@RequestBody MeasuredDataPostParam measuredDataPostParam) {
-        System.out.println(">> Measured Data Controller(POST)");
-        System.out.println("RequestBody:" + measuredDataPostParam);
 
-        var response = measuredDataService.addMeasuredData(measuredDataPostParam);
+        measuredDataService.addMeasuredData(measuredDataPostParam);
 
-        System.out.println("<< Measured Data Controller(POST)");
-        return new ResponseEntity<>(response);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -52,8 +45,6 @@ public class MeasuredDataController {
      */
     @GetMapping
     public ResponseEntity<MeasuredDataGetResponse> getMeasuredData(@RequestParam String microControllerUuid, HttpServletRequest httpServletRequest) {
-        System.out.println(">> Measured Data Controller(POST)");
-        System.out.println("RequestParam: microControllerUuid:" + microControllerUuid);
 
         var cookieLIst = httpServletRequest.getCookies();
 
@@ -63,7 +54,6 @@ public class MeasuredDataController {
 
         var response = measuredDataService.getMeasuredData(userUuid, microControllerUuid);
 
-        System.out.println("<< Measured Data Controller(POST)");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
