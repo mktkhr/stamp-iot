@@ -5,6 +5,7 @@ import Home from '@/views/home/Home.vue';
 import MeasuredData from '@/views/measuredData/MeasuredData.vue';
 import axios from 'axios';
 import { AccountStore } from '@/store/accountStore';
+import MicroControllerDetail from '@/views/microController/MicroControllerDetail.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -27,6 +28,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'result',
     props: true,
     component: MeasuredData,
+  },
+  {
+    path: '/microController/detail/:microControllerUuid',
+    name: 'microControllerDetail',
+    props: true,
+    component: MicroControllerDetail,
   },
 ];
 
