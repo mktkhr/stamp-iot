@@ -1,4 +1,3 @@
-import { SpinnerStore } from '@/store/spinnerStore';
 import axios from 'axios';
 
 export class MicroController {
@@ -46,6 +45,24 @@ export const microControllerRegister = async (userId: string, macAddress: string
       userId: userId,
       macAddress: macAddress,
     });
+  } catch (e) {
+    throw e;
+  }
+};
+
+/**
+ * マイコン詳細取得API
+ * @param microControllerUuid マイコンUUID
+ */
+export const microControllerDetailGet = async (
+  microControllerUuid: string
+): Promise<MicroController> => {
+  try {
+    const rwaResponse = await axios.get('/api/ems/micro-controller/detail', {
+      params: { microControllerUuid: microControllerUuid },
+    });
+    const response: MicroController = rwaResponse.data;
+    return response;
   } catch (e) {
     throw e;
   }
