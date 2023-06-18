@@ -100,8 +100,14 @@ export const useHome = () => {
     register();
   };
 
+  // マイコンタイル押下時の処理
   const onClickTile = (uuid: string) => {
     router.push({ name: 'result', params: { microControllerUuid: uuid } });
+  };
+
+  // マイコンの設定アイコン押下時の処理
+  const onClickSetting = (uuid: string) => {
+    router.push({ name: 'microControllerDetail', params: { microControllerUuid: uuid } });
   };
 
   return {
@@ -117,5 +123,6 @@ export const useHome = () => {
     getMacAddress,
     onClickRegister,
     onClickTile,
+    onClickSetting,
   };
 };

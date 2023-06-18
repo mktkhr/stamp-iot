@@ -24,13 +24,13 @@ const routes: Array<RouteRecordRaw> = [
     component: Home,
   },
   {
-    path: '/result/:microControllerUuid',
+    path: '/microController/:microControllerUuid/result',
     name: 'result',
     props: true,
     component: MeasuredData,
   },
   {
-    path: '/microController/detail/:microControllerUuid',
+    path: '/microController/:microControllerUuid/detail',
     name: 'microControllerDetail',
     props: true,
     component: MicroControllerDetail,

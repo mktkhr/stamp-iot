@@ -24,6 +24,7 @@ const {
   getMacAddress,
   onClickRegister,
   onClickTile,
+  onClickSetting,
 } = useHome();
 </script>
 
@@ -83,6 +84,11 @@ const {
                     :title="microController.name ?? '端末名称未設定'"
                     @click="onClickTile(microController.uuid)"
                   >
+                    <template #button>
+                      <v-icon class="icon" @click.stop="onClickSetting(microController.uuid)">
+                        ems-settings
+                      </v-icon>
+                    </template>
                     <template #content>
                       <DisplayInformation
                         title="MACアドレス"
@@ -114,6 +120,7 @@ const {
 
 <style lang="scss" scoped>
 $account_info_height: 150px;
+$wrapper_account_info_padding: 10px;
 .wrapper {
   &-main-content {
     height: 100%;
@@ -122,10 +129,13 @@ $account_info_height: 150px;
   }
   &-account-info {
     height: #{$account_info_height};
-    width: 100%;
+    padding: #{$wrapper_account_info_padding};
+    width: calc(100% - #{$wrapper_account_info_padding} * 2); // padding分を引く
   }
   &-micro-controller {
-    height: calc(100% - #{$account_info_height});
+    height: calc(
+      100% - #{$account_info_height} - #{$wrapper_account_info_padding} * 2
+    ); // padding分を引く
     width: 100%;
     overflow-y: auto;
   }
@@ -142,7 +152,6 @@ img {
   cursor: pointer;
 }
 .account-info {
-  margin: 10px;
   max-width: 800px;
 }
 .icon {
