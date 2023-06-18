@@ -66,10 +66,11 @@ watch(router.currentRoute, () => {
     @onClickLogout="onClickLogout"
   />
   <NavigatorComponent :menuState="menuStateRef" v-if="showHamburgerMenu" />
-  <div v-if="showSpinner" class="spinner">
-    <v-progress-circular color="blue" indeterminate />
-  </div>
+
   <div class="main-view">
+    <div v-if="showSpinner" class="spinner">
+      <v-progress-circular color="blue" indeterminate />
+    </div>
     <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
     <router-view />
   </div>
