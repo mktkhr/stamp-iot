@@ -43,15 +43,40 @@ const {
       />
     </template>
     <template #button>
-      <CommonButton button-title="登録" @click-button="onClickRegister" />
+      <div class="wrapper-button">
+        <CommonButton
+          button-title="登録"
+          width="100px"
+          height="40px"
+          @click-button="onClickRegister"
+        />
+      </div>
     </template>
     <template #link>
-      <RouterLink to="/login" class="link">ログインはこちら</RouterLink>
+      <div class="wrapper-link">
+        <RouterLink to="/login" class="link">ログインはこちら</RouterLink>
+      </div>
     </template>
   </FormWindow>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+.wrapper {
+  &-button {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &-link {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
 img {
   margin-top: 20px;
   height: 50px;

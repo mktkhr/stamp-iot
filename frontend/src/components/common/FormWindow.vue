@@ -13,12 +13,8 @@ const props = defineProps<{
     <slot name="mailAddress"></slot>
     <slot name="password"></slot>
     <slot name="passwordConfirm"></slot>
-    <div>
-      <slot name="button"></slot>
-    </div>
-    <div>
-      <slot name="link"></slot>
-    </div>
+    <slot name="button"></slot>
+    <slot name="link"></slot>
   </div>
 </template>
 

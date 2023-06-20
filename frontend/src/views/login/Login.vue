@@ -34,15 +34,40 @@ const {
       <InformationInput password :error-message="passwordError" @input-value="getPassword" />
     </template>
     <template #button>
-      <CommonButton button-title="ログイン" @click-button="onClickLoginButton" />
+      <div class="wrapper-button">
+        <CommonButton
+          button-title="ログイン"
+          width="100px"
+          height="40px"
+          @click-button="onClickLoginButton"
+        />
+      </div>
     </template>
     <template #link>
-      <RouterLink to="/register" class="link">新規登録はこちら</RouterLink>
+      <div class="wrapper-link">
+        <RouterLink to="/register" class="link">新規登録はこちら</RouterLink>
+      </div>
     </template>
   </FormWindow>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+.wrapper {
+  &-button {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &-link {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
 img {
   margin-top: 20px;
   height: 50px;
