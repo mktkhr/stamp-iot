@@ -1,49 +1,64 @@
 <script setup lang="ts">
-
 interface Props {
-    title?: string,
-    content?: string,
+  title?: string;
+  content?: string;
+  height?: string;
+  titleWidth?: string;
+  titleBackGroundColor?: string;
+  contentBackGroundColor?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    title: '',
-    content: '',
+  title: '',
+  content: '',
+  height: '36px',
+  titleWidth: '40%',
+  titleBackGroundColor: '#eeeeee',
+  contentBackGroundColor: 'white',
 });
-    
 </script>
 
 <template>
-    <div class="information-row">
-        <div class="information-title">
-            <span>{{props.title}}</span>
-        </div>
-        <div class="information-content">
-            <span>{{props.content}}</span>
-        </div>
+  <div class="information-row">
+    <div class="information-title" :style="{ width: titleWidth }">
+      <span v-if="title" class="span-text span-title">{{ props.title }}</span>
+      <slot name="title"></slot>
     </div>
+    <div class="information-content" :style="{ width: `calc(100% - ${titleWidth})` }">
+      <span v-if="content" class="span-text span-content">{{ props.content }}</span>
+      <slot name="content"></slot>
+    </div>
+  </div>
 </template>
 
-<style scoped>
-.information-row {
+<style lang="scss" scoped>
+.information {
+  &-row {
     display: flex;
-    border-top: 1px  solid #33333380;
-    border-bottom: 1px  solid #33333380;
-}
-.information-title {
-    width: 40%;
-    min-height: 30px;
+    border-top: 1px solid #33333380;
+    border-bottom: 1px solid #33333380;
+    min-height: 36px;
+  }
+  &-title {
     height: auto;
     display: table;
-    background-color: #eee;
     border-right: 1px solid #33333380;
-}
-.information-content {
-    width: 60%;
-    height: 30px;
+  }
+  &-content {
     display: table;
+  }
 }
-span {
+.span {
+  &-text {
     display: table-cell;
     vertical-align: middle;
+    color: #333333;
+  }
+  &-title {
+    font-size: 14px;
+  }
+  &-content {
+    font-weight: bold;
+  }
 }
 </style>
