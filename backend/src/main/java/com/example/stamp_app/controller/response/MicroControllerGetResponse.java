@@ -27,7 +27,8 @@ public class MicroControllerGetResponse {
 
     private LocalDateTime updatedAt;
 
-    public static List<MicroControllerGetResponse> convertMicroControllerToResponse(List<MicroController> microControllerList) {
+
+    public static List<MicroControllerGetResponse> convertMicroControllerToListResponse(List<MicroController> microControllerList) {
         List<MicroControllerGetResponse> microControllerGetResponseList = new ArrayList<>();
 
         microControllerList.forEach((microController) -> {
@@ -44,6 +45,20 @@ public class MicroControllerGetResponse {
         });
 
         return microControllerGetResponseList;
+    }
+
+    public static MicroControllerGetResponse convertMicroControllerToDetailResponse(MicroController microController) {
+
+        var microControllerGetResponse = new MicroControllerGetResponse();
+        microControllerGetResponse.setId(microController.getId());
+        microControllerGetResponse.setUuid(microController.getUuid());
+        microControllerGetResponse.setName(microController.getName());
+        microControllerGetResponse.setInterval(microController.getInterval());
+        microControllerGetResponse.setMacAddress(microController.getMacAddress());
+        microControllerGetResponse.setCreatedAt(microController.getCreatedAt());
+        microControllerGetResponse.setUpdatedAt(microController.getCreatedAt());
+
+        return microControllerGetResponse;
     }
 
 }

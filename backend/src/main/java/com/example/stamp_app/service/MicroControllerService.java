@@ -16,6 +16,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @Slf4j
 public class MicroControllerService {
@@ -95,6 +96,30 @@ public class MicroControllerService {
 
         var microControllerList = account.getMicroController();
 
-        return MicroControllerGetResponse.convertMicroControllerToResponse(microControllerList);
+        return MicroControllerGetResponse.convertMicroControllerToListResponse(microControllerList);
+    }
+
+    /**
+     * マイコン詳細を取得
+     *
+     * @param microControllerUuid マイコンID
+     * @return マイコン詳細
+     */
+    public MicroController getMicroControllerDetail(String microControllerUuid) {
+        MicroController microController;
+
+        try {
+            microController = microControllerRepository.findByUuid(UUID.fromString(microControllerUuid));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // アカウントが存在しなかった場合，400を返す
+        if (microController == null) {
+            log.error("該当のマイクロコントローラーの取得に失敗 UUID: " + microControllerUuid);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        return microController;
     }
 }
