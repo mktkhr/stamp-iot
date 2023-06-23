@@ -35,7 +35,7 @@ const props = defineProps<{
   box-shadow: 0px 10px 20px -5px rgba(0, 0, 0, 0.6);
 }
 .title {
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 .title span {
   font-size: 25px;

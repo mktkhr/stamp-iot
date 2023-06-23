@@ -6,6 +6,9 @@ interface Props {
   titleWidth?: string;
   titleBackGroundColor?: string;
   contentBackGroundColor?: string;
+  showBorderTop?: boolean;
+  showBorderBottom?: boolean;
+  isEditMode?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -15,17 +18,23 @@ const props = withDefaults(defineProps<Props>(), {
   titleWidth: '40%',
   titleBackGroundColor: '#eeeeee',
   contentBackGroundColor: 'white',
+  showBorderTop: false,
+  showBorderBottom: true,
+  isEditMode: false,
 });
 </script>
 
 <template>
-  <div class="information-row">
+  <div
+    class="information-row"
+    :class="{ 'border-top': showBorderTop, 'border-bottom': showBorderBottom }"
+  >
     <div class="information-title" :style="{ width: titleWidth }">
       <span v-if="title" class="span-text span-title">{{ props.title }}</span>
       <slot name="title"></slot>
     </div>
     <div class="information-content" :style="{ width: `calc(100% - ${titleWidth})` }">
-      <span v-if="content" class="span-text span-content">{{ props.content }}</span>
+      <span v-if="content && !isEditMode" class="span-text span-content">{{ props.content }}</span>
       <slot name="content"></slot>
     </div>
   </div>
@@ -35,8 +44,6 @@ const props = withDefaults(defineProps<Props>(), {
 .information {
   &-row {
     display: flex;
-    border-top: 1px solid #33333380;
-    border-bottom: 1px solid #33333380;
     min-height: 36px;
   }
   &-title {
@@ -59,6 +66,14 @@ const props = withDefaults(defineProps<Props>(), {
   }
   &-content {
     font-weight: bold;
+  }
+}
+.border {
+  &-top {
+    border-top: 1px solid #33333380;
+  }
+  &-bottom {
+    border-bottom: 1px solid #33333380;
   }
 }
 </style>

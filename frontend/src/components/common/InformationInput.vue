@@ -8,15 +8,18 @@ interface Props {
   text?: boolean;
   label?: string;
   errorMessage?: string;
+  initValue?: string;
+  alignLeft?: boolean;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   mailAddress: false,
   password: false,
   passwordConfirm: false,
   macAddress: false,
   label: '',
   errorMessage: '',
+  alignLeft: false,
 });
 
 interface Emits {
@@ -25,7 +28,7 @@ interface Emits {
 
 const emit = defineEmits<Emits>();
 
-const inputValue = ref('');
+const inputValue = ref(props.initValue ?? '');
 
 watch(inputValue, () => {
   emit('inputValue', inputValue.value);
@@ -37,7 +40,7 @@ watch(inputValue, () => {
     <div class="input-wrap">
       <input
         v-if="mailAddress"
-        v-bind:class="{ isEditing: inputValue != '' }"
+        v-bind:class="{ isEditing: inputValue != '', 'align-left': alignLeft }"
         class="input input-smallest"
         type="email"
         placeholder=""
@@ -45,7 +48,7 @@ watch(inputValue, () => {
       />
       <input
         v-if="password"
-        v-bind:class="{ isEditing: inputValue != '' }"
+        v-bind:class="{ isEditing: inputValue != '', 'align-left': alignLeft }"
         class="input input-smallest"
         type="password"
         placeholder=""
@@ -53,7 +56,7 @@ watch(inputValue, () => {
       />
       <input
         v-if="passwordConfirm"
-        v-bind:class="{ isEditing: inputValue != '' }"
+        v-bind:class="{ isEditing: inputValue != '', 'align-left': alignLeft }"
         class="input input-smallest"
         type="password"
         placeholder=""
@@ -61,7 +64,7 @@ watch(inputValue, () => {
       />
       <input
         v-if="text"
-        v-bind:class="{ isEditing: inputValue != '' }"
+        v-bind:class="{ isEditing: inputValue != '', 'align-left': alignLeft }"
         class="input input-smallest"
         type="text"
         placeholder=""
@@ -82,8 +85,8 @@ watch(inputValue, () => {
 <style scoped>
 .input-wrap {
   position: relative;
-  width: 75%;
-  margin: 20px auto 5px;
+  width: 100%;
+  height: 36px;
 }
 .input-wrap input {
   box-sizing: border-box;
@@ -97,10 +100,11 @@ watch(inputValue, () => {
   outline: none;
 }
 .input {
-  padding: 7px 14px;
+  height: 100%;
+  padding: 0 10px;
   transition: 0.4s;
-  border: 1px solid #1b2538;
-  border-radius: 2px;
+  border: 1px solid #00000088;
+  border-radius: 5px;
   background: transparent;
   text-align: center;
 }
@@ -181,6 +185,10 @@ watch(inputValue, () => {
   color: #ef4868;
   font-size: 10px;
   line-height: 10px;
+}
+
+.align-left {
+  text-align: left;
 }
 
 @media screen and (max-height: 600px) {

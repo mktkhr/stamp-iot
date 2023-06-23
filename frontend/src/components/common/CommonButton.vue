@@ -5,7 +5,6 @@ interface Props {
   height?: string;
   width?: string;
   backgroundColor?: string;
-  hoverColor?: string;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -13,8 +12,7 @@ withDefaults(defineProps<Props>(), {
   errorMessage: '',
   height: '30px',
   width: '60px',
-  backgroundColor: '#eeeeee',
-  hoverColor: '#888888',
+  backgroundColor: '#00000022',
 });
 
 interface Emits {
@@ -32,7 +30,7 @@ const clickButton = () => {
   <button
     class="button"
     @click="clickButton"
-    :style="{ height: height, width: width, 'background-color': backgroundColor }"
+    :style="{ height: height, width: width, background: backgroundColor }"
   >
     <span class="button-title">{{ buttonTitle }}</span>
   </button>
@@ -40,15 +38,15 @@ const clickButton = () => {
 
 <style lang="scss" scoped>
 .button {
-  border-radius: 10px;
+  border-radius: 5px;
   border: none;
   cursor: pointer;
 }
 .button:hover {
-  background-color: #888;
+  filter: brightness(1.2);
 }
 .button:active {
-  background-color: #888;
+  filter: brightness(1.2);
 }
 .button-title {
   font-size: 16px;

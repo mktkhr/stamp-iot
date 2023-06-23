@@ -11,12 +11,12 @@ withDefaults(defineProps<Props>(), {
 
 <template>
   <div class="modal-content">
-    <v-container class="modal-title modal-container">
+    <div class="modal-title modal-container">
       <span>{{ title }}</span>
-    </v-container>
-    <v-container class="modal-container">
+    </div>
+    <div class="modal-container">
       <span>{{ description }}</span>
-    </v-container>
+    </div>
     <slot name="content"></slot>
     <div class="button">
       <slot name="button"></slot>
@@ -24,7 +24,7 @@ withDefaults(defineProps<Props>(), {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .modal-content {
   width: 100%;
   height: 100%;
@@ -34,22 +34,27 @@ withDefaults(defineProps<Props>(), {
 }
 .modal-title {
   font-size: 22px;
-  background-color: #aaa;
 }
 .modal-container {
-  margin-top: 20px;
+  margin: 20px auto;
   height: auto;
-  max-width: 80%;
+  width: 80%;
   display: table;
   background-color: #eee;
   padding: 0;
   text-align: center;
 }
 .button {
-  text-align: center;
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  position: absolute;
+  bottom: 30px;
 }
 span {
   display: table-cell;
   vertical-align: middle;
+  white-space: pre-wrap;
 }
 </style>
