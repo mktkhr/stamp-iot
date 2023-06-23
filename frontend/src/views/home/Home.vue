@@ -137,7 +137,6 @@ $wrapper_account_info_padding: 10px;
       100% - #{$account_info_height} - #{$wrapper_account_info_padding} * 2
     ); // padding分を引く
     width: 100%;
-    overflow-y: auto;
   }
   &-info {
     padding: 10px;

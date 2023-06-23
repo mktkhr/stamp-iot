@@ -25,13 +25,19 @@ const {
     </template>
     <template #mailAddress>
       <InformationInput
+        class="input-center"
         mail-address
         :error-message="mailAddressError"
         @input-value="getMailAddress"
       />
     </template>
     <template #password>
-      <InformationInput password :error-message="passwordError" @input-value="getPassword" />
+      <InformationInput
+        class="input-center"
+        password
+        :error-message="passwordError"
+        @input-value="getPassword"
+      />
     </template>
     <template #button>
       <div class="wrapper-button">
@@ -67,6 +73,10 @@ const {
     align-items: center;
     justify-content: center;
   }
+}
+.input-center {
+  width: 75%;
+  margin: 0 auto;
 }
 img {
   margin-top: 20px;
