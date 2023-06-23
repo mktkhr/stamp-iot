@@ -22,7 +22,7 @@
     "vue-chart-3": "^3.1.8",
     "vue-material-design-icons": "^5.1.2",
     "vue-router": "^4.0.3",
-    "vuetify": "3.3.0"
+    "vuetify": "3.3.5"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.21.5",
