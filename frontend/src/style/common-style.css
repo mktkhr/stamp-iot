@@ -29,12 +29,11 @@ p {
   font-size: 16px;
 }
 
-.main-content {
-  padding: 10px;
+div {
   -ms-overflow-style: none; /* IE, Edge スクロールバー非表示 */
   scrollbar-width: none; /* Firefox スクロールバー非表示 */
 }
 
-.main-content::-webkit-scrollbar {
+div::-webkit-scrollbar {
   display: none; /* Chrome スクロールバー非表示 */
 }

@@ -25,22 +25,24 @@ const {
 
 <template>
   <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
-  <div class="main-content">
-    <div class="graph-wrapper">
+  <div class="wrapper-content">
+    <div class="wrapper-chart">
       <LineChart ref="lineRef" :chartData="sdi12ChartDataSet" :options="sdi12ChartConfig" />
       <InformationSelect
+        class="selector"
         title="表示項目"
         :option-list="sdi12OptionList"
         @selectedValue="onChangeSdi12Select"
       />
     </div>
-    <div class="graph-wrapper">
+    <div class="wrapper-chart">
       <LineChart
         ref="lineRef"
         :chartData="environmentalChartDataSet"
         :options="environmentalChartConfig"
       />
       <InformationSelect
+        class="selector"
         title="表示項目"
         :option-list="environmentalOptionList"
         @selectedValue="onChangeEnvironmentalSelect"
@@ -49,4 +51,23 @@ const {
   </div>
 </template>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.wrapper {
+  &-content {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+  }
+  &-chart {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.selector {
+  width: 80%;
+  max-width: 500px;
+}
+</style>

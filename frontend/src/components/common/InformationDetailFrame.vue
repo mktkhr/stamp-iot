@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import Plus from 'vue-material-design-icons/Plus.vue';
-
 interface Props {
   title?: string;
   isForMultiMedia?: boolean;
-  useAccountInfo?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
   title: '',
   isForMultiMedia: true,
-  useAccountInfo: false,
 });
 
 interface Emits {
@@ -21,75 +17,53 @@ const emit = defineEmits<Emits>();
 </script>
 
 <template>
-  <div
-    class="content-box"
-    v-bind:class="{
-      col: isForMultiMedia,
-      'col-one-half': isForMultiMedia,
-      'col-one-fourth': isForMultiMedia,
-    }"
-  >
-    <div class="title-box">
-      <span>{{ title }}</span>
-      <button v-if="useAccountInfo" style="height: 40px">
-        <Plus id="plus-icon" @click="emit('clickButton')" />
-      </button>
+  <div class="information-detail-frame-box-content">
+    <div class="information-detail-frame-box-title">
+      <span class="title">{{ title }}</span>
+      <div class="wrapper-button">
+        <slot name="button"> </slot>
+      </div>
     </div>
     <slot name="content"></slot>
   </div>
 </template>
 
-<style scoped>
-button {
-  padding: 0;
-  float: right;
-  border: 1px solid #aaa;
-  margin: 1px 1px 0 0;
-}
-#plus-icon {
-  width: 35px;
-  margin-top: auto;
-  margin-bottom: auto;
-  padding: 0;
-  color: #888;
-  cursor: pointer;
-}
-.content-box {
-  width: 100%;
-  box-shadow: 0px 10px 20px -5px rgba(0, 0, 0, 0.6);
-}
-.title-box {
-  width: 100%;
-  text-align: left;
-  height: auto;
-  min-height: 40px;
-  background-color: #aaa;
-  display: table;
-}
-.title-box span {
-  font-size: 18px;
-  font-weight: 700;
-  padding-left: 15px;
-  display: table-cell;
-  vertical-align: middle;
-}
-.col {
-  width: calc(100% - 10px);
-  margin: 5px;
-}
-
-@media (min-width: 800px) {
-  .col-one-half {
-    width: calc(50% - 10px);
-  }
-  .col {
-    float: left;
-  }
-}
-
-@media (min-width: 1200px) {
-  .col-one-fourth {
-    width: calc(25% - 10px);
+<style lang="scss">
+// wrapper-button > i にcssを当てるため，scopedをつけない
+.information-detail-frame {
+  &-box {
+    &-content {
+      width: auto;
+      border-radius: 2px;
+      box-shadow: 0px 10px 10px -5px rgba(0, 0, 0, 0.6);
+    }
+    &-title {
+      width: 100%;
+      text-align: left;
+      height: auto;
+      min-height: 40px;
+      background-color: #aaa;
+      border-radius: 2px 2px 0 0;
+      display: table;
+      position: relative;
+      > .title {
+        font-size: 18px;
+        font-weight: 700;
+        padding-left: 15px;
+        display: table-cell;
+        vertical-align: middle;
+      }
+      > .wrapper-button {
+        height: 100%;
+        width: 40px;
+        position: absolute;
+        right: 0;
+        > i {
+          height: 100%;
+          width: 100%;
+        }
+      }
+    }
   }
 }
 </style>
