@@ -3,11 +3,11 @@ package com.example.stamp_app.controller;
 import com.example.stamp_app.controller.param.MicroControllerPostParam;
 import com.example.stamp_app.controller.response.MicroControllerGetResponse;
 import com.example.stamp_app.controller.response.MicroControllerPostResponse;
-import com.example.stamp_app.service.AccountService;
+import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.service.MicroControllerService;
 import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;
-import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
+@Slf4j
 @RequestMapping(value = "/ems/micro-controller")
 public class MicroControllerController {
     @Autowired
@@ -28,6 +29,8 @@ public class MicroControllerController {
     SessionService sessionService;
     @Autowired
     RedisService redisService;
+    @Autowired
+    RequestedUser requestedUser;
 
     /**
      * マイコン登録API
@@ -44,17 +47,11 @@ public class MicroControllerController {
      * アカウントに紐づくマイコン一覧取得API
      */
     @GetMapping(value = "/info")
-    public ResponseEntity<List<MicroControllerGetResponse>> getMicroControllerInfo(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<MicroControllerGetResponse>> getMicroControllerInfo() {
 
-        var cookieLIst = httpServletRequest.getCookies();
+        var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
 
-        var sessionUuid = sessionService.getSessionUuidFromCookie(cookieLIst);
-        if(sessionUuid == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        var userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
-        if(userUuid == null){
+        if (userUuid == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

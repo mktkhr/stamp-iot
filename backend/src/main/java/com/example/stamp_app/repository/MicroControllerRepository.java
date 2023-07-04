@@ -3,11 +3,8 @@ package com.example.stamp_app.repository;
 import com.example.stamp_app.entity.MicroController;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.math.BigInteger;
-import java.util.UUID;
-
-public interface MicroControllerRepository extends JpaRepository<MicroController, UUID> {
+public interface MicroControllerRepository extends JpaRepository<MicroController, String> {
     MicroController findByMacAddress(String macAddress);
 
-    MicroController findByUuid(UUID uuid);
+    MicroController findByUuid(String uuid);
 }

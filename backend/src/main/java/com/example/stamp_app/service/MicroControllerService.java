@@ -6,6 +6,7 @@ import com.example.stamp_app.entity.Account;
 import com.example.stamp_app.entity.MicroController;
 import com.example.stamp_app.repository.AccountRepository;
 import com.example.stamp_app.repository.MicroControllerRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class MicroControllerService {
 
     @Autowired
@@ -82,6 +84,7 @@ public class MicroControllerService {
         try {
             account = accountRepository.findByUuid(UUID.fromString(userUuid));
         } catch (Exception e) {
+            log.error(e.toString());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

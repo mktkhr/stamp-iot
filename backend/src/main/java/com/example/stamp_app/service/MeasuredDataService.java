@@ -127,7 +127,7 @@ public class MeasuredDataService {
         MicroController microController = null;
 
         try {
-            microController = microControllerRepository.findByUuid(UUID.fromString(microControllerUuid));
+            microController = microControllerRepository.findByUuid(microControllerUuid);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }

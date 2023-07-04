@@ -2,6 +2,7 @@ package com.example.stamp_app.entity;
 
 public class DummyData {
     public static final String REGISTER_POST_PATH = "/ems/account/register";
+    public static final String LOGIN_POST_PATH = "/ems/account/login";
 
     public static final String INVALID_7_LENGTH_PASSWORD = "A123456";
 
@@ -22,4 +23,8 @@ public class DummyData {
     public static final String VALID_EMAIL_ADDRESS = "aaa@example.com";
 
     public static final String INVALID_EMAIL_ADDRESS = "aaaexample.com";
+    public static final String INVALID_UUID = "a";
+    public static final String VALID_UUID = "4e540b38-31f8-40b4-9602-44dea41e5c5a";
+    public static final String INVALID_INTERVAL = "100";
+    public static final String INVALID_SDI_ADDRESS = "11";
 }
