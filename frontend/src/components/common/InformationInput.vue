@@ -76,8 +76,8 @@ watch(inputValue, () => {
       <label v-if="text">{{ label }}</label>
       <span class="focus_line"><i></i></span>
     </div>
-    <div class="error-wrap">
-      <p v-if="errorMessage != ''" class="error-message">{{ errorMessage }}</p>
+    <div class="error-wrap" v-if="errorMessage">
+      <p class="error-message">{{ errorMessage }}</p>
     </div>
   </div>
 </template>

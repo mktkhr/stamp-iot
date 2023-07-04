@@ -86,7 +86,7 @@ const {
 }
 .input-center {
   width: 75%;
-  margin: 0 auto;
+  margin: 0 auto 20px;
 }
 img {
   margin-top: 20px;
