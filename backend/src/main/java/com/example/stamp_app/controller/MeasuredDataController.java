@@ -2,10 +2,9 @@ package com.example.stamp_app.controller;
 
 import com.example.stamp_app.controller.param.MeasuredDataPostParam;
 import com.example.stamp_app.controller.response.measuredDataGetResponse.MeasuredDataGetResponse;
+import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.service.MeasuredDataService;
 import com.example.stamp_app.session.RedisService;
-import com.example.stamp_app.session.SessionService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +18,9 @@ public class MeasuredDataController {
     @Autowired
     MeasuredDataService measuredDataService;
     @Autowired
-    SessionService sessionService;
-    @Autowired
     RedisService redisService;
+    @Autowired
+    RequestedUser requestedUser;
 
     /**
      * 測定データ登録API
@@ -44,13 +43,9 @@ public class MeasuredDataController {
      * @return 測定結果
      */
     @GetMapping
-    public ResponseEntity<MeasuredDataGetResponse> getMeasuredData(@RequestParam String microControllerUuid, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<MeasuredDataGetResponse> getMeasuredData(@RequestParam String microControllerUuid) {
 
-        var cookieLIst = httpServletRequest.getCookies();
-
-        var sessionUuid = sessionService.getSessionUuidFromCookie(cookieLIst);
-
-        var userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
+        var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
 
         var response = measuredDataService.getMeasuredData(userUuid, microControllerUuid);
 

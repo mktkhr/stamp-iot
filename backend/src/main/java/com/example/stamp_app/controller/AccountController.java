@@ -4,23 +4,21 @@ import com.example.stamp_app.controller.param.account.LoginPostParam;
 import com.example.stamp_app.controller.param.account.RegisterPostParam;
 import com.example.stamp_app.controller.response.AccountGetResponse;
 import com.example.stamp_app.controller.response.AccountLoginResponse;
+import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.service.AccountService;
 import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.UUID;
 
@@ -35,8 +33,8 @@ public class AccountController {
     SessionService sessionService;
     @Autowired
     RedisService redisService;
-    @Value("${spring.redis.host}")
-    public String host;
+    @Autowired
+    RequestedUser requestedUser;
 
     /**
      * アカウント登録API
@@ -45,7 +43,7 @@ public class AccountController {
      * @return ResponseEntity
      */
     @PostMapping(value = "/register")
-    public ResponseEntity<HttpStatus> addAccount(@RequestBody @Valid RegisterPostParam registerPostParam) {
+    public ResponseEntity<HttpStatus> addAccount(@RequestBody @Validated RegisterPostParam registerPostParam) {
 
         accountService.addAccount(registerPostParam);
 
@@ -59,11 +57,7 @@ public class AccountController {
      * @return ResponseEntity
      */
     @PostMapping(value = "/login")
-    public ResponseEntity<HttpStatus> login(@RequestBody @Valid LoginPostParam loginPostParam, HttpServletResponse httpServletResponse) {
-
-        if (loginPostParam == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<HttpStatus> login(@RequestBody @Validated LoginPostParam loginPostParam, HttpServletResponse httpServletResponse) {
 
         AccountLoginResponse accountLoginResponse = accountService.login(loginPostParam);
 
@@ -85,17 +79,13 @@ public class AccountController {
      * @return ResponseEntity
      */
     @PostMapping(value = "/logout")
-    public ResponseEntity<HttpStatus> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
-        var cookieList = httpServletRequest.getCookies();
-
-        var sessionUuid = sessionService.getSessionUuidFromCookie(cookieList);
+    public ResponseEntity<HttpStatus> logout(HttpServletResponse httpServletResponse) {
 
         // redis からセッション情報を削除
-        redisService.delete(sessionUuid);
+        redisService.delete(requestedUser.getSessionUuid());
 
         // 有効期限切れのCookieをレスポンスにセット
-        httpServletResponse.addCookie(sessionService.generateExpiredCookie(sessionUuid));
+        httpServletResponse.addCookie(sessionService.generateExpiredCookie(requestedUser.getSessionUuid()));
 
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -107,13 +97,9 @@ public class AccountController {
      * @return ユーザーIDとユーザー名
      */
     @GetMapping(value = "/info")
-    public ResponseEntity<AccountGetResponse> accountInfo(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<AccountGetResponse> accountInfo() {
 
-        var cookieList = httpServletRequest.getCookies();
-
-        var sessionUuid = sessionService.getSessionUuidFromCookie(cookieList);
-
-        var userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
+        var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
 
         var accountGetResponse = accountService.getAccountInfo(userUuid);
 
