@@ -1,17 +1,20 @@
 package com.example.stamp_app.controller;
 
 import com.example.stamp_app.controller.param.MicroControllerPostParam;
+import com.example.stamp_app.controller.param.microController.MicroControllerPatchParam;
 import com.example.stamp_app.controller.response.MicroControllerGetResponse;
 import com.example.stamp_app.controller.response.MicroControllerPostResponse;
 import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.service.MicroControllerService;
 import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -70,4 +73,20 @@ public class MicroControllerController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+
+    /**
+     * マイコン詳細更新API
+     *
+     * @param param 更新パラメータ
+     */
+    @PatchMapping(value = "/detail")
+    public ResponseEntity<MicroControllerGetResponse> updateMicroControllerDetail(@Valid @Validated @RequestBody MicroControllerPatchParam param) {
+
+        var microController = microControllerService.updateMicroControllerDetail(requestedUser.getUserUuid(), param);
+        var response = MicroControllerGetResponse.convertMicroControllerToDetailResponse(microController);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

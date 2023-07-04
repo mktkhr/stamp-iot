@@ -3,6 +3,7 @@ package com.example.stamp_app.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Entity
 @Data
+@AllArgsConstructor
 public class MicroController {
 
     @Id

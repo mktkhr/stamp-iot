@@ -54,9 +54,10 @@ public class MicroControllerGetResponse {
         microControllerGetResponse.setUuid(microController.getUuid());
         microControllerGetResponse.setName(microController.getName());
         microControllerGetResponse.setInterval(microController.getInterval());
+        microControllerGetResponse.setSdi12Address(microController.getSdi12Address());
         microControllerGetResponse.setMacAddress(microController.getMacAddress());
         microControllerGetResponse.setCreatedAt(microController.getCreatedAt());
-        microControllerGetResponse.setUpdatedAt(microController.getCreatedAt());
+        microControllerGetResponse.setUpdatedAt(microController.getUpdatedAt());
 
         return microControllerGetResponse;
     }
