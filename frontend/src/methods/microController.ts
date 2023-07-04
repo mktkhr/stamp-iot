@@ -6,9 +6,10 @@ export class MicroController {
   name: string;
   macAddress: string;
   interval: number;
+  sdi12Address: string;
   createdAt: Date;
   updatedAt: Date;
-  deletedAt: Date;
+  deletedAt: Date | null;
 }
 
 export type MicroControllerInfoState = {
@@ -17,6 +18,7 @@ export type MicroControllerInfoState = {
   name: string | null;
   macAddress: string;
   interval: number;
+  sdi12Address: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -24,6 +26,13 @@ export type MicroControllerInfoState = {
 export class MicroControllerInfoRequestQuery {
   mailAddress: string;
 }
+
+export type MicroControllerDetailPatchParam = {
+  microControllerUuid: string;
+  name?: string;
+  interval?: string;
+  sdi12Address?: string;
+};
 
 /**
  * アカウントに紐づくマイコン情報取得API
@@ -58,10 +67,26 @@ export const microControllerDetailGet = async (
   microControllerUuid: string
 ): Promise<MicroController> => {
   try {
-    const rwaResponse = await axios.get('/api/ems/micro-controller/detail', {
+    const rawResponse = await axios.get('/api/ems/micro-controller/detail', {
       params: { microControllerUuid: microControllerUuid },
     });
-    const response: MicroController = rwaResponse.data;
+    const response: MicroController = rawResponse.data;
+    return response;
+  } catch (e) {
+    throw e;
+  }
+};
+
+/**
+ * マイコン詳細更新API
+ * @param microControllerUuid マイコンUUID
+ */
+export const microControllerDetailPatch = async (
+  param: MicroControllerDetailPatchParam
+): Promise<MicroController> => {
+  try {
+    const rawResponse = await axios.patch('/api/ems/micro-controller/detail', param);
+    const response: MicroController = rawResponse.data;
     return response;
   } catch (e) {
     throw e;

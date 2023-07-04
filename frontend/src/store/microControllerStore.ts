@@ -4,6 +4,8 @@ import {
   MicroController,
   MicroControllerInfoState,
   microControllerDetailGet,
+  microControllerDetailPatch,
+  MicroControllerDetailPatchParam,
   microControllerGet,
   microControllerRegister,
 } from '@/methods/microController';
@@ -30,8 +32,9 @@ export const MicroControllerStore = defineStore('MicroControllerStore', {
       spinnerStore.showSpinner();
 
       try {
-        const response = await microControllerGet();
-        this.$state.microControllerList = response;
+        const responseList = await microControllerGet();
+        const convertedResponseList = responseList.map((response) => convertToState(response));
+        this.$state.microControllerList = convertedResponseList;
       } catch (e) {
         throw e;
       } finally {
@@ -69,6 +72,23 @@ export const MicroControllerStore = defineStore('MicroControllerStore', {
         spinnerStore.hideSpinner();
       }
     },
+
+    /**
+     * マイコン詳細更新
+     */
+    async updateMicroControllerDetail(param: MicroControllerDetailPatchParam) {
+      const spinnerStore = SpinnerStore();
+      spinnerStore.showSpinner();
+
+      try {
+        const response = await microControllerDetailPatch(param);
+        this.$state.microControllerDetail = convertToState(response);
+      } catch (e) {
+        throw e;
+      } finally {
+        spinnerStore.hideSpinner();
+      }
+    },
   },
 });
 
@@ -83,6 +103,7 @@ const convertToState = (microController: MicroController): MicroControllerInfoSt
     name: microController.name,
     macAddress: microController.macAddress,
     interval: microController.interval,
+    sdi12Address: microController.sdi12Address,
     createdAt: microController.createdAt,
     updatedAt: microController.updatedAt,
   };
