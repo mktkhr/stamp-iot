@@ -5,7 +5,7 @@ import Home from '@/views/home/Home.vue';
 import MeasuredData from '@/views/measuredData/MeasuredData.vue';
 import axios from 'axios';
 import { AccountStore } from '@/store/accountStore';
-import MicroControllerDetail from '@/views/microController/MicroControllerDetail.vue';
+import MicroControllerDetail from '@/views/microController/detail/MicroControllerDetail.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
