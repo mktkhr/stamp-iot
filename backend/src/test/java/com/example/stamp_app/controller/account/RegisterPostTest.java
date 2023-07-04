@@ -1,12 +1,15 @@
 package com.example.stamp_app.controller.account;
 
+import com.example.stamp_app.config.AppInterceptor;
 import com.example.stamp_app.controller.AccountController;
 import com.example.stamp_app.controller.param.account.RegisterPostParam;
 import com.example.stamp_app.entity.DummyData;
+import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.service.AccountService;
 import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AccountController.class)
@@ -25,9 +30,12 @@ public class RegisterPostTest {
 
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     ObjectMapper objectMapper;
+    @MockBean
+    AppInterceptor appInterceptor;
+    @MockBean
+    RequestedUser requestedUser;
 
     @MockBean
     AccountService accountService;
@@ -43,6 +51,11 @@ public class RegisterPostTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
                 .accept(MediaType.APPLICATION_JSON));
+    }
+
+    @BeforeEach
+    void setup() {
+        when(appInterceptor.preHandle(any(), any(), any())).thenReturn(true);
     }
 
     @Nested
