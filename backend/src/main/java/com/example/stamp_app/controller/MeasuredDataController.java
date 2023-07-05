@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -29,7 +30,7 @@ public class MeasuredDataController {
      * @return ResponseEntity
      */
     @PostMapping
-    public ResponseEntity<HttpStatus> addMeasuredData(@RequestBody MeasuredDataPostParam measuredDataPostParam) {
+    public ResponseEntity<HttpStatus> addMeasuredData(@RequestBody @Validated MeasuredDataPostParam measuredDataPostParam) {
 
         measuredDataService.addMeasuredData(measuredDataPostParam);
 
@@ -43,7 +44,7 @@ public class MeasuredDataController {
      * @return 測定結果
      */
     @GetMapping
-    public ResponseEntity<MeasuredDataGetResponse> getMeasuredData(@RequestParam String microControllerUuid) {
+    public ResponseEntity<MeasuredDataGetResponse> getMeasuredData(@RequestParam @Validated String microControllerUuid) {
 
         var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
 
