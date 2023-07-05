@@ -5,6 +5,7 @@ import com.example.stamp_app.controller.response.measuredDataGetResponse.Measure
 import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.service.MeasuredDataService;
 import com.example.stamp_app.session.RedisService;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
+@Validated
 @RequestMapping(value = "/ems/measured-data")
 public class MeasuredDataController {
 
@@ -44,7 +46,7 @@ public class MeasuredDataController {
      * @return 測定結果
      */
     @GetMapping
-    public ResponseEntity<MeasuredDataGetResponse> getMeasuredData(@RequestParam @Validated String microControllerUuid) {
+    public ResponseEntity<MeasuredDataGetResponse> getMeasuredData(@RequestParam @Pattern(regexp = "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$") String microControllerUuid) {
 
         var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
 

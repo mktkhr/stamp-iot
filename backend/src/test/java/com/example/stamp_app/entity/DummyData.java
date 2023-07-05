@@ -4,6 +4,7 @@ public class DummyData {
     public static final String REGISTER_POST_PATH = "/ems/account/register";
     public static final String LOGIN_POST_PATH = "/ems/account/login";
     public static final String MEASURED_DATA_POST_PATH = "/ems/measured-data";
+    public static final String MEASURED_DATA_GET_PATH = "/ems/measured-data";
     public static final String MICROCONTROLLER_PATCH_PATH = "/ems/micro-controller/detail";
 
     public static final String INVALID_7_LENGTH_PASSWORD = "A123456";
