@@ -49,13 +49,7 @@ public class MicroControllerController {
     @GetMapping(value = "/info")
     public ResponseEntity<List<MicroControllerGetResponse>> getMicroControllerInfo() {
 
-        var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
-
-        if (userUuid == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        var microControllerList = microControllerService.getMicroControllerList(userUuid);
+        var microControllerList = microControllerService.getMicroControllerList(requestedUser.getUserUuid());
 
         return new ResponseEntity<>(microControllerList, HttpStatus.OK);
     }
