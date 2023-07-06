@@ -9,6 +9,7 @@ import com.example.stamp_app.service.MicroControllerService;
 import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Controller
 @Slf4j
+@Validated
 @RequestMapping(value = "/ems/micro-controller")
 public class MicroControllerController {
     @Autowired
@@ -36,7 +38,7 @@ public class MicroControllerController {
      * マイコン登録API
      */
     @PostMapping
-    public ResponseEntity<String> addMicroControllerRelation(@RequestBody MicroControllerPostParam microControllerPostParam) {
+    public ResponseEntity<String> addMicroControllerRelation(@RequestBody @Validated MicroControllerPostParam microControllerPostParam) {
 
         MicroControllerPostResponse microControllerPostResponse = microControllerService.addMicroControllerRelation(microControllerPostParam.getUserId(), microControllerPostParam.getMacAddress());
 
@@ -49,13 +51,7 @@ public class MicroControllerController {
     @GetMapping(value = "/info")
     public ResponseEntity<List<MicroControllerGetResponse>> getMicroControllerInfo() {
 
-        var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
-
-        if (userUuid == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        var microControllerList = microControllerService.getMicroControllerList(userUuid);
+        var microControllerList = microControllerService.getMicroControllerList(requestedUser.getUserUuid());
 
         return new ResponseEntity<>(microControllerList, HttpStatus.OK);
     }
@@ -67,7 +63,7 @@ public class MicroControllerController {
      */
 
     @GetMapping(value = "/detail")
-    public ResponseEntity<MicroControllerGetResponse> getMicroControllerDetail(@RequestParam String microControllerUuid) {
+    public ResponseEntity<MicroControllerGetResponse> getMicroControllerDetail(@RequestParam @Pattern(regexp = "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$") String microControllerUuid) {
         var microController = microControllerService.getMicroControllerDetail(microControllerUuid);
         var response = MicroControllerGetResponse.convertMicroControllerToDetailResponse(microController);
 

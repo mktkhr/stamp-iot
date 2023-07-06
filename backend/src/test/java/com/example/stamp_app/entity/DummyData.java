@@ -3,7 +3,11 @@ package com.example.stamp_app.entity;
 public class DummyData {
     public static final String REGISTER_POST_PATH = "/ems/account/register";
     public static final String LOGIN_POST_PATH = "/ems/account/login";
+    public static final String MEASURED_DATA_POST_PATH = "/ems/measured-data";
+    public static final String MEASURED_DATA_GET_PATH = "/ems/measured-data";
     public static final String MICROCONTROLLER_PATCH_PATH = "/ems/micro-controller/detail";
+    public static final String MICROCONTROLLER_POST_PATH = "/ems/micro-controller";
+    public static final String MICROCONTROLLER_GET_PATH = "/ems/micro-controller/detail";
 
     public static final String INVALID_7_LENGTH_PASSWORD = "A123456";
 
@@ -28,4 +32,6 @@ public class DummyData {
     public static final String VALID_UUID = "4e540b38-31f8-40b4-9602-44dea41e5c5a";
     public static final String INVALID_INTERVAL = "100";
     public static final String INVALID_SDI_ADDRESS = "11";
+    public static final String INVALID_MAC_ADDRESS = "a";
+    public static final String VALID_MAC_ADDRESS = "AA:AA:AA:AA:AA:AA";
 }

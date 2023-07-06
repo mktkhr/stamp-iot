@@ -1,15 +1,16 @@
 package com.example.stamp_app.controller.param;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 public class MeasuredDataPostParam {
 
-    @NotNull
+    @NotBlank
+    @Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$")
     private String macAddress;
 
     private List<Sdi12Param> sdi12Param;
