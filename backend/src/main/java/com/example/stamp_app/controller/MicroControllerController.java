@@ -36,7 +36,7 @@ public class MicroControllerController {
      * マイコン登録API
      */
     @PostMapping
-    public ResponseEntity<String> addMicroControllerRelation(@RequestBody MicroControllerPostParam microControllerPostParam) {
+    public ResponseEntity<String> addMicroControllerRelation(@RequestBody @Validated MicroControllerPostParam microControllerPostParam) {
 
         MicroControllerPostResponse microControllerPostResponse = microControllerService.addMicroControllerRelation(microControllerPostParam.getUserId(), microControllerPostParam.getMacAddress());
 
