@@ -21,7 +21,7 @@ import java.util.List;
 public class MicroController {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
 
     @NotNull
