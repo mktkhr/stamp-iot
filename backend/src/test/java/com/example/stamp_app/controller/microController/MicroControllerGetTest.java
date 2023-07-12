@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -47,7 +46,7 @@ public class MicroControllerGetTest {
     RedisService redisService;
 
     private MicroController generateMicroController() {
-        return new MicroController(BigInteger.ONE, DummyData.VALID_UUID, "モック", "AA:AA:AA:AA:AA:AA", "30", "1,3", LocalDateTime.now(), LocalDateTime.now(), null, null, null);
+        return new MicroController(1L, DummyData.VALID_UUID, "モック", "AA:AA:AA:AA:AA:AA", "30", "1,3", LocalDateTime.now(), LocalDateTime.now(), null, null, null);
     }
 
     private ResultActions mockMvcPerform(String path) throws Exception {
