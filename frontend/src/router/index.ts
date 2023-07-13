@@ -80,7 +80,7 @@ const checkSession = async (): Promise<boolean> => {
   await axios
     .post('/api/ems/session')
     .then((response) => {
-      if (response.status === 200) {
+      if (response.data.toString() ===  'success') {
         sessionStatus = true;
       } else {
         sessionStatus = false;
