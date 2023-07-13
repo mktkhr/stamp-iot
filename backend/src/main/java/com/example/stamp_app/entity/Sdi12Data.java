@@ -2,11 +2,10 @@ package com.example.stamp_app.entity;
 
 import com.example.stamp_app.controller.param.Sdi12Param;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.math.BigInteger;
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +14,8 @@ import java.util.List;
 public class Sdi12Data {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private BigInteger id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull
     @Column

@@ -3,13 +3,12 @@ package com.example.stamp_app.controller.response.measuredDataGetResponse;
 import com.example.stamp_app.entity.EnvironmentalData;
 import lombok.Data;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Data
 public class EnvironmentalDataGetResponse {
 
-    private BigInteger measuredDataMasterId;
+    private Long measuredDataMasterId;
 
     private String dayOfYear;
 
@@ -31,7 +30,7 @@ public class EnvironmentalDataGetResponse {
 
     private LocalDateTime deletedAt;
 
-    public static EnvironmentalDataGetResponse convertFromEnvironmentalData(EnvironmentalData environmentalData, BigInteger measuredDataMasterId, String dayOfYear) {
+    public static EnvironmentalDataGetResponse convertFromEnvironmentalData(EnvironmentalData environmentalData, Long measuredDataMasterId, String dayOfYear) {
         var environmentalDataGetResponse = new EnvironmentalDataGetResponse();
         environmentalDataGetResponse.setMeasuredDataMasterId(measuredDataMasterId);
         environmentalDataGetResponse.setDayOfYear(dayOfYear);

@@ -1,18 +1,20 @@
 package com.example.stamp_app.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
 public class Sensor {
 
     @Id
-    @NotNull
     @Length(max = 3, min = 1)
-    private String id;
+    private Long id;
 
     @Column
     @NotNull

@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -57,7 +56,7 @@ public class MicroControllerPostTest {
     }
 
     private MicroControllerPostResponse generateMicroControllerResponse() {
-        var microController = new MicroController(BigInteger.ONE, DummyData.VALID_UUID, "モック", "AA:AA:AA:AA:AA:AA", "30", "1,3", LocalDateTime.now(), LocalDateTime.now(), null, null, null);
+        var microController = new MicroController(1L, DummyData.VALID_UUID, "モック", "AA:AA:AA:AA:AA:AA", "30", "1,3", LocalDateTime.now(), LocalDateTime.now(), null, null, null);
         return new MicroControllerPostResponse(HttpStatus.OK, microController);
     }
 
@@ -75,7 +74,7 @@ public class MicroControllerPostTest {
         void リクエストボディが正しいの値の場合400を返すこと() throws Exception {
 
             MicroControllerPostParam microControllerPostParam = new MicroControllerPostParam();
-            microControllerPostParam.setUserId(BigInteger.ONE);
+            microControllerPostParam.setUserId(1L);
             microControllerPostParam.setMacAddress(DummyData.VALID_MAC_ADDRESS);
 
             String requestBodyString = objectMapper.writeValueAsString(microControllerPostParam);
@@ -103,7 +102,7 @@ public class MicroControllerPostTest {
 
                 MicroControllerPostParam microControllerPostParam = new MicroControllerPostParam();
                 microControllerPostParam.setMacAddress(DummyData.VALID_MAC_ADDRESS);
-                microControllerPostParam.setUserId(BigInteger.valueOf(-1));
+                microControllerPostParam.setUserId(-1L);
 
                 String requestBodyString = objectMapper.writeValueAsString(microControllerPostParam);
                 mockMvcPerform(requestBodyString).andExpect(status().isBadRequest());
@@ -115,7 +114,7 @@ public class MicroControllerPostTest {
 
                 MicroControllerPostParam microControllerPostParam = new MicroControllerPostParam();
                 microControllerPostParam.setMacAddress(DummyData.VALID_MAC_ADDRESS);
-                microControllerPostParam.setUserId(BigInteger.ZERO);
+                microControllerPostParam.setUserId(0L);
 
                 String requestBodyString = objectMapper.writeValueAsString(microControllerPostParam);
                 mockMvcPerform(requestBodyString).andExpect(status().isBadRequest());
@@ -132,7 +131,7 @@ public class MicroControllerPostTest {
             void リクエストボディのMACアドレスがnullの場合400を返すこと() throws Exception {
 
                 MicroControllerPostParam microControllerPostParam = new MicroControllerPostParam();
-                microControllerPostParam.setUserId(BigInteger.ONE);
+                microControllerPostParam.setUserId(1L);
 
                 String requestBodyString = objectMapper.writeValueAsString(microControllerPostParam);
                 mockMvcPerform(requestBodyString).andExpect(status().isBadRequest());
@@ -143,7 +142,7 @@ public class MicroControllerPostTest {
             void リクエストボディのMACアドレスが不正な値の場合400を返すこと() throws Exception {
 
                 MicroControllerPostParam microControllerPostParam = new MicroControllerPostParam();
-                microControllerPostParam.setUserId(BigInteger.ONE);
+                microControllerPostParam.setUserId(1L);
                 microControllerPostParam.setMacAddress(DummyData.INVALID_MAC_ADDRESS);
 
                 String requestBodyString = objectMapper.writeValueAsString(microControllerPostParam);

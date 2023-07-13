@@ -46,29 +46,27 @@ const router = createRouter({
  * 画面遷移前の共通処理
  * セッションの有効性チェック
  */
-router.beforeEach(async (to, _from, next) => {
+router.beforeEach(async (to, from, next) => {
+  const accountStore = AccountStore();
   //セッションの有効チェック
   const sessionStatus = await checkSession();
 
   if (!sessionStatus && to.name != 'login' && to.name != 'register') {
-    //セッションが無効かつログイン画面以外に遷移する場合
+    //セッションが無効かつログイン・登録画面以外に遷移する場合
     next({ name: 'login' });
-  } else if (sessionStatus && (to.name === 'login' || to.path === '/')) {
+  } else if (
+    !sessionStatus &&
+    (to.name.toString() === 'login' || to.name.toString() === 'register')
+  ) {
+    //ログインか登録画面への遷移の場合，アカウント情報を取得せずに遷移
+    next();
+  } else if (sessionStatus && (to.name.toString() === 'login' || to.path === '/')) {
     //セッションが有効かつログインか"/"に遷移する場合
+    await accountStore.fetchAccountInfo();
     next({ name: 'home' });
   } else {
-    next();
-  }
-});
-
-/**
- * 画面遷移後の共通処理
- * アカウント情報をStoreに保存する
- */
-router.afterEach(async (to) => {
-  const accountStore = AccountStore();
-  if (to.name != 'login' || to.path != '/') {
     await accountStore.fetchAccountInfo();
+    next();
   }
 });
 

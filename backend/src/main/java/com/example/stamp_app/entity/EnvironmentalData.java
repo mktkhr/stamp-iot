@@ -2,10 +2,9 @@ package com.example.stamp_app.entity;
 
 import com.example.stamp_app.controller.param.EnvironmentalDataParam;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.Data;
 
-import jakarta.persistence.*;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +13,8 @@ import java.util.List;
 public class EnvironmentalData {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private BigInteger id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "atmosphericPressure")
     private String airPress;

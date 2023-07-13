@@ -1,13 +1,12 @@
 package com.example.stamp_app.controller.param;
 
-import lombok.Data;
-
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 @Data
 public class Sdi12Param {
 
-    private String sensorId;
+    private Long sensorId;
 
     @NotNull
     private String sdiAddress;

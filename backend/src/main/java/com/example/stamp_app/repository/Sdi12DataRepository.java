@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +23,7 @@ public interface Sdi12DataRepository extends JpaRepository<Sdi12Data, UUID> {
             "GROUP BY sdi12data.sdi_address"
             , nativeQuery = true
     )
-    List<String> findSdiAddressGroupBySdiAddress(@Param("userUuid") UUID userUuid, @Param("microControllerId") BigInteger microControllerId);
+    List<String> findSdiAddressGroupBySdiAddress(@Param("userUuid") UUID userUuid, @Param("microControllerId") Long microControllerId);
 
     // TODO: クラスに直接マッピングできるようにする
 //    @Query(value = "SELECT measured_data_master.id, measured_data_master.day_of_year, sdi12data.volumetric_water_content, sdi12data.soil_temperature, sdi12data.bulk_relative_permittivity, sdi12data.soil_bulk_electric_conductivity, sdi12data.soil_pore_water_electric_conductivity, sdi12data.gravitational_accelerationxaxis, sdi12data.gravitational_accelerationyaxis, sdi12data.gravitational_accelerationzaxis, measured_data_master.created_at, measured_data_master.updated_at, measured_data_master.deleted_at " +
@@ -55,7 +54,7 @@ public interface Sdi12DataRepository extends JpaRepository<Sdi12Data, UUID> {
 //            @FieldResult(name="updated_at",column = "updatedAt"),
 //            @FieldResult(name="deleted_at",column = "deletedAt"),
 //    }))
-//    List<Sdi12DataGetResponse.Sdi12DataAndDoy> findMeasuredDataBySdiAddress(@Param("userUuid") UUID userUuid, @Param("sdi12Address") String sdi12Address, @Param("microControllerId") BigInteger microControllerId);
+//    List<Sdi12DataGetResponse.Sdi12DataAndDoy> findMeasuredDataBySdiAddress(@Param("userUuid") UUID userUuid, @Param("sdi12Address") String sdi12Address, @Param("microControllerId") Long microControllerId);
 
     List<Sdi12Data> findBySdiAddress(String sdiAddress);
 }

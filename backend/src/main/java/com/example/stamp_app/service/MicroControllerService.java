@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +28,7 @@ public class MicroControllerService {
     @Autowired
     AccountRepository accountRepository;
 
-    public MicroControllerPostResponse addMicroControllerRelation(BigInteger userId, String macAddress) {
+    public MicroControllerPostResponse addMicroControllerRelation(Long userId, String macAddress) {
 
         MicroController microController;
         Account requestedAccount;

@@ -3,7 +3,6 @@ package com.example.stamp_app.controller.response;
 import com.example.stamp_app.entity.MicroController;
 import lombok.Data;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
 @Data
 public class MicroControllerGetResponse {
 
-    private BigInteger id;
+    private Long id;
 
     private String uuid;
 
