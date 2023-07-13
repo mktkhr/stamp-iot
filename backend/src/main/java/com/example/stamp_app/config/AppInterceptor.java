@@ -31,7 +31,7 @@ public class AppInterceptor implements HandlerInterceptor {
         var path = request.getRequestURI();
 
         // セッションの有無を確認しないリクエスト
-        if (path.contains("/login") || path.contains("/register")) {
+        if (path.contains("/login") || path.contains("/register") || path.contains("/session")) {
             return true;
         }
 

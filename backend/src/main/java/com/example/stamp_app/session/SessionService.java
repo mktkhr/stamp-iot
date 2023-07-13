@@ -1,14 +1,12 @@
 package com.example.stamp_app.session;
 
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import jakarta.servlet.http.Cookie;
-import org.springframework.web.server.ResponseStatusException;
-
-import static com.example.stamp_app.constants.Constants.*;
+import static com.example.stamp_app.constants.Constants.COOKIE_NAME;
+import static com.example.stamp_app.constants.Constants.SESSION_VALID_TIME_IN_SEC;
 
 @Service
 public class SessionService {
@@ -62,10 +60,6 @@ public class SessionService {
                     sessionUuid = cookie.getValue();
                 }
             }
-        }
-
-        if(sessionUuid == null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         return sessionUuid;
