@@ -48,7 +48,7 @@ public class AppInterceptor implements HandlerInterceptor {
                 return true;
             }
         } catch (Exception e) {
-            log.error(e.toString());
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

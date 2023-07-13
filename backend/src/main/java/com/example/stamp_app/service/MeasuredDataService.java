@@ -56,7 +56,7 @@ public class MeasuredDataService {
             microController = microControllerRepository.findByMacAddress(measuredDataPostParam.getMacAddress());
 
         } catch (Exception e) {
-            log.error(e.toString());
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -110,7 +110,7 @@ public class MeasuredDataService {
             }
 
         } catch (Exception e) {
-            log.error(e.toString());
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
