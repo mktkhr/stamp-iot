@@ -31,7 +31,7 @@ public class AppInterceptor implements HandlerInterceptor {
         var path = request.getRequestURI();
 
         // セッションの有無を確認しないリクエスト
-        if (path.contains("/login") || path.contains("/register")) {
+        if (path.contains("/login") || path.contains("/register") || path.contains("/session")) {
             return true;
         }
 
@@ -48,7 +48,7 @@ public class AppInterceptor implements HandlerInterceptor {
                 return true;
             }
         } catch (Exception e) {
-            log.error(e.toString());
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

@@ -36,7 +36,7 @@ public class AccountService {
         try {
             isNewUser = accountRepository.findByEmail(registerPostParam.getEmail()) == null;
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -56,8 +56,8 @@ public class AccountService {
 
         try {
             accountRepository.save(newUser);
-        } catch (Exception exception) {
-            log.error(exception.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -78,7 +78,7 @@ public class AccountService {
             loginUser = accountRepository.findByEmail(loginPostParam.getEmail());
 
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -121,7 +121,7 @@ public class AccountService {
             }
 
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

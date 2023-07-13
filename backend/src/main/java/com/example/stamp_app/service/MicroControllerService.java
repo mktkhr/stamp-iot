@@ -87,7 +87,7 @@ public class MicroControllerService {
         try {
             account = accountRepository.findByUuid(UUID.fromString(userUuid));
         } catch (Exception e) {
-            log.error(e.toString());
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -169,7 +169,7 @@ public class MicroControllerService {
         try {
             microControllerRepository.save(microController);
         } catch (Exception e) {
-            log.error(e.toString());
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -177,7 +177,7 @@ public class MicroControllerService {
         try {
             microControllerUpdateResult = microControllerRepository.findByUuid(param.getMicroControllerUuid());
         } catch (Exception e) {
-            log.error(e.toString());
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
