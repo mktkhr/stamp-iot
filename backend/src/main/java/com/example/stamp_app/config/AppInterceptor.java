@@ -44,6 +44,7 @@ public class AppInterceptor implements HandlerInterceptor {
             if (userUuid != null) {
                 requestedUser.setSessionUuid(sessionUuid);
                 requestedUser.setUserUuid(userUuid);
+                log.info(requestedUser.toString());
                 response.setStatus(HttpStatus.OK.value());
                 return true;
             }
