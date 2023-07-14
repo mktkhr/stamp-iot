@@ -109,7 +109,7 @@ export const useChart = () => {
     },
     plugins: {
       legend: {
-        display: true,
+        display: measuredDataStore.getMeasuredDataList.sdi12Data.length > 0 && selectedSdi12Option.value !== "",
       },
       title: {
         text: convertSdi12KeyWordToTitle(selectedSdi12Option.value),
@@ -154,7 +154,7 @@ export const useChart = () => {
     },
     plugins: {
       legend: {
-        display: true,
+        display: measuredDataStore.getMeasuredDataList.environmentalData.length > 0 && selectedEnvironmentalOption.value !== "",
       },
       title: {
         text: convertEnvironmentalKeyWordToTitle(selectedEnvironmentalOption.value),
@@ -205,7 +205,7 @@ export const useChart = () => {
   }));
 
   /**
-   * SDI-12の表示項目セレクターが変化した際の処理
+   * 環境データの表示項目セレクターが変化した際の処理
    * @param value
    */
   const onChangeEnvironmentalSelect = (value: string) => {
