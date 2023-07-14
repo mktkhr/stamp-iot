@@ -36,25 +36,18 @@ withDefaults(defineProps<Props>(), {
   font-size: 22px;
 }
 .modal-container {
-  margin: 20px auto;
-  height: auto;
-  width: 80%;
-  display: table;
+  width: 100%;
+  display: flex;
   background-color: #eee;
-  padding: 0;
-  text-align: center;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
 }
 .button {
   width: 100%;
   display: flex;
-  gap: 20px;
   justify-content: center;
-  position: absolute;
-  bottom: 30px;
-}
-span {
-  display: table-cell;
-  vertical-align: middle;
-  white-space: pre-wrap;
+  align-items: center;
+  padding: 8px 16px;
 }
 </style>
