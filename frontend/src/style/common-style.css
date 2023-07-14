@@ -32,6 +32,7 @@ p {
 div {
   -ms-overflow-style: none; /* IE, Edge スクロールバー非表示 */
   scrollbar-width: none; /* Firefox スクロールバー非表示 */
+  box-sizing: border-box; /* 要素幅にpaddingおよびborderを含める */
 }
 
 div::-webkit-scrollbar {
