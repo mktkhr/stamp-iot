@@ -56,11 +56,11 @@ router.beforeEach(async (to, from, next) => {
     next({ name: 'login' });
   } else if (
     !sessionStatus &&
-    (to.name.toString() === 'login' || to.name.toString() === 'register')
+    (to.name === 'login' || to.name === 'register')
   ) {
     //ログインか登録画面への遷移の場合，アカウント情報を取得せずに遷移
     next();
-  } else if (sessionStatus && (to.name.toString() === 'login' || to.path === '/')) {
+  } else if (sessionStatus && (to.name === 'login' || to.path === '/')) {
     //セッションが有効かつログインか"/"に遷移する場合
     await accountStore.fetchAccountInfo();
     next({ name: 'home' });
