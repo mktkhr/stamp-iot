@@ -39,11 +39,16 @@ public class AppInterceptor implements HandlerInterceptor {
 
         var sessionUuid = sessionService.getSessionUuidFromCookie(cookieList);
 
+        if (sessionUuid == null) {
+            return false;
+        }
+
         try {
             var userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
             if (userUuid != null) {
                 requestedUser.setSessionUuid(sessionUuid);
                 requestedUser.setUserUuid(userUuid);
+                log.info(requestedUser.toString());
                 response.setStatus(HttpStatus.OK.value());
                 return true;
             }

@@ -45,9 +45,10 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
      * @param dataType 取得するデータ名
      */
     getSdi12DataList(dataType: string) {
+      const measuredDataStore = MeasuredDataStore()
       const sdi12DatasetList = new Array<datasetFrame>();
 
-      if (this.measuredDataList.sdi12Data != undefined) {
+      if (measuredDataStore.getMeasuredDataList.sdi12Data.length > 0) {
         this.measuredDataList.sdi12Data.forEach((measuredData: Sdi12DataState, index: number) => {
           const sdi12Dataset = new datasetFrame();
           sdi12Dataset.fill = false;
@@ -116,6 +117,7 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
      * @param dataType 取得するデータ名
      */
     getEnvironmentDataList(dataType: string) {
+      const measuredDataStore = MeasuredDataStore()
       const environmentalDatasetList = new Array<datasetFrame>();
       const environmentalDataset = new datasetFrame();
       environmentalDataset.fill = false;
@@ -124,28 +126,28 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
       environmentalDataset.pointStyle = 'circle';
       environmentalDataset.pointRadius = 0;
 
-      if (this.measuredDataList.sdi12Data != undefined) {
+      if (measuredDataStore.getMeasuredDataList.environmentalData.length > 0) {
         environmentalDataset.data = this.measuredDataList.environmentalData.map(
           (data: EnvironmentalDataState) => {
-            if (dataType == '') {
+            if (dataType === '') {
               environmentalDataset.label = '';
               return { x: '', y: '' };
-            } else if (dataType == 'airPress') {
+            } else if (dataType === 'airPress') {
               environmentalDataset.label = '大気圧';
               return { x: data.dayOfYear, y: data.airPress };
-            } else if (dataType == 'temp') {
+            } else if (dataType === 'temp') {
               environmentalDataset.label = '気温';
               return { x: data.dayOfYear, y: data.temp };
-            } else if (dataType == 'humi') {
+            } else if (dataType === 'humi') {
               environmentalDataset.label = '相対湿度';
               return { x: data.dayOfYear, y: data.humi };
-            } else if (dataType == 'co2Concent') {
+            } else if (dataType === 'co2Concent') {
               environmentalDataset.label = '二酸化炭素濃度';
               return { x: data.dayOfYear, y: data.co2Concent };
-            } else if (dataType == 'tvoc') {
+            } else if (dataType === 'tvoc') {
               environmentalDataset.label = '総揮発性有機化合物量';
               return { x: data.dayOfYear, y: data.tvoc };
-            } else if (dataType == 'analogValue') {
+            } else if (dataType === 'analogValue') {
               environmentalDataset.label = 'アナログ値';
               return { x: data.dayOfYear, y: data.analogValue };
             }

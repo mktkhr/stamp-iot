@@ -68,7 +68,7 @@
 
     <!-- production では WARN 以上を出力 -->
     <springProfile name="prod">
-        <root level="WARN">
+        <root level="INFO">
             <appender-ref ref="STDERR"/>
         </root>
     </springProfile>

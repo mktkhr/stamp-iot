@@ -39,7 +39,14 @@ const {
           description="登録する端末のMACアドレスを入力して下さい。"
         >
           <template #content>
-            <InformationInput text @input-value="getMacAddress" :error-message="macAddressError" />
+            <div class="wrapper-input">
+              <InformationInput
+                class="input-content"
+                text
+                @input-value="getMacAddress"
+                :error-message="macAddressError"
+              />
+            </div>
           </template>
           <template #button>
             <CommonButton button-title="登録" @click-button="onClickRegister" />
@@ -119,8 +126,7 @@ const {
 </template>
 
 <style lang="scss" scoped>
-$account_info_height: 150px;
-$wrapper_account_info_padding: 10px;
+$account_info_height: 170px;
 .wrapper {
   &-main-content {
     height: 100%;
@@ -128,18 +134,26 @@ $wrapper_account_info_padding: 10px;
     overflow-y: auto;
   }
   &-account-info {
-    height: #{$account_info_height};
-    padding: #{$wrapper_account_info_padding};
-    width: calc(100% - #{$wrapper_account_info_padding} * 2); // padding分を引く
+    padding: 10px;
+    width: 100%;
   }
   &-micro-controller {
     height: calc(
-      100% - #{$account_info_height} - #{$wrapper_account_info_padding} * 2
-    ); // padding分を引く
+      100% - #{$account_info_height}
+    );
     width: 100%;
   }
   &-info {
     padding: 10px;
+  }
+  &-input {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 8px 16px;
+    > .input-content {
+      width: 80%;
+    }
   }
 }
 img {

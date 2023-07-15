@@ -27,7 +27,7 @@ const {
   <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
   <div class="wrapper-content">
     <div class="wrapper-chart">
-      <LineChart ref="lineRef" :chartData="sdi12ChartDataSet" :options="sdi12ChartConfig" />
+      <LineChart ref="lineRef" class="chart" :chartData="sdi12ChartDataSet" :options="sdi12ChartConfig" />
       <InformationSelect
         class="selector"
         title="表示項目"
@@ -38,6 +38,7 @@ const {
     <div class="wrapper-chart">
       <LineChart
         ref="lineRef"
+        class="chart"
         :chartData="environmentalChartDataSet"
         :options="environmentalChartConfig"
       />
@@ -59,7 +60,7 @@ const {
     overflow-y: auto;
   }
   &-chart {
-    padding: 10px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -69,5 +70,8 @@ const {
 .selector {
   width: 80%;
   max-width: 500px;
+}
+.chart{
+  width: 100%;
 }
 </style>
