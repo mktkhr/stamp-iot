@@ -120,7 +120,12 @@
 
 1. Java17 をインストール ([Oracle](https://www.oracle.com/jp/java/technologies/downloads/#java17), [Amazon Corretto](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html))
 2. `stamp-iot/backend` へ移動
-3. InntelliJ で `BackendApplication` を実行
+3. IntelliJ で `BackendApplication` を実行
 
 ### データベース
 1. 初期テーブルはjpaにより自動で生成されるため，作成する必要はなし
+
+### API仕様書の更新
+1. バックエンドを起動
+2. `localhost:8082/api-docs.yaml` にアクセスし，`api-docs.yaml` をダウンロード
+3. `/document/API仕様/api-docs.yaml` を置換
