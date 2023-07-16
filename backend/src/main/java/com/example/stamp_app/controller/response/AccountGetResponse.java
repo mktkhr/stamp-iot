@@ -17,10 +17,10 @@ public class AccountGetResponse {
     @Schema(description = "登録名", example = "サンプル太郎")
     private String name;
 
-    @Schema(description = "作成日", example = "2023-01-01T01:01:01.111111")
+    @Schema(description = "作成日時", example = "2023-01-01T01:01:01.111111")
     private LocalDateTime createdAt;
 
-    @Schema(description = "更新日", example = "2023-01-01T01:01:01.111111")
+    @Schema(description = "更新日時", example = "2023-01-01T01:01:01.111111")
     private LocalDateTime updatedAt;
 
 }
