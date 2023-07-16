@@ -2,17 +2,24 @@ package com.example.stamp_app.controller;
 
 import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@Tag(name = "Session", description = "セッション関連API")
 @RequestMapping(value = "/ems/session")
 public class SessionController {
 
@@ -27,8 +34,15 @@ public class SessionController {
      * @param request リクエスト内容
      * @return ResponseEntity
      */
+    @Operation(summary = "セッション確認API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "確認成功", content = @Content(examples = {
+                    @ExampleObject(name = "セッション有効", value = "success"),
+                    @ExampleObject(name = "セッション無効", value = "failed")
+            }))
+    })
     @PostMapping
-    public ResponseEntity<String> addAccount(HttpServletRequest request, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<String> checkSession(HttpServletRequest request, HttpServletResponse httpServletResponse) {
 
         var cookieList = request.getCookies();
 

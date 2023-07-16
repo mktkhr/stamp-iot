@@ -1,0 +1,753 @@
+openapi: 3.0.1
+info:
+  title: Stamp IoT API仕様書
+  description: Stamp IoT用バックエンドアプリ
+  version: v1
+servers:
+- url: http://localhost:8080
+  description: ローカル環境
+- url: https://www.ems-engineering.jp
+  description: 本番環境
+tags:
+- name: Account
+  description: アカウント関連API
+- name: MeasuredData
+  description: 測定結果関連API
+- name: MicroController
+  description: マイコン関連API
+- name: Session
+  description: セッション関連API
+paths:
+  /ems/session:
+    post:
+      tags:
+      - Session
+      summary: セッション確認API
+      operationId: checkSession
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            '*/*':
+              examples:
+                セッション有効:
+                  description: セッション有効
+                  value: success
+                セッション無効:
+                  description: セッション無効
+                  value: failed
+  /ems/micro-controller:
+    post:
+      tags:
+      - MicroController
+      summary: マイコン登録API
+      operationId: addMicroControllerRelation
+      requestBody:
+        description: マイコン登録パラメータ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MicroControllerPostParam'
+        required: true
+      responses:
+        "200":
+          description: 登録成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicroControllerPostResponse'
+        "400":
+          description: バリデーションエラー/無効なマイコン
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "401":
+          description: 認証エラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+  /ems/measured-data:
+    get:
+      tags:
+      - MeasuredData
+      summary: 測定データ取得API
+      operationId: getMeasuredData
+      parameters:
+      - name: microControllerUuid
+        in: query
+        description: マイコンUUID
+        required: true
+        schema:
+          pattern: "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$"
+          type: string
+        example: 61d5f7a7-7629-496e-be68-cfe022264578
+      responses:
+        "400":
+          description: バリデーションエラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "200":
+          description: 取得成功
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/MeasuredDataGetResponse'
+        "403":
+          description: マイコン所有者不一致エラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+    post:
+      tags:
+      - MeasuredData
+      summary: 測定データ登録API
+      operationId: addMeasuredData
+      requestBody:
+        description: 登録情報
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeasuredDataPostParam'
+        required: true
+      responses:
+        "400":
+          description: バリデーションエラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "403":
+          description: 無効なマイコン
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "200":
+          description: 登録成功
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "401":
+          description: 認証エラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+  /ems/account/register:
+    post:
+      tags:
+      - Account
+      summary: アカウント登録API
+      operationId: addAccount
+      requestBody:
+        description: 登録情報
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterPostParam'
+        required: true
+      responses:
+        "400":
+          description: バリデーションエラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "200":
+          description: 登録成功
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+  /ems/account/logout:
+    post:
+      tags:
+      - Account
+      summary: ログアウトAPI
+      operationId: logout
+      responses:
+        "200":
+          description: ログアウト成功
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+  /ems/account/login:
+    post:
+      tags:
+      - Account
+      summary: ログインAPI
+      operationId: login
+      requestBody:
+        description: ログイン情報
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginPostParam'
+        required: true
+      responses:
+        "400":
+          description: バリデーションエラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "401":
+          description: 認証エラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "200":
+          description: ログイン成功
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+  /ems/micro-controller/detail:
+    get:
+      tags:
+      - MicroController
+      summary: マイコン詳細取得API
+      operationId: getMicroControllerDetail
+      parameters:
+      - name: microControllerUuid
+        in: query
+        description: マイコンUUID
+        required: true
+        schema:
+          pattern: "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$"
+          type: string
+        example: 61d5f7a7-7629-496e-be68-cfe022264578
+      responses:
+        "400":
+          description: 無効なアカウント
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MicroControllerGetResponse'
+    patch:
+      tags:
+      - MicroController
+      summary: マイコン詳細更新API
+      operationId: updateMicroControllerDetail
+      requestBody:
+        description: マイコン詳細更新パラメータ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MicroControllerPatchParam'
+        required: true
+      responses:
+        "400":
+          description: 無効なアカウント
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MicroControllerGetResponse'
+  /ems/micro-controller/info:
+    get:
+      tags:
+      - MicroController
+      summary: マイコン一覧取得API
+      operationId: getMicroControllerInfo
+      responses:
+        "400":
+          description: 無効なアカウント
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MicroControllerGetResponse'
+  /ems/account/info:
+    get:
+      tags:
+      - Account
+      summary: アカウント詳細取得API
+      operationId: accountInfo
+      responses:
+        "400":
+          description: バリデーションエラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "200":
+          description: ログイン成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountGetResponse'
+components:
+  schemas:
+    MicroControllerPostParam:
+      required:
+      - macAddress
+      - userId
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: ユーザーID
+          format: int64
+        macAddress:
+          pattern: "^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$"
+          type: string
+          description: MACアドレス
+      description: マイコン登録パラメータ
+    MicroControllerPostResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: マイコンID
+          format: int64
+          example: 1
+        uuid:
+          type: string
+          description: マイコンUUID
+          example: 61d5f7a7-7629-496e-be68-cfe022264578
+        name:
+          type: string
+          description: マイコン名
+          example: サンプル端末
+        macAddress:
+          type: string
+          description: MACアドレス
+          example: AA:AA:AA:AA:AA:AA
+        interval:
+          type: string
+          description: 測定間隔
+          example: "60"
+        sdi12Address:
+          type: string
+          description: SDI-12アドレス
+          example: "1,3"
+        createdAt:
+          type: string
+          description: 作成日時
+          format: date-time
+        updatedAt:
+          type: string
+          description: 更新日時
+          format: date-time
+        deletedAt:
+          type: string
+          description: 削除日時
+          format: date-time
+      description: マイコンデータ
+    "Null":
+      type: object
+    EnvironmentalDataParam:
+      type: object
+      properties:
+        airPress:
+          type: string
+          description: 大気圧
+          example: "1011.11"
+        temp:
+          type: string
+          description: 気温
+          example: "11.11"
+        humi:
+          type: string
+          description: 相対湿度
+          example: "77.77"
+        co2Concent:
+          type: string
+          description: 二酸化炭素濃度
+          example: "1111.11"
+        tvoc:
+          type: string
+          description: 総揮発性有機化合物
+          example: "11.11"
+        analogValue:
+          type: string
+          description: アナログ値
+          example: "11.11"
+      description: 環境データパラメータ
+    MeasuredDataPostParam:
+      required:
+      - macAddress
+      type: object
+      properties:
+        macAddress:
+          pattern: "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$"
+          type: string
+          description: MACアドレス
+          example: AA:AA:AA:AA:AA:AA
+        sdi12Param:
+          type: array
+          description: SDI-12パラメータリスト
+          items:
+            $ref: '#/components/schemas/Sdi12Param'
+        environmentalDataParam:
+          type: array
+          description: 環境データパラメータリスト
+          items:
+            $ref: '#/components/schemas/EnvironmentalDataParam'
+        voltage:
+          type: string
+          description: 電圧
+          example: "11.11"
+      description: 測定結果登録パラメータ
+    Sdi12Param:
+      required:
+      - sdiAddress
+      type: object
+      properties:
+        sensorId:
+          type: integer
+          description: センサID
+          format: int64
+          example: 1
+        sdiAddress:
+          type: string
+          description: SDI-12アドレス
+          example: "1"
+        vwc:
+          type: string
+          description: 体積含水率
+          example: "11.11"
+        soilTemp:
+          type: string
+          description: 地温
+          example: "11.11"
+        brp:
+          type: string
+          description: 比誘電率
+          example: "11.11"
+        sbec:
+          type: string
+          description: 電気伝導度
+          example: "11.11"
+        spwec:
+          type: string
+          description: 間隙水電気伝導度
+          example: "11.11"
+        gax:
+          type: string
+          description: 重力加速度(X)
+          example: "1.11"
+        gay:
+          type: string
+          description: 重力加速度(Y)
+          example: "1.11"
+        gaz:
+          type: string
+          description: 重力加速度(Z)
+          example: "1.11"
+      description: SDI-12パラメータ
+    RegisterPostParam:
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          pattern: "^([a-zA-Z0-9])+([a-zA-Z0-9._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9._-]+)+$"
+          type: string
+          description: メールアドレス
+          example: aaa@example.com
+        password:
+          pattern: "^(?=.*[A-Z])[a-zA-Z0-9.?/-]{8,24}$"
+          type: string
+          description: パスワード
+          example: SamplePassword
+      description: アカウント登録パラメータ
+    LoginPostParam:
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          pattern: "^([a-zA-Z0-9])+([a-zA-Z0-9._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9._-]+)+$"
+          type: string
+          description: メールアドレス
+          example: aaa@example.com
+        password:
+          type: string
+          description: パスワード
+          example: SamplePassword
+      description: ログインパラメータ
+    MicroControllerPatchParam:
+      required:
+      - interval
+      - microControllerUuid
+      type: object
+      properties:
+        microControllerUuid:
+          pattern: "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$"
+          type: string
+          description: マイコンUUID
+          example: 61d5f7a7-7629-496e-be68-cfe022264578
+        name:
+          type: string
+          description: マイコン名
+          example: サンプル端末
+        interval:
+          pattern: ^(60|30|20|15|10|5|1)$
+          type: string
+          description: 測定間隔
+          example: "60"
+        sdi12Address:
+          pattern: "^(([0-9A-Za-z]{1},)*[0-9A-za-z]{1})|([0-9A-za-z]{1})$"
+          type: string
+          description: SDI-12アドレス
+          example: "1,3"
+      description: マイコン更新データ
+    MicroControllerGetResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: マイコンID
+          format: int64
+          example: 1
+        uuid:
+          type: string
+          description: マイコンUUID
+          example: 61d5f7a7-7629-496e-be68-cfe022264578
+        name:
+          type: string
+          description: マイコン名
+          example: サンプル端末
+        macAddress:
+          type: string
+          description: MACアドレス
+          example: AA:AA:AA:AA:AA:AA
+        interval:
+          type: string
+          description: 測定間隔
+          example: "60"
+        sdi12Address:
+          type: string
+          description: SDI-12アドレス
+          example: "1,3"
+        createdAt:
+          type: string
+          description: 作成日時
+          format: date-time
+        updatedAt:
+          type: string
+          description: 更新日時
+          format: date-time
+      description: マイコン詳細データ
+    EnvironmentalDataGetResponse:
+      type: object
+      properties:
+        measuredDataMasterId:
+          type: integer
+          description: 測定データマスターID
+          format: int64
+          example: 1
+        dayOfYear:
+          type: string
+          description: DOY
+          example: "111.11"
+        airPress:
+          type: string
+          description: 大気圧
+          example: "1011.11"
+        temp:
+          type: string
+          description: 気温
+          example: "11.11"
+        humi:
+          type: string
+          description: 相対湿度
+          example: "77.77"
+        co2Concent:
+          type: string
+          description: 二酸化炭素濃度
+          example: "1111.11"
+        tvoc:
+          type: string
+          description: 総揮発性有機化合物
+          example: "11.11"
+        analogValue:
+          type: string
+          description: アナログ値
+          example: "11.11"
+        createdAt:
+          type: string
+          description: 作成日時
+          format: date-time
+        updatedAt:
+          type: string
+          description: 更新日時
+          format: date-time
+        deletedAt:
+          type: string
+          description: 削除日時
+          format: date-time
+      description: 環境データ
+    MeasuredDataGetResponse:
+      type: object
+      properties:
+        sdi12Data:
+          type: array
+          description: SDI-12データリスト
+          items:
+            $ref: '#/components/schemas/Sdi12DataGetResponse'
+        environmentalData:
+          type: array
+          description: 環境データリスト
+          items:
+            $ref: '#/components/schemas/EnvironmentalDataGetResponse'
+        voltageData:
+          type: array
+          description: 電圧データ
+          items:
+            $ref: '#/components/schemas/VoltageDataGetResponse'
+      description: 測定結果取得レスポンス
+    Sdi12DataAndDoy:
+      type: object
+      properties:
+        measuredDataMasterId:
+          type: integer
+          description: 測定データマスターID
+          format: int64
+          example: 1
+        dayOfYear:
+          type: string
+          description: DOY
+          example: "111.11"
+        vwc:
+          type: string
+          description: 体積含水率
+          example: "11.11"
+        soilTemp:
+          type: string
+          description: 地温
+          example: "11.11"
+        brp:
+          type: string
+          description: 比誘電率
+          example: "11.11"
+        sbec:
+          type: string
+          description: 電気伝導度
+          example: "11.11"
+        spwec:
+          type: string
+          description: 間隙水電気伝導度
+          example: "11.11"
+        gax:
+          type: string
+          description: 重力加速度(X)
+          example: "1.11"
+        gay:
+          type: string
+          description: 重力加速度(Y)
+          example: "1.11"
+        gaz:
+          type: string
+          description: 重力加速度(Z)
+          example: "1.11"
+        createdAt:
+          type: string
+          description: 作成日時
+          format: date-time
+        updatedAt:
+          type: string
+          description: 更新日時
+          format: date-time
+        deletedAt:
+          type: string
+          description: 削除日時
+          format: date-time
+      description: SDI-12測定データとDOY
+    Sdi12DataGetResponse:
+      type: object
+      properties:
+        sdiAddress:
+          type: string
+          description: SDI-12アドレス
+          example: "1"
+        dataList:
+          type: array
+          description: SDI-12測定データとDOYリスト
+          items:
+            $ref: '#/components/schemas/Sdi12DataAndDoy'
+      description: SDI-12データ
+    VoltageDataGetResponse:
+      type: object
+      properties:
+        measuredDataMasterId:
+          type: integer
+          description: 測定データマスターID
+          format: int64
+          example: 1
+        dayOfYear:
+          type: string
+          description: DOY
+          example: "111.11"
+        voltage:
+          type: string
+          description: 電圧
+          example: "11.11"
+        createdAt:
+          type: string
+          description: 作成日時
+          format: date-time
+        updatedAt:
+          type: string
+          description: 更新日時
+          format: date-time
+        deletedAt:
+          type: string
+          description: 削除日時
+          format: date-time
+      description: 電圧データ
+    AccountGetResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: アカウントID
+          format: int64
+          example: 1
+        name:
+          type: string
+          description: 登録名
+          example: サンプル太郎
+        createdAt:
+          type: string
+          description: 作成日時
+          format: date-time
+        updatedAt:
+          type: string
+          description: 更新日時
+          format: date-time
+      description: アカウント情報

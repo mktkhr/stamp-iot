@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -57,7 +56,17 @@ public class MicroControllerPostTest {
 
     private MicroControllerPostResponse generateMicroControllerResponse() {
         var microController = new MicroController(1L, DummyData.VALID_UUID, "モック", "AA:AA:AA:AA:AA:AA", "30", "1,3", LocalDateTime.now(), LocalDateTime.now(), null, null, null);
-        return new MicroControllerPostResponse(HttpStatus.OK, microController);
+        return new MicroControllerPostResponse(
+                microController.getId(),
+                microController.getUuid(),
+                microController.getName(),
+                microController.getMacAddress(),
+                microController.getInterval(),
+                microController.getSdi12Address(),
+                microController.getCreatedAt(),
+                microController.getUpdatedAt(),
+                microController.getDeletedAt()
+        );
     }
 
     @BeforeEach

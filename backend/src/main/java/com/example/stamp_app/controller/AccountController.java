@@ -8,23 +8,27 @@ import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.service.AccountService;
 import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 import static com.example.stamp_app.constants.Constants.SESSION_VALID_TIME_IN_SEC;
 
-@Controller
+@RestController
+@Tag(name = "Account", description = "アカウント関連API")
 @RequestMapping(value = "/ems/account")
 public class AccountController {
     @Autowired
@@ -42,8 +46,18 @@ public class AccountController {
      * @param registerPostParam 登録情報
      * @return ResponseEntity
      */
+    @Operation(summary = "アカウント登録API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "登録成功", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class))),
+            @ApiResponse(responseCode = "400", description = "バリデーションエラー", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class)))
+    })
     @PostMapping(value = "/register")
-    public ResponseEntity<HttpStatus> addAccount(@RequestBody @Validated RegisterPostParam registerPostParam) {
+    public ResponseEntity<HttpStatus> addAccount(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "登録情報", content = {
+                    @Content(schema = @Schema(implementation = RegisterPostParam.class))
+            })
+            @RequestBody
+            @Validated RegisterPostParam registerPostParam) {
 
         accountService.addAccount(registerPostParam);
 
@@ -56,8 +70,19 @@ public class AccountController {
      * @param loginPostParam 登録情報
      * @return ResponseEntity
      */
+    @Operation(summary = "ログインAPI")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ログイン成功", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class))),
+            @ApiResponse(responseCode = "400", description = "バリデーションエラー", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class))),
+            @ApiResponse(responseCode = "401", description = "認証エラー", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class)))
+    })
     @PostMapping(value = "/login")
-    public ResponseEntity<HttpStatus> login(@RequestBody @Validated LoginPostParam loginPostParam, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<HttpStatus> login(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "ログイン情報", content = {
+                    @Content(schema = @Schema(implementation = LoginPostParam.class))
+            })
+            @RequestBody
+            @Validated LoginPostParam loginPostParam, HttpServletResponse httpServletResponse) {
 
         AccountLoginResponse accountLoginResponse = accountService.login(loginPostParam);
 
@@ -78,6 +103,10 @@ public class AccountController {
      *
      * @return ResponseEntity
      */
+    @Operation(summary = "ログアウトAPI")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ログアウト成功", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class)))
+    })
     @PostMapping(value = "/logout")
     public ResponseEntity<HttpStatus> logout(HttpServletResponse httpServletResponse) {
 
@@ -96,6 +125,11 @@ public class AccountController {
      *
      * @return ユーザーIDとユーザー名
      */
+    @Operation(summary = "アカウント詳細取得API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ログイン成功", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AccountGetResponse.class))),
+            @ApiResponse(responseCode = "400", description = "バリデーションエラー", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class)))
+    })
     @GetMapping(value = "/info")
     public ResponseEntity<AccountGetResponse> accountInfo() {
 
