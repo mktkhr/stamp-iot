@@ -1,8 +1,8 @@
 #include <WiFi.h>
 #include <SDI12.h>
-#include "UNIT_ENV.h"
+#include "M5_ENV.h"
 #include "Adafruit_SGP30.h"
-#include <M5_BH1750FVI.h>
+#include <M5_DLight.h>
 #include "SD.h"
 #include "SPI.h"
 #include "FS.h"
@@ -45,7 +45,7 @@ SHT3X sht30; //温湿度センサ
 QMP6988 qmp6988; //大気圧センサ
 Adafruit_SGP30 sgp; //二酸化炭素濃度センサ
 esp_adc_cal_characteristics_t adcChar; //ADCモジュール
-M5_BH1750FVI bh1750; //デジタル光センサ
+M5_DLight bh1750; //デジタル光センサ
 
 void setup() {
   Serial.begin(115200);
