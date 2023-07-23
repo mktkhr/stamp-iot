@@ -8,6 +8,7 @@
 #include "FS.h"
 #include "driver/adc.h"
 #include "esp_adc_cal.h"
+#include "version.h"
 
 #define SD_PIN 0
 #define DATA_PIN 19
