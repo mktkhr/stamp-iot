@@ -171,7 +171,24 @@ void setup()
   adcInit(); // ADCの設定
 
   // アクセスポイントに接続
-  connectToAccessPoint(ssid, password);
+  String ssidRead = readPreference(1);
+  String passwordRead = readPreference(2);
+  char ssid[30];
+  char password[30];
+  ssidRead.toCharArray(ssid, ssidRead.length() + 1);
+  passwordRead.toCharArray(password, passwordRead.length() + 1);
+  const bool wifiStatus = connectToAccessPoint(ssid, password);
+  if (!wifiStatus)
+  {
+    // 5秒間赤に点灯させ，消灯
+    led[0] = 0xff0000;
+    FastLED.show();
+    delay(5000);
+    led[0] = 0x000000;
+    FastLED.show();
+
+    ESP.restart();
+  }
 
   // NTPサーバの設定
   configTime(9 * 3600L, 0, "ntp.nict.jp", "time.google.com");
@@ -261,8 +278,9 @@ void loop()
  *
  * @param ssid 接続先SSID
  * @param password 接続先PASS
+ * @return true: 成功, false: 失敗
  */
-void connectToAccessPoint(const char *ssid, const char *password)
+bool connectToAccessPoint(const char *ssid, const char *password)
 {
   WiFi.begin(ssid, password);
   int waitCountInSec = 0;
@@ -271,15 +289,15 @@ void connectToAccessPoint(const char *ssid, const char *password)
     waitCountInSec++;
     delay(1000);
     Serial.print(".");
-    // 10秒待って接続できなかった場合，再起動
+    // 10秒待って接続できなかった場合失敗とする
     if (waitCountInSec == 10)
     {
-      Serial.println("\nWi-Fi Connection failed. Please check the ssid and password.");
-      delay(3000);
-      ESP.restart();
+      Serial.println("Wi-Fi Connection failed. Please check the ssid and password.");
+      return false;
     }
   }
-  Serial.println("\nWiFi connected.");
+  Serial.println("WiFi connected.");
+  return true;
 }
 
 /**
@@ -925,7 +943,7 @@ String readAdcValue(int calculateNumber)
 void postRequest(char *host, int port, String uri, String measureData)
 {
   Serial.println("\r\n-----Connecting to API-----\r\n");
-  WiFiClient micorControllerClient;
+  WiFiClient client;
 
   const String hostString = String(host);
   const int requestLimit = 5;
@@ -935,24 +953,24 @@ void postRequest(char *host, int port, String uri, String measureData)
 
   for (int j = 0; j < requestLimit; j++)
   {
-    if (micorControllerClient.connect(host, port))
+    if (client.connect(host, port))
     {
       Serial.println("\r\n-----Posting measured data-----\r\n");
-      micorControllerClient.println("POST " + uri + " HTTP/1.1");
-      micorControllerClient.println("Host: " + hostString + ":" + String(port));
-      micorControllerClient.println("Connection: close");
-      micorControllerClient.println("Content-Type: application/json");
-      micorControllerClient.print("Content-Length: ");
-      micorControllerClient.println(measureData.length());
-      micorControllerClient.println();
-      micorControllerClient.println(measureData);
+      client.println("POST " + uri + " HTTP/1.1");
+      client.println("Host: " + hostString + ":" + String(port));
+      client.println("Connection: close");
+      client.println("Content-Type: application/json");
+      client.print("Content-Length: ");
+      client.println(measureData.length());
+      client.println();
+      client.println(measureData);
       delay(100);
-      String apiResponse = micorControllerClient.readString();
+      String apiResponse = client.readString();
       int bodypos = apiResponse.indexOf("\r\n");
       delay(100);
       Serial.print("API response:");
       Serial.println(apiResponse);
-      micorControllerClient.stop();
+      client.stop();
       return;
     }
     else
