@@ -1,4 +1,5 @@
 #include <WiFi.h>
+#include <Preferences.h>
 #include <SDI12.h>
 #include "M5_ENV.h"
 #include "Adafruit_SGP30.h"
@@ -40,6 +41,9 @@ struct tm timeInfo;
 char timeData[20];
 
 int maxSdi12SensorNum = 4;
+
+Preferences preferences;                     // Preference
+const char *emsPreference = "emsPreference"; // Preference保存先
 
 SDI12 mySDI12(DATA_PIN);               // SDI-12センサ
 SHT3X sht30;                           // 温湿度センサ
@@ -904,3 +908,70 @@ void postRequest(char *host, int port, String uri, String measureData)
   }
   Serial.println("\r\n-----POST request failed.-----\r\n");
 }
+
+/**
+ * @brief Preferenceに設定値を書き込む
+ *
+ * @param target 書き込み先(0: 起動モード, 1: ssid, 2: pass, 3: host)
+ * @param value 書き込み値
+ */
+void writePreference(int target, String value)
+{
+  preferences.begin(emsPreference, false);
+
+  switch (target)
+  {
+  case 0:
+    preferences.putString("bootMode", value); // 0: 通常モード, 1: メンテナンスモード
+    preferences.end();
+    break;
+  case 1:
+    preferences.putString("ssid", value);
+    preferences.end();
+    break;
+  case 2:
+    preferences.putString("pass", value);
+    preferences.end();
+    break;
+  case 3:
+    preferences.putString("host", value);
+    preferences.end();
+    break;
+  default:
+    break;
+  }
+}
+
+/**
+ * @brief Preferenceに書き込まれた設定値の読み取り
+ *
+ * @param target 読み取り先(0: 起動モード, 1: ssid, 2: pass, 3: host)
+ */
+String readPreference(int target)
+{
+  preferences.begin(emsPreference, false);
+  String value;
+
+  switch (target)
+  {
+  case 0:
+    value = preferences.getString("bootMode", "normal");
+    preferences.end();
+    return value;
+  case 1:
+    value = preferences.getString("ssid", "未設定");
+    preferences.end();
+    return value;
+  case 2:
+    value = preferences.getString("pass", "未設定");
+    preferences.end();
+    return value;
+  case 3:
+    value = preferences.getString("host", "未設定");
+    preferences.end();
+    return value;
+  default:
+    break;
+  }
+}
+
