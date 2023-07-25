@@ -1,4 +1,5 @@
 #include <WiFi.h>
+#include <WebServer.h>
 #include <Preferences.h>
 #include <SDI12.h>
 #include "M5_ENV.h"
@@ -9,6 +10,8 @@
 #include "FS.h"
 #include "driver/adc.h"
 #include "esp_adc_cal.h"
+#include <FastLED.h>
+#include "index_html.h"
 #include "version.h"
 
 #define SD_PIN 0
@@ -16,6 +19,11 @@
 #define ADC_PIN 32
 #define ANALOG_PIN 33
 #define ADC_CHANNEL ADC_CHANNEL_4
+#define NUM_LED 1
+#define LED_PIN 27
+#define BUTTON_PIN 39
+
+CRGB led[NUM_LED];
 
 uint8_t sda = 21;
 uint8_t scl = 22;
@@ -41,6 +49,13 @@ struct tm timeInfo;
 char timeData[20];
 
 int maxSdi12SensorNum = 4;
+
+int bootMode = 0;                      // 起動モード(0: 通常, 1:WebServer)
+WebServer Server(80);                  // WebServer
+const char *ssid_server = "ems_stamp"; // SSIDを指定
+const char *pass_server = "00000000";  // パスワードを指定
+IPAddress ip(192, 168, 4, 11);         // APモード用IP
+IPAddress subnet(255, 255, 255, 0);    // APモード用サブネットマスク
 
 Preferences preferences;                     // Preference
 const char *emsPreference = "emsPreference"; // Preference保存先
@@ -68,6 +83,46 @@ void setup()
   qmp6988.init(); // 大気圧センサ
 
   mySDI12.begin(); // SDI-12センサ
+
+  FastLED.addLeds<SK6812, LED_PIN, RGB>(led, NUM_LED); // LED
+  FastLED.setBrightness(1);
+
+  pinMode(BUTTON_PIN, INPUT); // ボタン
+  bool buttonState = digitalRead(BUTTON_PIN);
+
+  if (buttonState == LOW)
+  { // ボタン押下時LOW
+    bootMode = 1;
+    Serial.println("Starting web server.....");
+    WiFi.mode(WIFI_AP);                // アクセスポイントモード
+    WiFi.softAPConfig(ip, ip, subnet); // IPアドレスとサブネットマスクを指定
+    if (WiFi.softAP(ssid_server, pass_server))
+    {
+      led[0] = 0x0000ff; // 成功時，青点灯
+      FastLED.show();
+    }
+    else
+    {
+      led[0] = 0x00f000; // 失敗時，赤点灯後消灯
+      FastLED.show();
+      delay(5000);
+      led[0] = 0x000000;
+      FastLED.show();
+    }
+    delay(100);
+    Serial.print("SSID: ");
+    Serial.println(ssid_server);
+    Serial.print("IP address: ");
+    Serial.println(WiFi.softAPIP());
+    // WebServerのハンドリング
+    Server.on("/", handleRoot);        // ルートアクセス時の応答関数を設定
+    Server.onNotFound(handleNotFound); // 不正アクセス時の応答関数を設定
+    Server.begin();                    // サーバー開始
+  }
+  while (bootMode == 1)
+  { // WebServerモード中
+    Server.handleClient();
+  }
 
   // SDカードの接続確認
   for (int i = 0; i < 3; i++)
@@ -975,3 +1030,127 @@ String readPreference(int target)
   }
 }
 
+/**
+ * @brief WebServerモード時の404のハンドリング
+ *
+ */
+void handleNotFound()
+{
+  Server.send(404, "text/plain", "Not found");
+}
+
+/**
+ * @brief WebServerモード時の200のハンドリング
+ *
+ */
+void handleRoot()
+{
+  Serial.println("\r\n------------------------------------------------");
+  Serial.println("Processing the request.....");
+
+  // POSTリクエストの処理
+  if (Server.method() == HTTP_POST)
+  {
+    String ssid_edit;
+    String pass_edit;
+    String address_edit;
+    String present_address;
+    String following_address;
+    String host_edit;
+    String reboot;
+    String maintenance_mode;
+    String normal_mode;
+
+    ssid_edit = Server.arg("ssid");
+    pass_edit = Server.arg("pass");
+    address_edit = Server.arg("address");
+    present_address = Server.arg("present_address");
+    following_address = Server.arg("following_address");
+    host_edit = Server.arg("host");
+    reboot = Server.arg("reboot");
+    maintenance_mode = Server.arg("maintenance");
+    normal_mode = Server.arg("normal");
+
+    // 再起動
+    if (reboot != "")
+    {
+      led[0] = 0x000000; // 消灯
+      FastLED.show();
+      delay(100);
+      ESP.restart();
+    }
+    // アクセスポイント
+    if (ssid_edit != "" || pass_edit != "")
+    {
+      writePreference(3, ssid_edit);
+      writePreference(4, pass_edit);
+      Serial.println("Changing access point setting...");
+      Serial.print("SSID:");
+      Serial.println(ssid_edit);
+      Serial.print("PASS:");
+      Serial.println(pass_edit);
+    }
+    // アドレス変更
+    else if (address_edit != "" && present_address && following_address)
+    {
+      Serial.println("Change SDI-12 sensor address...");
+      Serial.print("Present address:");
+      Serial.print(present_address);
+      Serial.print("Following address:");
+      Serial.print(following_address);
+      bool result = addressChange(present_address, following_address);
+    }
+    // 起動モード
+    else if (maintenance_mode != "" | normal_mode != "")
+    {
+      // メンテナンスモード
+      if (maintenance_mode != "")
+      {
+        writePreference(1, "maintenance");
+        writePreference(3, host_edit);
+        Serial.println("Changing HOST...");
+        Serial.print("New HOST: ");
+        Serial.println(host_edit);
+      }
+      else
+      // 通常モード
+      {
+        Serial.println("Changing BootMode...");
+        writePreference(1, "normal");
+      }
+    }
+  }
+  String macAddress = WiFi.macAddress();
+  const char *macAddress_pointer = macAddress.c_str();
+  const char *ssid = readPreference(1).c_str();
+  const char *version = VERSION.c_str();
+  const char *bootMode = readPreference(0).c_str();
+
+  String htmlString = generateHtml(macAddress_pointer, ssid, version, bootMode);
+
+  Serial.println("------------------------------------------------\r\n");
+
+  //  クライアントにレスポンスを返す
+  Server.send(200, "text/html", htmlString);
+}
+
+/**
+ * @brief SDI-12センサのアドレスを変更する
+ *
+ * @param present_address 変更前アドレス
+ * @param following_address 変更先アドレス
+ * @return boolean true: 変更成功, false: 変更失敗
+ */
+boolean addressChange(String present_address, String following_address)
+{
+  String command = present_address + "A" + following_address + "!";
+  String response = sendCommandAndCollectResponse(command, 50, 5);
+  if (response == following_address)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
