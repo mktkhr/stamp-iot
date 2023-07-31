@@ -1,4 +1,4 @@
-#include <WiFi.h>
+#include <WiFiClientSecure.h>
 #include <WebServer.h>
 #include <Preferences.h>
 #include <SDI12.h>
@@ -12,6 +12,7 @@
 #include "esp_adc_cal.h"
 #include <FastLED.h>
 #include "index_html.h"
+#include "public_key.h"
 #include "version.h"
 
 #define SD_PIN 0
@@ -28,12 +29,10 @@ CRGB led[NUM_LED];
 uint8_t sda = 21;
 uint8_t scl = 22;
 
-String serialNumber = "sampleNumber";
-const char *ssid = "";                             // myssid
-const char *password = "";                         // mypassword
-const char *host = "";                             // バックエンドのIPを指定
-int port = 8082;                                   // バックエンドのポートを指定
-String postMeasuredDataUri = "/ems/measured-data"; // POST先のエンドポイントを指定
+String emsHost = "www.ems-engineering.jp";             // バックエンドのIPを指定
+int productionPort = 443;                              // バックエンドのポート(本番環境)を指定
+int localPort = 8080;                                  // バックエンドのポート(ローカル環境)を指定
+String postMeasuredDataUri = "/api/ems/measured-data"; // POST先のエンドポイントを指定
 
 int measurementIntervalInMinutes = 1;
 
@@ -59,6 +58,8 @@ IPAddress subnet(255, 255, 255, 0);    // APモード用サブネットマスク
 
 Preferences preferences;                     // Preference
 const char *emsPreference = "emsPreference"; // Preference保存先
+const char *NORMAL_MODE = "通常モード";
+const char *MAINTENANCE_MODE = "メンテナンスモード";
 
 SDI12 mySDI12(DATA_PIN);               // SDI-12センサ
 SHT3X sht30;                           // 温湿度センサ
@@ -268,7 +269,7 @@ void loop()
     sdSaveData += String(timeData) + "," + macAddress + "," + sensorNum + "," + sdiResultForSd + convertEnv3ResultForSd(env3Result) + convertSgp30ResultForSd(sgp30Result) + illuminationResult + "," + analogResult + "," + adcResult + "\n";
     Serial.println(sdSaveData);
     appendFile("/log.csv", sdSaveData);
-    postRequest(host, port, postMeasuredDataUri, postString);
+    postRequest(emsHost, postMeasuredDataUri, postString);
     delay(1000);
   }
 }
@@ -936,28 +937,53 @@ String readAdcValue(int calculateNumber)
  * @brief POSTリクエストを送信
  *
  * @param host ホスト
- * @param port ポート番号
  * @param uri エンドポイントのURI
  * @param measureData 測定データ(json文字列)
  */
-void postRequest(char *host, int port, String uri, String measureData)
+void postRequest(String host, String uri, String measureData)
 {
-  Serial.println("\r\n-----Connecting to API-----\r\n");
-  WiFiClient client;
+  Serial.println("\r\n-----Connecting to HOST-----\r\n");
+  WiFiClientSecure client;
+  String targetHost;
+  int targetPort;
 
-  const String hostString = String(host);
+  const String bootMode = readPreference(0);
+  if (bootMode == String(NORMAL_MODE))
+  {
+    targetHost = emsHost;
+    targetPort = productionPort;
+    client.setInsecure();
+    client.setCACert(PUBLIC_KEY);
+  }
+  else
+  {
+    targetHost = readPreference(3);
+    targetPort = localPort;
+  }
+
+  Serial.print("TargetHost: ");
+  Serial.println(targetHost);
+  Serial.print("TargetPort: ");
+  Serial.println(targetPort);
+
+  // ホスト名(String)をchar*に変換
+  int length = targetHost.length() + 1;
+  char bufferArray[length];
+  targetHost.toCharArray(bufferArray, length);
+  const char *hostCharPointer = bufferArray;
+
   const int requestLimit = 5;
 
-  Serial.print("Urlencoded data:");
+  Serial.print("MeasuredData data:");
   Serial.println(measureData);
 
   for (int j = 0; j < requestLimit; j++)
   {
-    if (client.connect(host, port))
+    if (client.connect(hostCharPointer, targetPort))
     {
       Serial.println("\r\n-----Posting measured data-----\r\n");
       client.println("POST " + uri + " HTTP/1.1");
-      client.println("Host: " + hostString + ":" + String(port));
+      client.println("Host: " + targetHost + ":" + String(targetPort));
       client.println("Connection: close");
       client.println("Content-Type: application/json");
       client.print("Content-Length: ");
@@ -966,7 +992,6 @@ void postRequest(char *host, int port, String uri, String measureData)
       client.println(measureData);
       delay(100);
       String apiResponse = client.readString();
-      int bodypos = apiResponse.indexOf("\r\n");
       delay(100);
       Serial.print("API response:");
       Serial.println(apiResponse);
