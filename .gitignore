@@ -39,3 +39,5 @@ esp32.svd
 debug_custom.json
 debug.cfg
 settings.json
+error.log
+access.log
