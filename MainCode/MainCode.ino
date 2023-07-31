@@ -904,7 +904,7 @@ String readAnalogValue()
 void adcInit(void)
 {
   // adc_power_on(); //不要のアラートが出るため，コメントアウト
-  adc_gpio_init(ADC_UNIT_1, ADC_CHANNEL);
+  // adc_gpio_init(ADC_UNIT_1, ADC_CHANNEL);
   adc1_config_width(ADC_WIDTH_BIT_12);
   adc1_config_channel_atten(ADC1_CHANNEL_4, ADC_ATTEN_DB_11);
   esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 1100, &adcChar);
