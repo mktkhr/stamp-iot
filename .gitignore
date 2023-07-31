@@ -41,3 +41,4 @@ debug.cfg
 settings.json
 error.log
 access.log
+public_key.h
