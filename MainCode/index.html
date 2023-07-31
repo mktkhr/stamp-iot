@@ -211,25 +211,25 @@ span{
                         <span class="info-span">$ssid$</span>
                     </div>
                     <hr>
-                    <form class="from-wrapper" action="post">
+                    <form class="from-wrapper" method="post">
                         <span class="info-title">SSID</span>
                         <input class="input" name="ssid" type="text" list="ssid" placeholder="入力もしくは選択" autocomplete="on" required>
                         <datalist id="ssid" size="1">
                             <option value="例">例</option>
                         </datalist>
                         <span class="info-title">パスワード</span>
-                        <input class="input" name="pass" type="text" placeholder="入力" autocomplete="on" required>
-                        <button name="wifi" value="wifi">送信</button>
+                        <input class="input" name="pass" type="password" placeholder="入力" autocomplete="on" required>
+                        <button type="submit" name="wifi" value="wifi">送信</button>
                     </form>
                 </div>
                 <div id="sdi">
                     <div class="info-wrapper">
-                        <form class="from-wrapper" action="post">
+                        <form class="from-wrapper" method="post">
                             <span class="info-title">変更元アドレス</span>
                             <input class="input" name="present_address" type="text" placeholder="例:1" pattern="^[0-9A-Za-z]$" maxlength="1" required>
                             <span class="info-title">変更先アドレス</span>
                             <input class="input" name="following_address" type="text" placeholder="例:3" pattern="^[0-9A-Za-z]$" maxlength="1" required>
-                            <button name="address" value="address">送信</button>
+                            <button type="submit" name="address" value="address">送信</button>
                         </form>
                     </div>
                 </div>
@@ -239,14 +239,14 @@ span{
                         <span class="info-span">$bootMode$</span>
                     </div>
                     <hr>
-                    <form class="from-wrapper" action="post">
+                    <form class="from-wrapper" method="post">
                         <span class="info-title">ホスト</span>
                         <input class="input" name="host" type="text" autocomplete="on" required>
-                        <button name="maintenance" value="メンテナンスモード">メンテナンスモード</button>
+                        <button type="submit" name="maintenance" value="メンテナンスモード">メンテナンスモード</button>
                     </form>
                     <hr>
-                    <form class="from-wrapper" action="post">
-                        <button name="normal" value="通常モード">通常モード</button>
+                    <form class="from-wrapper" method="post">
+                        <button type="submit" name="normal" value="通常モード">通常モード</button>
                     </form>
                 </div>
             </div>
