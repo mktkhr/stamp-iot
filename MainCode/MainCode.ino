@@ -995,7 +995,7 @@ void writePreference(int target, String value)
   switch (target)
   {
   case 0:
-    preferences.putString("bootMode", value); // 0: 通常モード, 1: メンテナンスモード
+    preferences.putString("bootMode", value); // 通常モード or メンテナンスモード
     preferences.end();
     break;
   case 1:
@@ -1028,7 +1028,7 @@ String readPreference(int target)
   switch (target)
   {
   case 0:
-    value = preferences.getString("bootMode", "normal");
+    value = preferences.getString("bootMode", String(NORMAL_MODE));
     preferences.end();
     return value;
   case 1:
@@ -1100,8 +1100,8 @@ void handleRoot()
     // アクセスポイント
     if (ssid_edit != "" || pass_edit != "")
     {
-      writePreference(3, ssid_edit);
-      writePreference(4, pass_edit);
+      writePreference(1, ssid_edit);
+      writePreference(2, pass_edit);
       Serial.println("Changing access point setting...");
       Serial.print("SSID:");
       Serial.println(ssid_edit);
@@ -1124,7 +1124,7 @@ void handleRoot()
       // メンテナンスモード
       if (maintenance_mode != "")
       {
-        writePreference(1, "maintenance");
+        writePreference(0, String(MAINTENANCE_MODE));
         writePreference(3, host_edit);
         Serial.println("Changing HOST...");
         Serial.print("New HOST: ");
@@ -1134,15 +1134,17 @@ void handleRoot()
       // 通常モード
       {
         Serial.println("Changing BootMode...");
-        writePreference(1, "normal");
+        writePreference(0, String(NORMAL_MODE));
       }
     }
   }
   String macAddress = WiFi.macAddress();
   const char *macAddress_pointer = macAddress.c_str();
-  const char *ssid = readPreference(1).c_str();
+  String ssidString = readPreference(1);
+  const char *ssid = ssidString.c_str();
   const char *version = VERSION.c_str();
-  const char *bootMode = readPreference(0).c_str();
+  String bootModeString = readPreference(0);
+  const char *bootMode = bootModeString.c_str();
 
   String htmlString = generateHtml(macAddress_pointer, ssid, version, bootMode);
 
