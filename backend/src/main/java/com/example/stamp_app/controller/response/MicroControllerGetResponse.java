@@ -47,20 +47,12 @@ public class MicroControllerGetResponse {
                     microController.getId(),
                     microController.getUuid(),
                     microController.getName(),
+                    microController.getMacAddress(),
                     microController.getInterval(),
                     microController.getSdi12Address(),
-                    microController.getMacAddress(),
                     microController.getCreatedAt(),
                     microController.getUpdatedAt()
             );
-            microControllerGetResponse.setId(microController.getId());
-            microControllerGetResponse.setUuid(microController.getUuid());
-            microControllerGetResponse.setName(microController.getName());
-            microControllerGetResponse.setInterval(microController.getInterval());
-            microControllerGetResponse.setSdi12Address(microController.getSdi12Address());
-            microControllerGetResponse.setMacAddress(microController.getMacAddress());
-            microControllerGetResponse.setCreatedAt(microController.getCreatedAt());
-            microControllerGetResponse.setUpdatedAt(microController.getUpdatedAt());
             microControllerGetResponseList.add(microControllerGetResponse);
         });
 
@@ -73,9 +65,9 @@ public class MicroControllerGetResponse {
                 microController.getId(),
                 microController.getUuid(),
                 microController.getName(),
+                microController.getMacAddress(),
                 microController.getInterval(),
                 microController.getSdi12Address(),
-                microController.getMacAddress(),
                 microController.getCreatedAt(),
                 microController.getUpdatedAt()
         );
