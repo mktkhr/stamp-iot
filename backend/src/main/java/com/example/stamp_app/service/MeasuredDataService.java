@@ -53,6 +53,7 @@ public class MeasuredDataService {
         // マイコンと所有者の一致確認
         try {
             // microControllerをprintしてはいけない理由(https://blogenist.jp/2020/12/17/11185/#i)
+            log.info("測定データ送信元MACアドレス: " + measuredDataPostParam.getMacAddress());
             microController = microControllerRepository.findByMacAddress(measuredDataPostParam.getMacAddress());
 
         } catch (Exception e) {
@@ -67,7 +68,7 @@ public class MeasuredDataService {
         }
 
         var accountId = microController.getAccount().getUuid().toString();
-        log.info("登録対象のアカウントID: " + accountId);
+        log.info("測定データ登録対象のアカウントID: " + accountId);
 
         // 所有者UUIDがnullの場合401を返す
         if (accountId == null) {
