@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -42,6 +43,10 @@ public class AppInterceptor implements HandlerInterceptor {
 
         // セッションの有無を確認しないリクエスト
         if (path.contains("/login") || path.contains("/register") || path.contains("/session")) {
+            return true;
+        }
+
+        if (path.contains("/measured-data") && Objects.equals(request.getMethod(), HttpMethod.POST.name())) {
             return true;
         }
 
