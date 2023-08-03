@@ -61,13 +61,7 @@ export const useLogin = () => {
     await accountStore
       .login(mailAddressRef.value, passwordRef.value)
       .then(() => {
-        notificationMessage.value = 'ログインに成功しました。';
-        notificationType.value = NotificationType.SUCCESS;
-        showNotification.value = true;
-        setTimeout(() => {
-          showNotification.value = false;
-          router.replace('/home');
-        }, 1500);
+        router.replace('/home');
       })
       .catch((e) => {
         const statusCode = e.response.status.toString();
