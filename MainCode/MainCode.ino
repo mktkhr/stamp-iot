@@ -1,4 +1,5 @@
 #include <WiFiClientSecure.h>
+#include <WiFiClient.h>
 #include <WebServer.h>
 #include <Preferences.h>
 #include <SDI12.h>
@@ -943,17 +944,18 @@ String readAdcValue(int calculateNumber)
 void postRequest(String host, String uri, String measureData)
 {
   Serial.println("\r\n-----Connecting to HOST-----\r\n");
-  WiFiClientSecure client;
   String targetHost;
   int targetPort;
+  WiFiClientSecure sslClient;
+  WiFiClient client;
 
   const String bootMode = readPreference(0);
   if (bootMode == String(NORMAL_MODE))
   {
     targetHost = emsHost;
     targetPort = productionPort;
-    client.setInsecure();
-    client.setCACert(PUBLIC_KEY);
+    sslClient.setInsecure();
+    sslClient.setCACert(PUBLIC_KEY);
   }
   else
   {
@@ -979,29 +981,61 @@ void postRequest(String host, String uri, String measureData)
 
   for (int j = 0; j < requestLimit; j++)
   {
-    if (client.connect(hostCharPointer, targetPort))
+    if (bootMode == String(NORMAL_MODE))
     {
-      Serial.println("\r\n-----Posting measured data-----\r\n");
-      client.println("POST " + uri + " HTTP/1.1");
-      client.println("Host: " + targetHost + ":" + String(targetPort));
-      client.println("Connection: close");
-      client.println("Content-Type: application/json");
-      client.print("Content-Length: ");
-      client.println(measureData.length());
-      client.println();
-      client.println(measureData);
-      delay(100);
-      String apiResponse = client.readString();
-      delay(100);
-      Serial.print("API response:");
-      Serial.println(apiResponse);
-      client.stop();
-      return;
+      if (sslClient.connect(hostCharPointer, targetPort))
+      {
+        // HTTPSの場合
+        Serial.println("\r\n-----Posting measured data-----\r\n");
+        sslClient.println("POST " + uri + " HTTP/1.1");
+        sslClient.println("Host: " + targetHost + ":" + String(targetPort));
+        sslClient.println("Connection: close");
+        sslClient.println("Content-Type: application/json");
+        sslClient.print("Content-Length: ");
+        sslClient.println(measureData.length());
+        sslClient.println();
+        sslClient.println(measureData);
+        delay(100);
+        String apiResponse = sslClient.readString();
+        delay(100);
+        Serial.print("API response:");
+        Serial.println(apiResponse);
+        sslClient.stop();
+        return;
+      }
+      else
+      {
+        Serial.println(".");
+        delay(200);
+      }
     }
     else
     {
-      Serial.println(".");
-      delay(200);
+      // HTTPの場合
+      if (client.connect(hostCharPointer, targetPort))
+      {
+        Serial.println("\r\n-----Posting measured data-----\r\n");
+        client.println("POST " + uri + " HTTP/1.1");
+        client.println("Host: " + targetHost + ":" + String(targetPort));
+        client.println("Connection: close");
+        client.println("Content-Type: application/json");
+        client.print("Content-Length: ");
+        client.println(measureData.length());
+        client.println();
+        client.println(measureData);
+        delay(100);
+        String apiResponse = client.readString();
+        delay(100);
+        Serial.print("API response:");
+        Serial.println(apiResponse);
+        client.stop();
+        return;
+      }
+      else
+      {
+        Serial.println(".");
+        delay(200);
+      }
     }
   }
   Serial.println("\r\n-----POST request failed.-----\r\n");
