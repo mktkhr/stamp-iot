@@ -26,7 +26,7 @@ paths:
       operationId: checkSession
       responses:
         "200":
-          description: 取得成功
+          description: 確認成功
           content:
             '*/*':
               examples:
@@ -198,14 +198,14 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Null'
-        "401":
-          description: 認証エラー
+        "200":
+          description: ログイン成功
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Null'
-        "200":
-          description: ログイン成功
+        "401":
+          description: 認証エラー
           content:
             '*/*':
               schema:
@@ -226,20 +226,18 @@ paths:
           type: string
         example: 61d5f7a7-7629-496e-be68-cfe022264578
       responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicroControllerGetResponse'
         "400":
           description: 無効なアカウント
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Null'
-        "200":
-          description: 取得成功
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MicroControllerGetResponse'
     patch:
       tags:
       - MicroController
@@ -253,12 +251,6 @@ paths:
               $ref: '#/components/schemas/MicroControllerPatchParam'
         required: true
       responses:
-        "400":
-          description: 無効なアカウント
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Null'
         "200":
           description: 取得成功
           content:
@@ -267,6 +259,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/MicroControllerGetResponse'
+        "400":
+          description: 無効なアカウント
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
   /ems/micro-controller/info:
     get:
       tags:
@@ -274,12 +272,6 @@ paths:
       summary: マイコン一覧取得API
       operationId: getMicroControllerInfo
       responses:
-        "400":
-          description: 無効なアカウント
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Null'
         "200":
           description: 取得成功
           content:
@@ -288,6 +280,40 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/MicroControllerGetResponse'
+        "400":
+          description: 無効なアカウント
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+  /ems/micro-controller/detail/no-session:
+    get:
+      tags:
+      - MicroController
+      summary: マイコン詳細取得API(セッション無し)
+      operationId: getMicroControllerDetailWithoutSession
+      parameters:
+      - name: macAddress
+        in: query
+        description: マイコンUUID
+        required: true
+        schema:
+          pattern: "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$"
+          type: string
+        example: AA:AA:AA:AA:AA:AA
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicroControllerGetDetailNoSessionResponse'
+        "400":
+          description: 無効なリクエスト
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
   /ems/account/info:
     get:
       tags:
@@ -563,6 +589,18 @@ components:
           description: 更新日時
           format: date-time
       description: マイコン詳細データ
+    MicroControllerGetDetailNoSessionResponse:
+      type: object
+      properties:
+        interval:
+          type: string
+          description: 測定間隔
+          example: "60"
+        sdi12Address:
+          type: string
+          description: SDI-12アドレス
+          example: "1,3"
+      description: マイコン詳細データ(セッション無し)
     EnvironmentalDataGetResponse:
       type: object
       properties:
