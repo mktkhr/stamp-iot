@@ -9,6 +9,8 @@ public class DummyData {
     public static final String MICROCONTROLLER_POST_PATH = "/ems/micro-controller";
     public static final String MICROCONTROLLER_GET_PATH = "/ems/micro-controller/detail";
 
+    public static final String MICROCONTROLLER_NO_SESSION_GET_PATH = "/ems/micro-controller/detail/no-session";
+
     public static final String INVALID_7_LENGTH_PASSWORD = "A123456";
 
     public static final String VALID_8_LENGTH_PASSWORD = "A1234567";

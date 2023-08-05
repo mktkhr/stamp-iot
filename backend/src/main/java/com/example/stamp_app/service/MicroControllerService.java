@@ -116,9 +116,33 @@ public class MicroControllerService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // アカウントが存在しなかった場合，400を返す
+        // マイコンが存在しなかった場合，400を返す
         if (microController == null) {
             log.error("該当のマイクロコントローラーの取得に失敗 UUID: " + microControllerUuid);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        return microController;
+    }
+
+    /**
+     * マイコン詳細を取得(MACアドレス)
+     *
+     * @param macAddress マイコンID
+     * @return マイコン詳細
+     */
+    public MicroController getMicroControllerDetailWithMacAddress(String macAddress) {
+        MicroController microController;
+
+        try {
+            microController = microControllerRepository.findByMacAddress(macAddress);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // マイコンが存在しなかった場合，400を返す
+        if (microController == null) {
+            log.error("該当のマイクロコントローラーの取得に失敗 MACアドレス: " + macAddress);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 

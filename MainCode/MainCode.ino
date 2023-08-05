@@ -2,6 +2,7 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <Preferences.h>
+#include <ArduinoJson.h>
 #include <SDI12.h>
 #include "M5_ENV.h"
 #include "Adafruit_SGP30.h"
@@ -30,14 +31,15 @@ CRGB led[NUM_LED];
 uint8_t sda = 21;
 uint8_t scl = 22;
 
-String emsHost = "www.ems-engineering.jp";             // バックエンドのIPを指定
-int productionPort = 443;                              // バックエンドのポート(本番環境)を指定
-int localPort = 8080;                                  // バックエンドのポート(ローカル環境)を指定
-String postMeasuredDataUri = "/api/ems/measured-data"; // POST先のエンドポイントを指定
+String emsHost = "www.ems-engineering.jp";                                    // バックエンドのIPを指定
+int productionPort = 443;                                                     // バックエンドのポート(本番環境)を指定
+int localPort = 8080;                                                         // バックエンドのポート(ローカル環境)を指定
+String postMeasuredDataUri = "/api/ems/measured-data";                        // POST先のエンドポイントを指定
+String getMicroControllerUri = "/api/ems/micro-controller/detail/no-session"; // GET先のエンドポイントを指定
 
-int measurementIntervalInMinutes = 1;
+int measurementInterval;
 
-int mySensorAddress[] = {0, 3};
+String measurementTargetSensorAddress;
 
 int calculateNumber = 100;
 
@@ -194,12 +196,21 @@ void setup()
 
   // NTPサーバの設定
   configTime(9 * 3600L, 0, "ntp.nict.jp", "time.google.com");
+
+  // 設定値の取得
+  getRequest();
+
+  // 測定間隔の読み取り
+  measurementInterval = readPreference(4).toInt();
+
+  // 測定対象SDI-12アドレスの読み取り
+  measurementTargetSensorAddress = readPreference(5);
 }
 
 void loop()
 {
   getLocalTime(&timeInfo);
-  if ((timeInfo.tm_min % measurementIntervalInMinutes == 0) && (timeInfo.tm_sec == 0))
+  if ((timeInfo.tm_min % measurementInterval == 0) && (timeInfo.tm_sec == 0))
   {
     sprintf(timeData, "%04d/%02d/%02d %02d:%02d:%02d", timeInfo.tm_year + 1900, timeInfo.tm_mon + 1, timeInfo.tm_mday, timeInfo.tm_hour, timeInfo.tm_min, timeInfo.tm_sec);
     Serial.println(timeData);
@@ -211,15 +222,32 @@ void loop()
     String adcResult = readAdcValue(calculateNumber);
     postString += "\"voltage\":\"" + adcResult + "\",";
 
+    Serial.println("測定間隔:" + String(measurementInterval));
+    Serial.println("測定対象アドレス: " + measurementTargetSensorAddress);
+
+    // 測定対象SDI-12センサの数をカウント
+    int sensorNum;
+    int addressLength = measurementTargetSensorAddress.length();
+    if (addressLength == 0)
+    {
+      sensorNum = 0;
+    }
+    else
+    {
+      sensorNum = (addressLength / 2) + 1;
+    }
+
+    String measurementTargetAddressArray[sensorNum];
+    split(measurementTargetSensorAddress, measurementTargetAddressArray);
+
     // SDI-12
-    int sensorNum = sizeof(mySensorAddress) / sizeof(int);
     String sdiResultForSd = "";
     String sdiResultForPost = "";
     postString += "\"sdi12Param\": [";
     // 測定, SDデータへの追加, POSTデータへの追加
     for (int i = 0; i < sensorNum; i++)
     {
-      String sdi12Response = measureSdi12(mySensorAddress[i]);
+      String sdi12Response = measureSdi12(measurementTargetAddressArray[i]);
       sdiResultForSd += "," + convertSdi12ResultForSd(sdi12Response);
       sdiResultForPost += convertSdi12ResultForPost(sdi12Response);
       // 最後の1本以外の場合はカンマを追加
@@ -449,9 +477,9 @@ String convertSgp30ResultForPost(String result)
 }
 
 /**
- * @brief +区切りの文字列を配列に分割
+ * @brief +もしくは,区切りの文字列を配列に分割
  *
- * @param data +区切りの文字列
+ * @param data 文字列
  * @param dataArray 結果配列
  */
 void split(String data, String *dataArray)
@@ -462,7 +490,7 @@ void split(String data, String *dataArray)
   for (int i = 0; i < datalength; i++)
   {
     char dataChar = data.charAt(i);
-    if (dataChar == '+')
+    if (dataChar == '+' || dataChar == ',')
     {
       index++;
     }
@@ -555,7 +583,7 @@ boolean checkActiveSdi12(byte i)
  * @param sensorAddress センサアドレス
  * @return String 整形されたSDI-12レスポンス
  */
-String measureSdi12(int sensorAddress)
+String measureSdi12(String sensorAddress)
 {
   String totalResponseString = "";
   int requestNumber = 5;
@@ -564,9 +592,9 @@ String measureSdi12(int sensorAddress)
   // SDI-12のレスポンスを受け取るための配列
   String sdi12Response[10] = {"\0"};
 
-  Serial.println("Start measurement (Sensor address: " + String(sensorAddress) + ")");
+  Serial.println("Start measurement (Sensor address: " + sensorAddress + ")");
 
-  String myCommand = String(sensorAddress) + "I!";
+  String myCommand = sensorAddress + "I!";
   String identResponse = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber); // 識別番号を取得
   String sensorIdent = identResponse.substring(11, 16);                                         // センサの型番を取り出し
 
@@ -577,7 +605,7 @@ String measureSdi12(int sensorAddress)
   }
 
   String rawResponse = "";
-  myCommand = String(sensorAddress) + "C!";
+  myCommand = sensorAddress + "C!";
   Serial.println("Command: " + myCommand);
 
   rawResponse = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
@@ -592,7 +620,7 @@ String measureSdi12(int sensorAddress)
   int waitTime = rawResponse.substring(3, 4).toInt() * 1000;
   delay(waitTime);
 
-  myCommand = String(sensorAddress) + "D0!";
+  myCommand = sensorAddress + "D0!";
   Serial.println("Command: " + myCommand);
   rawResponse = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
 
@@ -1042,9 +1070,207 @@ void postRequest(String host, String uri, String measureData)
 }
 
 /**
+ * @brief Getリクエストを送信
+ *
+ */
+void getRequest()
+{
+  Serial.println("\r\n-----Connecting to HOST-----\r\n");
+  String targetHost;
+  int targetPort;
+  WiFiClientSecure sslClient;
+  WiFiClient client;
+  // ArduinoJson
+  const int BUFFER_SIZE = JSON_OBJECT_SIZE(4) + JSON_ARRAY_SIZE(1);
+  StaticJsonDocument<BUFFER_SIZE> jsonBuffer;
+
+  const String bootMode = readPreference(0);
+  if (bootMode == String(NORMAL_MODE))
+  {
+    targetHost = emsHost;
+    targetPort = productionPort;
+    sslClient.setInsecure();
+    sslClient.setCACert(PUBLIC_KEY);
+  }
+  else
+  {
+    targetHost = readPreference(3);
+    targetPort = localPort;
+  }
+
+  Serial.print("TargetHost: ");
+  Serial.println(targetHost);
+  Serial.print("TargetPort: ");
+  Serial.println(targetPort);
+
+  // ホスト名(String)をchar*に変換
+  int length = targetHost.length() + 1;
+  char bufferArray[length];
+  targetHost.toCharArray(bufferArray, length);
+  const char *hostCharPointer = bufferArray;
+
+  const int requestLimit = 5;
+
+  for (int j = 0; j < requestLimit; j++)
+  {
+    if (bootMode == String(NORMAL_MODE))
+    {
+      if (sslClient.connect(hostCharPointer, targetPort))
+      {
+        // HTTPSの場合
+        Serial.println("\r\n-----Get measuring settings-----\r\n");
+        sslClient.println("GET " + getMicroControllerUri + "?macAddress=" + WiFi.macAddress() + " HTTP/1.1");
+        sslClient.println("Host: " + targetHost + ":" + String(targetPort));
+        sslClient.println("Connection: close");
+        sslClient.println("Content-Type: application/json");
+        sslClient.print("Content-Length: 0");
+        sslClient.println();
+        sslClient.println();
+        delay(100);
+
+        // ヘッダーの読み飛ばし
+        String response;
+        while (sslClient.available())
+        {
+          response = sslClient.readStringUntil('\r');
+          response.trim();
+          if (response.length() == 0)
+          {
+            break;
+          }
+        }
+        delay(100);
+
+        // レスポンスボディを取得
+        String responseBuffer;
+        while (sslClient.available())
+        {
+          response = sslClient.readStringUntil('\r');
+          response.trim();
+          responseBuffer.concat(response);
+        }
+
+        // JSONパース
+        char json[responseBuffer.length() + 1];
+        responseBuffer.toCharArray(json, sizeof(json));
+        Serial.println(json);
+        auto error = deserializeJson(jsonBuffer, json);
+        delay(200);
+        if (error)
+        {
+          Serial.print("JSON parse error: ");
+          Serial.println(error.c_str());
+          return;
+        }
+        const char *interval = jsonBuffer["interval"];
+        Serial.println(interval);
+        const char *sdi12Address = jsonBuffer["sdi12Address"];
+        Serial.println(sdi12Address);
+
+        String intervalString = String(interval);
+        String sdi12AddressString = String(sdi12Address);
+        if (intervalString == "1" || intervalString == "5" || intervalString == "10" || intervalString == "15" || intervalString == "20" || intervalString == "30" || intervalString == "60")
+        {
+          writePreference(4, intervalString);
+        }
+
+        writePreference(5, sdi12AddressString);
+
+        Serial.println("closing connection");
+
+        delay(100);
+        sslClient.stop();
+        return;
+      }
+      else
+      {
+        Serial.println(".");
+        delay(200);
+      }
+    }
+    else
+    {
+      // HTTPの場合
+      if (client.connect(hostCharPointer, targetPort))
+      {
+        Serial.println("\r\n-----Get measuring settings-----\r\n");
+        client.println("GET " + getMicroControllerUri + "?macAddress=" + WiFi.macAddress() + " HTTP/1.1");
+        client.println("Host: " + targetHost + ":" + String(targetPort));
+        client.println("Connection: close");
+        client.println("Content-Type: application/json");
+        client.print("Content-Length: 0");
+        client.println();
+        client.println();
+        delay(100);
+
+        // ヘッダーの読み飛ばし
+        String response;
+        while (client.available())
+        {
+          response = client.readStringUntil('\r');
+          Serial.print(response);
+          response.trim();
+          if (response.length() == 0)
+          {
+            break;
+          }
+        }
+        delay(100);
+
+        // レスポンスボディを取得
+        String responseBuffer;
+        while (client.available())
+        {
+          response = client.readStringUntil('\r');
+          response.trim();
+          responseBuffer.concat(response);
+        }
+
+        // JSONパース
+        char json[responseBuffer.length() + 1];
+        responseBuffer.toCharArray(json, sizeof(json));
+        Serial.println(json);
+        auto error = deserializeJson(jsonBuffer, json);
+        delay(200);
+        if (error && responseBuffer.length() == 0)
+        {
+          Serial.print("JSON parse error: ");
+          Serial.println(error.c_str());
+          return;
+        }
+        const char *interval = jsonBuffer["interval"];
+        Serial.println(interval);
+        const char *sdi12Address = jsonBuffer["sdi12Address"];
+        Serial.println(sdi12Address);
+
+        String intervalString = String(interval);
+        String sdi12AddressString = String(sdi12Address);
+        if (intervalString == "1" || intervalString == "5" || intervalString == "10" || intervalString == "15" || intervalString == "20" || intervalString == "30" || intervalString == "60")
+        {
+          writePreference(4, intervalString);
+        }
+
+        writePreference(5, sdi12AddressString);
+
+        Serial.println("closing connection");
+        delay(100);
+        client.stop();
+        return;
+      }
+      else
+      {
+        Serial.println(".");
+        delay(200);
+      }
+    }
+  }
+  Serial.println("\r\n-----GET request failed.-----\r\n");
+}
+
+/**
  * @brief Preferenceに設定値を書き込む
  *
- * @param target 書き込み先(0: 起動モード, 1: ssid, 2: pass, 3: host)
+ * @param target 書き込み先(0: 起動モード, 1: ssid, 2: pass, 3: host, 4: 測定間隔, 5: 測定アドレス)
  * @param value 書き込み値
  */
 void writePreference(int target, String value)
@@ -1069,6 +1295,14 @@ void writePreference(int target, String value)
     preferences.putString("host", value);
     preferences.end();
     break;
+  case 4:
+    preferences.putString("interval", value);
+    preferences.end();
+    break;
+  case 5:
+    preferences.putString("address", value);
+    preferences.end();
+    break;
   default:
     break;
   }
@@ -1077,7 +1311,7 @@ void writePreference(int target, String value)
 /**
  * @brief Preferenceに書き込まれた設定値の読み取り
  *
- * @param target 読み取り先(0: 起動モード, 1: ssid, 2: pass, 3: host)
+ * @param target 読み取り先(0: 起動モード, 1: ssid, 2: pass, 3: host, 4: 測定間隔, 5: 測定アドレス)
  */
 String readPreference(int target)
 {
@@ -1100,6 +1334,14 @@ String readPreference(int target)
     return value;
   case 3:
     value = preferences.getString("host", "未設定");
+    preferences.end();
+    return value;
+  case 4:
+    value = preferences.getString("interval", "60");
+    preferences.end();
+    return value;
+  case 5:
+    value = preferences.getString("address", "");
     preferences.end();
     return value;
   default:
