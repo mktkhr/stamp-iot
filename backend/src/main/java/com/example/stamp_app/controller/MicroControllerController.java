@@ -4,6 +4,7 @@ import com.example.stamp_app.controller.param.MicroControllerPostParam;
 import com.example.stamp_app.controller.param.microController.MicroControllerPatchParam;
 import com.example.stamp_app.controller.response.MicroControllerGetResponse;
 import com.example.stamp_app.controller.response.MicroControllerPostResponse;
+import com.example.stamp_app.controller.response.microController.MicroControllerGetDetailNoSessionResponse;
 import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.service.MicroControllerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -83,7 +84,7 @@ public class MicroControllerController {
      */
     @Operation(summary = "マイコン詳細取得API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "取得成功", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = MicroControllerGetResponse.class)))),
+            @ApiResponse(responseCode = "200", description = "取得成功", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = MicroControllerGetResponse.class))),
             @ApiResponse(responseCode = "400", description = "無効なアカウント", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class)))
     })
     @GetMapping(value = "/detail")
@@ -93,6 +94,27 @@ public class MicroControllerController {
             @Pattern(regexp = "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$") String microControllerUuid) {
         var microController = microControllerService.getMicroControllerDetail(microControllerUuid);
         var response = MicroControllerGetResponse.convertMicroControllerToDetailResponse(microController);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * マイコン詳細情報取得(セッション無し)
+     *
+     * @param macAddress マイコンMACアドレス
+     */
+    @Operation(summary = "マイコン詳細取得API(セッション無し)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "取得成功", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = MicroControllerGetDetailNoSessionResponse.class))),
+            @ApiResponse(responseCode = "400", description = "無効なリクエスト", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class)))
+    })
+    @GetMapping(value = "/detail/no-session")
+    public ResponseEntity<MicroControllerGetDetailNoSessionResponse> getMicroControllerDetailWithoutSession(
+            @Parameter(required = true, description = "マイコンUUID", example = "AA:AA:AA:AA:AA:AA")
+            @RequestParam
+            @Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$") String macAddress) {
+        var microController = microControllerService.getMicroControllerDetailWithMacAddress(macAddress);
+        var response = MicroControllerGetDetailNoSessionResponse.convertMicroControllerToDetailResponse(microController);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

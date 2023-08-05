@@ -50,6 +50,10 @@ public class AppInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        if (path.contains("/micro-controller/detail/no-session") && Objects.equals(request.getMethod(), HttpMethod.GET.name())) {
+            return true;
+        }
+
         var cookieList = request.getCookies();
 
         var sessionUuid = sessionService.getSessionUuidFromCookie(cookieList);
