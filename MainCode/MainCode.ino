@@ -2,6 +2,7 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <Preferences.h>
+#include <ArduinoJson.h>
 #include <SDI12.h>
 #include "M5_ENV.h"
 #include "Adafruit_SGP30.h"
@@ -30,14 +31,15 @@ CRGB led[NUM_LED];
 uint8_t sda = 21;
 uint8_t scl = 22;
 
-String emsHost = "www.ems-engineering.jp";             // バックエンドのIPを指定
-int productionPort = 443;                              // バックエンドのポート(本番環境)を指定
-int localPort = 8080;                                  // バックエンドのポート(ローカル環境)を指定
-String postMeasuredDataUri = "/api/ems/measured-data"; // POST先のエンドポイントを指定
+String emsHost = "www.ems-engineering.jp";                                    // バックエンドのIPを指定
+int productionPort = 443;                                                     // バックエンドのポート(本番環境)を指定
+int localPort = 8080;                                                         // バックエンドのポート(ローカル環境)を指定
+String postMeasuredDataUri = "/api/ems/measured-data";                        // POST先のエンドポイントを指定
+String getMicroControllerUri = "/api/ems/micro-controller/detail/no-session"; // GET先のエンドポイントを指定
 
-int measurementIntervalInMinutes = 1;
+int measurementInterval;
 
-int mySensorAddress[] = {0, 3};
+String measurementTargetSensorAddress;
 
 int calculateNumber = 100;
 
@@ -194,12 +196,21 @@ void setup()
 
   // NTPサーバの設定
   configTime(9 * 3600L, 0, "ntp.nict.jp", "time.google.com");
+
+  // 設定値の取得
+  getRequest();
+
+  // 測定間隔の読み取り
+  measurementInterval = readPreference(4).toInt();
+
+  // 測定対象SDI-12アドレスの読み取り
+  measurementTargetSensorAddress = readPreference(5);
 }
 
 void loop()
 {
   getLocalTime(&timeInfo);
-  if ((timeInfo.tm_min % measurementIntervalInMinutes == 0) && (timeInfo.tm_sec == 0))
+  if ((timeInfo.tm_min % measurementInterval == 0) && (timeInfo.tm_sec == 0))
   {
     sprintf(timeData, "%04d/%02d/%02d %02d:%02d:%02d", timeInfo.tm_year + 1900, timeInfo.tm_mon + 1, timeInfo.tm_mday, timeInfo.tm_hour, timeInfo.tm_min, timeInfo.tm_sec);
     Serial.println(timeData);
@@ -211,15 +222,32 @@ void loop()
     String adcResult = readAdcValue(calculateNumber);
     postString += "\"voltage\":\"" + adcResult + "\",";
 
+    Serial.println("測定間隔:" + String(measurementInterval));
+    Serial.println("測定対象アドレス: " + measurementTargetSensorAddress);
+
+    // 測定対象SDI-12センサの数をカウント
+    int sensorNum;
+    int addressLength = measurementTargetSensorAddress.length();
+    if (addressLength == 0)
+    {
+      sensorNum = 0;
+    }
+    else
+    {
+      sensorNum = (addressLength / 2) + 1;
+    }
+
+    String measurementTargetAddressArray[sensorNum];
+    split(measurementTargetSensorAddress, measurementTargetAddressArray);
+
     // SDI-12
-    int sensorNum = sizeof(mySensorAddress) / sizeof(int);
     String sdiResultForSd = "";
     String sdiResultForPost = "";
     postString += "\"sdi12Param\": [";
     // 測定, SDデータへの追加, POSTデータへの追加
     for (int i = 0; i < sensorNum; i++)
     {
-      String sdi12Response = measureSdi12(mySensorAddress[i]);
+      String sdi12Response = measureSdi12(measurementTargetAddressArray[i]);
       sdiResultForSd += "," + convertSdi12ResultForSd(sdi12Response);
       sdiResultForPost += convertSdi12ResultForPost(sdi12Response);
       // 最後の1本以外の場合はカンマを追加
@@ -449,9 +477,9 @@ String convertSgp30ResultForPost(String result)
 }
 
 /**
- * @brief +区切りの文字列を配列に分割
+ * @brief +もしくは,区切りの文字列を配列に分割
  *
- * @param data +区切りの文字列
+ * @param data 文字列
  * @param dataArray 結果配列
  */
 void split(String data, String *dataArray)
@@ -462,7 +490,7 @@ void split(String data, String *dataArray)
   for (int i = 0; i < datalength; i++)
   {
     char dataChar = data.charAt(i);
-    if (dataChar == '+')
+    if (dataChar == '+' || dataChar == ',')
     {
       index++;
     }
@@ -555,7 +583,7 @@ boolean checkActiveSdi12(byte i)
  * @param sensorAddress センサアドレス
  * @return String 整形されたSDI-12レスポンス
  */
-String measureSdi12(int sensorAddress)
+String measureSdi12(String sensorAddress)
 {
   String totalResponseString = "";
   int requestNumber = 5;
@@ -564,9 +592,9 @@ String measureSdi12(int sensorAddress)
   // SDI-12のレスポンスを受け取るための配列
   String sdi12Response[10] = {"\0"};
 
-  Serial.println("Start measurement (Sensor address: " + String(sensorAddress) + ")");
+  Serial.println("Start measurement (Sensor address: " + sensorAddress + ")");
 
-  String myCommand = String(sensorAddress) + "I!";
+  String myCommand = sensorAddress + "I!";
   String identResponse = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber); // 識別番号を取得
   String sensorIdent = identResponse.substring(11, 16);                                         // センサの型番を取り出し
 
@@ -577,7 +605,7 @@ String measureSdi12(int sensorAddress)
   }
 
   String rawResponse = "";
-  myCommand = String(sensorAddress) + "C!";
+  myCommand = sensorAddress + "C!";
   Serial.println("Command: " + myCommand);
 
   rawResponse = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
@@ -592,7 +620,7 @@ String measureSdi12(int sensorAddress)
   int waitTime = rawResponse.substring(3, 4).toInt() * 1000;
   delay(waitTime);
 
-  myCommand = String(sensorAddress) + "D0!";
+  myCommand = sensorAddress + "D0!";
   Serial.println("Command: " + myCommand);
   rawResponse = sendCommandAndCollectResponse(myCommand, sendInterval, requestNumber);
 
