@@ -1044,7 +1044,7 @@ void postRequest(String host, String uri, String measureData)
 /**
  * @brief Preferenceに設定値を書き込む
  *
- * @param target 書き込み先(0: 起動モード, 1: ssid, 2: pass, 3: host)
+ * @param target 書き込み先(0: 起動モード, 1: ssid, 2: pass, 3: host, 4: 測定間隔, 5: 測定アドレス)
  * @param value 書き込み値
  */
 void writePreference(int target, String value)
@@ -1069,6 +1069,14 @@ void writePreference(int target, String value)
     preferences.putString("host", value);
     preferences.end();
     break;
+  case 4:
+    preferences.putString("interval", value);
+    preferences.end();
+    break;
+  case 5:
+    preferences.putString("address", value);
+    preferences.end();
+    break;
   default:
     break;
   }
@@ -1077,7 +1085,7 @@ void writePreference(int target, String value)
 /**
  * @brief Preferenceに書き込まれた設定値の読み取り
  *
- * @param target 読み取り先(0: 起動モード, 1: ssid, 2: pass, 3: host)
+ * @param target 読み取り先(0: 起動モード, 1: ssid, 2: pass, 3: host, 4: 測定間隔, 5: 測定アドレス)
  */
 String readPreference(int target)
 {
@@ -1100,6 +1108,14 @@ String readPreference(int target)
     return value;
   case 3:
     value = preferences.getString("host", "未設定");
+    preferences.end();
+    return value;
+  case 4:
+    value = preferences.getString("interval", "60");
+    preferences.end();
+    return value;
+  case 5:
+    value = preferences.getString("address", "");
     preferences.end();
     return value;
   default:
