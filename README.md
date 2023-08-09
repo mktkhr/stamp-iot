@@ -18,7 +18,7 @@
   - セッション(Redis)
   - データベース(Postgres)
 - システム構成図
-  ![システム構成図](document/systemConstitution/systemConstitution.drawio.png)
+  ![システム構成図](document/systemConstitution/systemConstitution.svg)
 
 ## コンセプト(未達成も含む)
 
