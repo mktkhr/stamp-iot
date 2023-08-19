@@ -10,6 +10,9 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 <template>
   <div class="wrapper">
+    <div class="wrapper-absolute">
+      <slot name="alert"></slot>
+    </div>
     <div class="wrapper-action-bar" v-show="showActionBar">
       <slot name="actionBar"></slot>
     </div>
@@ -29,6 +32,7 @@ $action_bar_height: 50px;
 .wrapper {
   height: 100%;
   width: 100%;
+  position: relative;
   &-action-bar {
     height: #{$action_bar_height};
     width: 100%;
@@ -40,6 +44,10 @@ $action_bar_height: 50px;
       height: 100%;
       width: 100%;
     }
+  }
+  &-absolute{
+    position: absolute;
+    width: 100%;
   }
 }
 </style>
