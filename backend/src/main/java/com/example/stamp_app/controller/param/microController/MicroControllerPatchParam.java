@@ -30,6 +30,6 @@ public class MicroControllerPatchParam {
 
     @Nullable
     @Schema(description = "SDI-12アドレス", example = "1,3")
-    @Pattern(regexp = "^(([0-9A-Za-z]{1},)*[0-9A-za-z]{1})|([0-9A-za-z]{1})$")
+    @Pattern(regexp = "^((([0-9A-Za-z]{1},)+[0-9A-za-z]{1})|([0-9A-za-z]{1})?)$")
     private String sdi12Address;
 }
