@@ -46,7 +46,7 @@ public class MicroController {
 
     @Column
     @Comment(value = "測定に使用するSDI-12アドレス(カンマ区切り)")
-    @Pattern(regexp = "^(([0-9A-Za-z]{1},)*[0-9A-za-z]{1})|([0-9A-za-z]{1})$")
+    @Pattern(regexp = "^((([0-9A-Za-z]{1},)+[0-9A-za-z]{1})|([0-9A-za-z]{1})?)$")
     private String sdi12Address;
 
     @Column

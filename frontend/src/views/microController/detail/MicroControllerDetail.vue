@@ -9,6 +9,7 @@ import { MicroControllerStore } from '@/store/microControllerStore';
 import InformationInput from '@/components/common/InformationInput.vue';
 import ModalWindow from '@/components/common/ModalWindow.vue';
 import { MicroControllerDetailPatchParam } from '@/methods/microController';
+import validation from '@/methods/validation';
 
 const props = defineProps<{
   microControllerUuid: string;
@@ -19,6 +20,7 @@ const intervalForEdit = ref('');
 const unitNameForEdit = ref('');
 const addressForEdit = ref('');
 const isShowModal = ref(false);
+const sdiAddressErrorMessage = ref('')
 
 const microControllerStore = MicroControllerStore();
 const microControllerDetail = computed(() => microControllerStore.getDetail);
@@ -49,9 +51,16 @@ const onClickCancel = () => {
     isShowModal.value = true;
     return;
   }
+  sdiAddressErrorMessage.value = "";
   isEditMode.value = false;
 };
 const onClickSave = () => {
+  sdiAddressErrorMessage.value = "";
+  if(!validation.sdiAddressValidate(addressForEdit.value)){
+    sdiAddressErrorMessage.value = "カンマ区切りで入力してください。";
+    return;
+  }
+
   const param: MicroControllerDetailPatchParam = {
     microControllerUuid: props.microControllerUuid,
     name: unitNameForEdit.value,
@@ -160,6 +169,7 @@ const onChangeSelectedValue = (value: string) => {
               text
               align-left
               :init-value="addressForEdit"
+              :error-message="sdiAddressErrorMessage"
               @inputValue="onInputAddress"
             />
           </template>

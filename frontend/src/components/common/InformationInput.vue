@@ -175,11 +175,12 @@ watch(inputValue, () => {
   color: #2e6dba;
 }
 .error-wrap {
-  width: calc(75% - 20px);
+  display: flex;
   height: 20px;
-  padding-left: 20px;
+  padding: 0 10px;
   margin: 0 auto;
   text-align: left;
+  align-items: center;
 }
 .error-message {
   color: #ef4868;
