@@ -17,4 +17,10 @@ export default {
     const macAddressRegExp = /^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$/;
     return macAddressRegExp.test(value);
   },
+
+  sdiAddressValidate(value:string): boolean{
+    //カンマ区切りの1文字
+    const sdiAddressRegExp = /^((([0-9A-Za-z]{1},)+[0-9A-za-z]{1})|([0-9A-za-z]{1})?)$/;
+    return sdiAddressRegExp.test(value);
+  }
 };
