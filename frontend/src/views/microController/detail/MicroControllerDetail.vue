@@ -51,6 +51,7 @@ const onClickCancel = () => {
     isShowModal.value = true;
     return;
   }
+  sdiAddressErrorMessage.value = "";
   isEditMode.value = false;
 };
 const onClickSave = () => {
