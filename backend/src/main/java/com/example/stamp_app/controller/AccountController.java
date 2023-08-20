@@ -121,7 +121,7 @@ public class AccountController {
     }
 
     /**
-     * アカウント情報取得
+     * アカウント情報取得API
      *
      * @return ユーザーIDとユーザー名
      */
@@ -138,5 +138,31 @@ public class AccountController {
         var accountGetResponse = accountService.getAccountInfo(userUuid);
 
         return new ResponseEntity<>(accountGetResponse, HttpStatus.OK);
+    }
+
+    /**
+     * アカウント削除API(論理削除)
+     *
+     * @return ResponseEntity
+     */
+    @Operation(summary = "アカウント削除API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "削除成功", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class))),
+            @ApiResponse(responseCode = "400", description = "バリデーションエラー", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class)))
+    })
+    @DeleteMapping(value = "/delete")
+    public ResponseEntity<HttpStatus> logicalDeleteAccount(HttpServletResponse httpServletResponse) {
+
+        var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
+
+        accountService.deleteAccount(userUuid);
+
+        // redis からセッション情報を削除
+        redisService.delete(requestedUser.getSessionUuid());
+
+        // 有効期限切れのCookieをレスポンスにセット
+        httpServletResponse.addCookie(sessionService.generateExpiredCookie(requestedUser.getSessionUuid()));
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
