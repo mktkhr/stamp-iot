@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,6 +21,7 @@ import static org.springframework.util.DigestUtils.md5DigestAsHex;
 
 @Service
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class AccountService {
     @Autowired
     AccountRepository accountRepository;
@@ -34,7 +36,7 @@ public class AccountService {
         boolean isNewUser;
 
         try {
-            isNewUser = accountRepository.findByEmail(registerPostParam.getEmail()) == null;
+            isNewUser = accountRepository.findByEmailAndDeletedAtIsNull(registerPostParam.getEmail()) == null;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -75,7 +77,7 @@ public class AccountService {
         Account loginUser = new Account();
 
         try {
-            loginUser = accountRepository.findByEmail(loginPostParam.getEmail());
+            loginUser = accountRepository.findByEmailAndDeletedAtIsNull(loginPostParam.getEmail());
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -104,28 +106,62 @@ public class AccountService {
     /**
      * アカウント情報取得Service
      *
-     * @param UserUuid ユーザーUUID
+     * @param userUuid ユーザーUUID
      * @return Account アカウント情報
      */
-    public AccountGetResponse getAccountInfo(String UserUuid) {
+    public AccountGetResponse getAccountInfo(String userUuid) {
 
         Account account;
 
         try {
-            account = accountRepository.findByUuid(UUID.fromString(UserUuid));
-
-            // アカウントが存在しない場合，400を返す
-            if (account == null) {
-                log.error("This account does not exist.");
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            }
-
+            account = accountRepository.findByUuid(UUID.fromString(userUuid));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        // アカウントが存在しない場合，400を返す
+        if (account == null) {
+            log.error("This account does not exist.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
         // IDと名前のみを返す
         return new AccountGetResponse(account.getId(), account.getName(), account.getCreatedAt(), account.getUpdatedAt());
+    }
+
+    /**
+     * アカウント削除Service
+     *
+     * @param userUuid ユーザーUUID
+     */
+    public void deleteAccount(String userUuid) {
+
+        Account account;
+
+        try {
+            account = accountRepository.findByUuid(UUID.fromString(userUuid));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // アカウントが存在しない場合，400を返す
+        if (account == null) {
+            log.error("This account does not exist.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        // 論理削除
+        account.setDeletedAt(LocalDateTime.now());
+
+        try {
+            // 論理削除したデータで上書き
+            accountRepository.save(account);
+        } catch (Exception e) {
+            log.error("アカウント削除に失敗したユーザーUUID: " + userUuid);
+            log.error(e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
