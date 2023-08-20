@@ -1,4 +1,4 @@
-import { login, logout, register } from '@/methods/account';
+import { deleteAccount, login, logout, register } from '@/methods/account';
 import { AccountInfoState, getAccountInfo } from '@/methods/account';
 import { defineStore } from 'pinia';
 import { SpinnerStore } from './spinnerStore';
@@ -60,5 +60,17 @@ export const AccountStore = defineStore('AccountStore', {
         spinnerStore.hideSpinner();
       }
     },
+    async delete() {
+      const spinnerStore = SpinnerStore();
+      spinnerStore.showSpinner();
+
+      try{
+        await deleteAccount();
+      }catch(e){
+        throw e;
+      }finally{
+        spinnerStore.hideSpinner();
+      }
+    }
   },
 });
