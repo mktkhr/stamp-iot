@@ -36,7 +36,7 @@ public class AccountService {
         boolean isNewUser;
 
         try {
-            isNewUser = accountRepository.findByEmailAndDeletedAtIsNull(registerPostParam.getEmail()) == null;
+            isNewUser = accountRepository.findByEmail(registerPostParam.getEmail()) == null;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
