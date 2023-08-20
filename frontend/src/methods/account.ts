@@ -67,3 +67,14 @@ export const register = async (mailAddress: string, password: string) => {
     throw e;
   }
 };
+/**
+ * アカウント削除API
+ */
+export const deleteAccount = async () => {
+  try{
+    const response = await axios.delete('api/ems/account/delete');
+    return response;
+  }catch(e){
+    throw e;
+  }
+}

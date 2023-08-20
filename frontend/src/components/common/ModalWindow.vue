@@ -14,7 +14,7 @@ withDefaults(defineProps<Props>(), {
     <div class="modal-title modal-container">
       <span>{{ title }}</span>
     </div>
-    <div class="modal-container">
+    <div class="modal-container" v-if="description">
       <span>{{ description }}</span>
     </div>
     <slot name="content"></slot>

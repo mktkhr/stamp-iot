@@ -50,24 +50,24 @@ paths:
               $ref: '#/components/schemas/MicroControllerPostParam'
         required: true
       responses:
-        "200":
-          description: 登録成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MicroControllerPostResponse'
-        "400":
-          description: バリデーションエラー/無効なマイコン
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Null'
         "401":
           description: 認証エラー
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Null'
+        "400":
+          description: バリデーションエラー/無効なマイコン
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "200":
+          description: 登録成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicroControllerPostResponse'
   /ems/measured-data:
     get:
       tags:
@@ -84,8 +84,8 @@ paths:
           type: string
         example: 61d5f7a7-7629-496e-be68-cfe022264578
       responses:
-        "400":
-          description: バリデーションエラー
+        "403":
+          description: マイコン所有者不一致エラー
           content:
             '*/*':
               schema:
@@ -96,8 +96,8 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/MeasuredDataGetResponse'
-        "403":
-          description: マイコン所有者不一致エラー
+        "400":
+          description: バリデーションエラー
           content:
             '*/*':
               schema:
@@ -115,18 +115,6 @@ paths:
               $ref: '#/components/schemas/MeasuredDataPostParam'
         required: true
       responses:
-        "400":
-          description: バリデーションエラー
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Null'
-        "403":
-          description: 無効なマイコン
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Null'
         "200":
           description: 登録成功
           content:
@@ -135,6 +123,18 @@ paths:
                 $ref: '#/components/schemas/Null'
         "401":
           description: 認証エラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "400":
+          description: バリデーションエラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "403":
+          description: 無効なマイコン
           content:
             '*/*':
               schema:
@@ -153,14 +153,14 @@ paths:
               $ref: '#/components/schemas/RegisterPostParam'
         required: true
       responses:
-        "400":
-          description: バリデーションエラー
+        "200":
+          description: 登録成功
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Null'
-        "200":
-          description: 登録成功
+        "400":
+          description: バリデーションエラー
           content:
             '*/*':
               schema:
@@ -192,12 +192,6 @@ paths:
               $ref: '#/components/schemas/LoginPostParam'
         required: true
       responses:
-        "400":
-          description: バリデーションエラー
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Null'
         "200":
           description: ログイン成功
           content:
@@ -206,6 +200,12 @@ paths:
                 $ref: '#/components/schemas/Null'
         "401":
           description: 認証エラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "400":
+          description: バリデーションエラー
           content:
             '*/*':
               schema:
@@ -226,18 +226,18 @@ paths:
           type: string
         example: 61d5f7a7-7629-496e-be68-cfe022264578
       responses:
-        "200":
-          description: 取得成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MicroControllerGetResponse'
         "400":
           description: 無効なアカウント
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Null'
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicroControllerGetResponse'
     patch:
       tags:
       - MicroController
@@ -251,6 +251,12 @@ paths:
               $ref: '#/components/schemas/MicroControllerPatchParam'
         required: true
       responses:
+        "400":
+          description: 無効なアカウント
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
         "200":
           description: 取得成功
           content:
@@ -259,12 +265,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/MicroControllerGetResponse'
-        "400":
-          description: 無効なアカウント
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Null'
   /ems/micro-controller/info:
     get:
       tags:
@@ -272,6 +272,12 @@ paths:
       summary: マイコン一覧取得API
       operationId: getMicroControllerInfo
       responses:
+        "400":
+          description: 無効なアカウント
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
         "200":
           description: 取得成功
           content:
@@ -280,12 +286,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/MicroControllerGetResponse'
-        "400":
-          description: 無効なアカウント
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Null'
   /ems/micro-controller/detail/no-session:
     get:
       tags:
@@ -302,18 +302,18 @@ paths:
           type: string
         example: AA:AA:AA:AA:AA:AA
       responses:
-        "200":
-          description: 取得成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MicroControllerGetDetailNoSessionResponse'
         "400":
           description: 無効なリクエスト
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Null'
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicroControllerGetDetailNoSessionResponse'
   /ems/account/info:
     get:
       tags:
@@ -321,18 +321,37 @@ paths:
       summary: アカウント詳細取得API
       operationId: accountInfo
       responses:
-        "400":
-          description: バリデーションエラー
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Null'
         "200":
           description: ログイン成功
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AccountGetResponse'
+        "400":
+          description: バリデーションエラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+  /ems/account/delete:
+    delete:
+      tags:
+      - Account
+      summary: アカウント削除API
+      operationId: logicalDeleteAccount
+      responses:
+        "200":
+          description: 削除成功
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
+        "400":
+          description: バリデーションエラー
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Null'
 components:
   schemas:
     MicroControllerPostParam:
@@ -350,6 +369,8 @@ components:
           type: string
           description: MACアドレス
       description: マイコン登録パラメータ
+    "Null":
+      type: object
     MicroControllerPostResponse:
       type: object
       properties:
@@ -391,8 +412,6 @@ components:
           description: 削除日時
           format: date-time
       description: マイコンデータ
-    "Null":
-      type: object
     EnvironmentalDataParam:
       type: object
       properties:
@@ -547,7 +566,7 @@ components:
           description: 測定間隔
           example: "60"
         sdi12Address:
-          pattern: "^(([0-9A-Za-z]{1},)*[0-9A-za-z]{1})|([0-9A-za-z]{1})$"
+          pattern: "^((([0-9A-Za-z]{1},)+[0-9A-za-z]{1})|([0-9A-za-z]{1})?)$"
           type: string
           description: SDI-12アドレス
           example: "1,3"

@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?949tra');
-  src:  url('fonts/icomoon.eot?949tra#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?949tra') format('truetype'),
-    url('fonts/icomoon.woff?949tra') format('woff'),
-    url('fonts/icomoon.svg?949tra#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?jk7j6m');
+  src:  url('fonts/icomoon.eot?jk7j6m#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?jk7j6m') format('truetype'),
+    url('fonts/icomoon.woff?jk7j6m') format('woff'),
+    url('fonts/icomoon.svg?jk7j6m#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -39,4 +39,7 @@
 }
 .ems-settings:before {
   content: "\e903";
+}
+.ems-account_circle:before {
+  content: "\e905";
 }
