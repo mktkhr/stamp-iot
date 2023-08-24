@@ -1,0 +1,15 @@
+export const Home = {
+  registerNewDevice: 'Register New Device',
+  enterMacAddress: 'Enter the MAC address of the device.',
+  accountInformation: 'Account Information',
+  accountName: 'Account Name',
+  unnamed: 'Unnamed',
+  registrationDate: 'Registration Date',
+  lastUpdatedDate: 'Last Updated Date',
+  unnamedDevice: 'Unnamed Device',
+  macAddress: 'MAC Address',
+  interval: 'Measurement Interval(min)',
+  registrationDateTime: 'Registration Date Time',
+  lastUpdateDateTime: 'Last Updated Date Time',
+  successfullyRegistered: 'Successfully Registered.',
+};

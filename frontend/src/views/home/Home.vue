@@ -35,8 +35,8 @@ const {
       <v-dialog v-model="isShowModal" width="80%" max-width="500px">
         <ModalWindow
           @click-button="onClickSubmit"
-          title="端末新規登録"
-          description="登録する端末のMACアドレスを入力して下さい。"
+          :title="$t('Home.registerNewDevice')"
+          :description="$t('Home.enterMacAddress')"
         >
           <template #content>
             <div class="wrapper-input">
@@ -49,7 +49,7 @@ const {
             </div>
           </template>
           <template #button>
-            <CommonButton button-title="登録" @click-button="onClickRegister" />
+            <CommonButton :button-title="$t('Button.register')" @click-button="onClickRegister" />
           </template>
         </ModalWindow>
       </v-dialog>
@@ -58,20 +58,23 @@ const {
         <div class="wrapper-account-info" v-if="accountInfo">
           <InformationDetailFrame
             class="account-info"
-            title="アカウント情報"
+            :title="$t('Home.accountInformation')"
             @clickButton="onClickPlusButton"
           >
             <template #button>
               <v-icon class="icon" @click="onClickPlusButton"> ems-add_circle </v-icon>
             </template>
             <template #content>
-              <DisplayInformation title="アカウント名" :content="accountInfo.name ?? '未設定'" />
               <DisplayInformation
-                title="登録日"
+                :title="$t('Home.accountName')"
+                :content="accountInfo.name ?? $t('Home.unnamed')"
+              />
+              <DisplayInformation
+                :title="$t('Home.registrationDate')"
                 :content="common.convertLocalDateTime(accountInfo.createdAt)"
               />
               <DisplayInformation
-                title="最終更新日"
+                :title="$t('Home.lastUpdatedDate')"
                 :content="common.convertLocalDateTime(accountInfo.updatedAt)"
               />
             </template>
@@ -88,7 +91,7 @@ const {
                 >
                   <InformationDetailFrame
                     class="micro-controller-tile"
-                    :title="microController.name ?? '端末名称未設定'"
+                    :title="microController.name ?? $t('Home.unnamedDevice')"
                     @click="onClickTile(microController.uuid)"
                   >
                     <template #button>
@@ -98,19 +101,19 @@ const {
                     </template>
                     <template #content>
                       <DisplayInformation
-                        title="MACアドレス"
+                        :title="$t('Home.macAddress')"
                         :content="microController.macAddress"
                       />
                       <DisplayInformation
-                        title="測定間隔(分)"
+                        :title="$t('Home.interval')"
                         :content="microController.interval.toString()"
                       />
                       <DisplayInformation
-                        title="登録日時"
+                        :title="$t('Home.registrationDateTime')"
                         :content="common.convertLocalDateTime(microController.createdAt)"
                       />
                       <DisplayInformation
-                        title="更新日時"
+                        :title="$t('Home.lastUpdatedDateTime')"
                         :content="common.convertLocalDateTime(microController.updatedAt)"
                       />
                     </template>
@@ -138,9 +141,7 @@ $account_info_height: 170px;
     width: 100%;
   }
   &-micro-controller {
-    height: calc(
-      100% - #{$account_info_height}
-    );
+    height: calc(100% - #{$account_info_height});
     width: 100%;
   }
   &-info {

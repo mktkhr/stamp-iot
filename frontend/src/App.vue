@@ -10,6 +10,7 @@ import { SpinnerStore } from './store/spinnerStore';
 import { AccountStore } from './store/accountStore';
 import { StatusCode } from './constants/statusCode';
 import { NotificationType } from './constants/notificationType';
+import { i18n } from './main';
 
 // スピナー表示状態管理
 const spinnerStore = SpinnerStore();
@@ -35,10 +36,9 @@ const onClickLogout = async () => {
     .catch((e) => {
       const statusCode = e.response.status.toString();
       if (statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
-        notificationMessage.value = 'エラーが発生しました。時間をおいて再度お試しください。';
+        notificationMessage.value = i18n.global.t('ApiError.internalServerError');
       } else {
-        notificationMessage.value =
-          '予期せぬエラーが発生しました。時間をおいて再度お試しください。';
+        notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
       }
       notificationType.value = NotificationType.ERROR;
       showNotification.value = true;

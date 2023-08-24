@@ -1,7 +1,6 @@
 import { computed, ref } from 'vue';
 import { MicroControllerStore } from '@/store/microControllerStore';
 import { MeasuredDataStore } from '@/store/measuredDataStore';
-import { useRoute } from 'vue-router';
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import {
   convertSdi12KeyWordToTitle,
@@ -11,16 +10,16 @@ import {
 } from '@/methods/measuredData';
 import { NotificationType } from '@/constants/notificationType';
 import { StatusCode } from '@/constants/statusCode';
+import { i18n } from '@/main';
 
 export const useMeasuredData = (microControllerUuid: string) => {
   const fetchMeasuredData = async (microControllerUuid: string) => {
     await measuredDataStore.fetchMeasuredData(microControllerUuid).catch((e) => {
       const statusCode = e.response.status.toString();
       if (statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
-        notificationMessage.value = 'エラーが発生しました。時間をおいて再度お試しください。';
+        notificationMessage.value = i18n.global.t('ApiError.internalServerError');
       } else {
-        notificationMessage.value =
-          '予期せぬエラーが発生しました。時間をおいて再度お試しください。';
+        notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
       }
       notificationType.value = NotificationType.ERROR;
       showNotification.value = true;
@@ -87,7 +86,7 @@ export const useChart = () => {
         title: {
           display: true,
           align: 'center',
-          text: 'DOY',
+          text: i18n.global.t('MeasuredData.dayOfYear'),
           font: {
             size: 14,
           },
@@ -109,7 +108,11 @@ export const useChart = () => {
     },
     plugins: {
       legend: {
-        display: measuredDataStore.getMeasuredDataList.sdi12Data.length > 0 && selectedSdi12Option.value !== "",
+        display:
+          measuredDataStore.getMeasuredDataList &&
+          measuredDataStore.getMeasuredDataList.sdi12Data &&
+          measuredDataStore.getMeasuredDataList.sdi12Data.length > 0 &&
+          selectedSdi12Option.value !== '',
       },
       title: {
         text: convertSdi12KeyWordToTitle(selectedSdi12Option.value),
@@ -132,7 +135,7 @@ export const useChart = () => {
         title: {
           display: true,
           align: 'center',
-          text: 'DOY',
+          text: i18n.global.t('MeasuredData.dayOfYear'),
           font: {
             size: 14,
           },
@@ -154,7 +157,11 @@ export const useChart = () => {
     },
     plugins: {
       legend: {
-        display: measuredDataStore.getMeasuredDataList.environmentalData.length > 0 && selectedEnvironmentalOption.value !== "",
+        display:
+          measuredDataStore.getMeasuredDataList &&
+          measuredDataStore.getMeasuredDataList.environmentalData &&
+          measuredDataStore.getMeasuredDataList.environmentalData.length > 0 &&
+          selectedEnvironmentalOption.value !== '',
       },
       title: {
         text: convertEnvironmentalKeyWordToTitle(selectedEnvironmentalOption.value),
@@ -168,24 +175,24 @@ export const useChart = () => {
 
   // SDI-12グラフ表示切替用選択肢
   const sdi12OptionList = [
-    { word: '体積含水率', key: 'vwc' },
-    { word: 'バルク比誘電率', key: 'brp' },
-    { word: '地温', key: 'soilTemp' },
-    { word: 'バルク電気伝導度', key: 'sbec' },
-    { word: '土壌間隙水電気伝導度', key: 'spwec' },
-    { word: '重力加速度(X)', key: 'gax' },
-    { word: '重力加速度(Y)', key: 'gay' },
-    { word: '重力加速度(Z)', key: 'gaz' },
+    { word: i18n.global.t('MeasuredData.volumetricWaterContent'), key: 'vwc' },
+    { word: i18n.global.t('MeasuredData.bulkRelativePermittivity'), key: 'brp' },
+    { word: i18n.global.t('MeasuredData.soilTemperature'), key: 'soilTemp' },
+    { word: i18n.global.t('MeasuredData.bulkElectricConductivity'), key: 'sbec' },
+    { word: i18n.global.t('MeasuredData.soilPoreWaterElectricConductivity'), key: 'spwec' },
+    { word: i18n.global.t('MeasuredData.gravitationalAccelerationX'), key: 'gax' },
+    { word: i18n.global.t('MeasuredData.gravitationalAccelerationY'), key: 'gay' },
+    { word: i18n.global.t('MeasuredData.gravitationalAccelerationZ'), key: 'gaz' },
   ];
 
   // 環境データグラフ表示切替用選択肢
   const environmentalOptionList = [
-    { word: '大気圧', key: 'airPress' },
-    { word: '気温', key: 'temp' },
-    { word: '相対湿度', key: 'humi' },
-    { word: '二酸化炭素濃度', key: 'co2Concent' },
-    { word: '総揮発性有機化合物量', key: 'tvoc' },
-    { word: 'アナログ値', key: 'analogValue' },
+    { word: i18n.global.t('MeasuredData.airPressure'), key: 'airPress' },
+    { word: i18n.global.t('MeasuredData.temperature'), key: 'temp' },
+    { word: i18n.global.t('MeasuredData.relativeHumidity'), key: 'humi' },
+    { word: i18n.global.t('MeasuredData.co2Concentration'), key: 'co2Concent' },
+    { word: i18n.global.t('MeasuredData.totalVolatileOrganicCompounds'), key: 'tvoc' },
+    { word: i18n.global.t('MeasuredData.analogValue'), key: 'analogValue' },
   ];
 
   /**

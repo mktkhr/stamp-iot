@@ -8,6 +8,7 @@ import NotificationBar from './common/NotificationBar.vue';
 
 import { StatusCode } from '@/constants/statusCode';
 import { NotificationType } from '@/constants/notificationType';
+import { i18n } from '@/main';
 
 interface Props {
   showHamburgerMenu: boolean;
@@ -48,7 +49,7 @@ const onClickMenuButton = (): void => {
 };
 
 const onClickLogout = async () => {
-  if (confirm('ログアウトします。よろしいですか?')) {
+  if (confirm(i18n.global.t('Header.logoutConfirm'))) {
     changeButtonView();
     emit('onClickLogout');
   } else {
@@ -90,9 +91,9 @@ const onClickAccept = async () => {
     .catch((e) => {
       const statusCode = e.response.status.toString();
       if (statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
-        errorMessage.value = 'エラーが発生しました。時間をおいて再度お試しください。';
+        errorMessage.value = i18n.global.t('ApiError.internalServerError');
       } else {
-        errorMessage.value = '予期せぬエラーが発生しました。時間をおいて再度お試しください。';
+        errorMessage.value = i18n.global.t('ApiError.unexpectedError');
       }
       changeButtonView();
       isShowModal.value = false;
@@ -128,39 +129,46 @@ const onClickAccept = async () => {
     <div class="account-manage" id="manage">
       <CommonButton
         class="account-button"
-        button-title="ログアウト"
+        :button-title="$t('Button.logout')"
         width="auto"
         @click="onClickLogout"
       />
       <CommonButton
         class="account-button"
-        button-title="アカウント削除"
+        :button-title="$t('Button.deleteAccount')"
         width="auto"
         @click="onClickAccountDelete"
       />
     </div>
     <v-dialog v-model="isShowModal" max-width="600px">
-      <ModalWindow title="アカウント削除確認" description="以下の項目を確認してください。">
+      <ModalWindow
+        :title="$t('Dialog.accountDeleteConfirm')"
+        :description="$t('Dialog.accountDeleteConfirmDescription')"
+      >
         <template #content>
           <div class="modal-content">
             <div class="wrapper-confirm">
               <input id="deleteAccount" type="checkbox" v-model="isDeleteAccountChecked" />
-              <label for="deleteAccount">アカウントが削除されます。よろしいですか？</label>
+              <label for="deleteAccount">{{ $t('Dialog.accountDeleteConfirmDescription') }}</label>
             </div>
             <div class="wrapper-confirm">
               <input id="deleteAccountData" type="checkbox" v-model="isDeleteAccountDataChecked" />
-              <label for="deleteAccountData"
-                >アカウントに紐づくデータが削除されます。よろしいですか？</label
-              >
+              <label for="deleteAccountData">{{
+                $t('Dialog.relatedDataDeleteConfirmDescription')
+              }}</label>
             </div>
           </div>
         </template>
         <template #button>
-          <CommonButton button-title="戻る" width="auto" @click-button="onClickDeny" />
+          <CommonButton
+            :button-title="$t('Button.back')"
+            width="auto"
+            @click-button="onClickDeny"
+          />
           <CommonButton
             v-if="showAcceptButton"
             class="delete-button"
-            button-title="削除"
+            :button-title="$t('Button.delete')"
             width="auto"
             @click-button="onClickAccept"
           />

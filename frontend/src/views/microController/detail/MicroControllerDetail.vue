@@ -10,6 +10,7 @@ import InformationInput from '@/components/common/InformationInput.vue';
 import ModalWindow from '@/components/common/ModalWindow.vue';
 import { MicroControllerDetailPatchParam } from '@/methods/microController';
 import validation from '@/methods/validation';
+import { i18n } from '@/main';
 
 const props = defineProps<{
   microControllerUuid: string;
@@ -20,7 +21,7 @@ const intervalForEdit = ref('');
 const unitNameForEdit = ref('');
 const addressForEdit = ref('');
 const isShowModal = ref(false);
-const sdiAddressErrorMessage = ref('')
+const sdiAddressErrorMessage = ref('');
 
 const microControllerStore = MicroControllerStore();
 const microControllerDetail = computed(() => microControllerStore.getDetail);
@@ -51,13 +52,13 @@ const onClickCancel = () => {
     isShowModal.value = true;
     return;
   }
-  sdiAddressErrorMessage.value = "";
+  sdiAddressErrorMessage.value = '';
   isEditMode.value = false;
 };
 const onClickSave = () => {
-  sdiAddressErrorMessage.value = "";
-  if(!validation.sdiAddressValidate(addressForEdit.value)){
-    sdiAddressErrorMessage.value = "カンマ区切りで入力してください。";
+  sdiAddressErrorMessage.value = '';
+  if (!validation.sdiAddressValidate(addressForEdit.value)) {
+    sdiAddressErrorMessage.value = i18n.global.t('Validation.invalidSdiAddress');
     return;
   }
 
@@ -105,14 +106,22 @@ const onChangeSelectedValue = (value: string) => {
     <template #actionBar>
       <div class="action-bar">
         <div class="wrapper-button">
-          <CommonButton v-if="!isEditMode" button-title="編集" @clickButton="onClickEdit" />
+          <CommonButton
+            v-if="!isEditMode"
+            :button-title="$t('Button.edit')"
+            @clickButton="onClickEdit"
+          />
           <CommonButton
             v-if="isEditMode"
-            button-title="キャンセル"
+            :button-title="$t('Button.cancel')"
             width="120px"
             @clickButton="onClickCancel"
           />
-          <CommonButton v-if="isEditMode" button-title="保存" @clickButton="onClickSave" />
+          <CommonButton
+            v-if="isEditMode"
+            :button-title="$t('Button.save')"
+            @clickButton="onClickSave"
+          />
         </div>
       </div>
     </template>
@@ -125,7 +134,7 @@ const onChangeSelectedValue = (value: string) => {
           <div class="wrapper-unit-name">
             <div class="span-name-box">
               <span v-if="!isEditMode" class="name">{{
-                `${microControllerDetail.name ?? '名称未設定'}`
+                `${microControllerDetail.name ?? $t('microControllerDetail.unnamedDevice')}`
               }}</span>
               <InformationInput
                 v-if="isEditMode"
@@ -134,12 +143,14 @@ const onChangeSelectedValue = (value: string) => {
                 :init-value="unitNameForEdit"
                 @inputValue="onInputName"
               />
-              <span class="address">{{ `MACアドレス: ${microControllerDetail.macAddress}` }}</span>
+              <span class="address">{{
+                `${$t('microControllerDetail.macAddress')}: ${microControllerDetail.macAddress}`
+              }}</span>
             </div>
           </div>
         </div>
         <DisplayInformation
-          title="測定間隔"
+          :title="$t('microControllerDetail.interval')"
           :content="`${microControllerDetail.interval}分`"
           show-border-top
           :is-edit-mode="isEditMode"
@@ -149,7 +160,7 @@ const onChangeSelectedValue = (value: string) => {
               v-if="isEditMode"
               class="selector"
               :option-list="intervalList"
-              title="測定間隔"
+              :title="$t('microControllerDetail.interval')"
               :show-label="false"
               :init-value="intervalForEdit"
               outlined
@@ -158,8 +169,10 @@ const onChangeSelectedValue = (value: string) => {
           </template>
         </DisplayInformation>
         <DisplayInformation
-          title="測定アドレス"
-          :content="microControllerDetail.sdi12Address ?? '未設定'"
+          :title="$t('microControllerDetail.measurementAddress')"
+          :content="
+            microControllerDetail.sdi12Address ?? $t('microControllerDetail.unsetSdiAddress')
+          "
           :is-edit-mode="isEditMode"
         >
           <template #content>
@@ -175,22 +188,26 @@ const onChangeSelectedValue = (value: string) => {
           </template>
         </DisplayInformation>
         <DisplayInformation
-          title="登録日"
+          :title="$t('microControllerDetail.registrationDate')"
           :content="`${dayjs(microControllerDetail.createdAt).format('YYYY/MM/DD')}`"
         />
         <DisplayInformation
-          title="最終更新日"
+          :title="$t('microControllerDetail.lastUpdatedDate')"
           :content="`${dayjs(microControllerDetail.updatedAt).format('YYYY/MM/DD')}`"
         />
 
         <v-dialog v-model="isShowModal" width="80%" max-width="500px" height="200px">
           <ModalWindow
-            title="キャンセル確認"
-            :description="`編集内容が保存されません。\nよろしいですか？`"
+            :title="$t('Dialog.cancelConfirm')"
+            :description="$t('Dialog.cancelConfirmDescription')"
           >
             <template #button>
-              <CommonButton button-title="いいえ" width="80" @click-button="onClickDeny" />
-              <CommonButton button-title="はい" @click-button="onClickAccept" />
+              <CommonButton
+                :button-title="$t('Button.no')"
+                width="80"
+                @click-button="onClickDeny"
+              />
+              <CommonButton :button-title="$t('Button.yes')" @click-button="onClickAccept" />
             </template>
           </ModalWindow>
         </v-dialog>

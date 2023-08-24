@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import { i18n } from '@/main';
 import validation from '@/methods/validation';
 import { AccountStore } from '@/store/accountStore';
 import { NotificationType } from '@/constants/notificationType';
@@ -39,16 +40,16 @@ export const useRegister = () => {
     const passwordConfirmValidateFlag = !validation.passwordValidate(passwordConfirmRef.value);
 
     if (mailAddressValidateFlag) {
-      mailAddressError.value = 'メールアドレスが正しく入力されていません。';
+      mailAddressError.value = i18n.global.t('Validation.Error.mailAddress');
     }
     if (passwordValidateFlag) {
-      passwordError.value = '1文字以上の大文字を含む,8~24文字のパスワードを入力して下さい。';
+      passwordError.value = i18n.global.t('Validation.Error.password');
     }
     if (passwordConfirmValidateFlag) {
-      passwordConfirmError.value = '1文字以上の大文字を含む,8~24文字のパスワードを入力して下さい。';
+      passwordConfirmError.value = i18n.global.t('Validation.Error.password');
     }
     if (passwordRef.value != passwordConfirmRef.value) {
-      passwordConfirmError.value = 'パスワードが一致していません。';
+      passwordConfirmError.value = i18n.global.t('Validation.Error.passwordNotMatch');
       return false;
     }
 
@@ -57,7 +58,7 @@ export const useRegister = () => {
 
   const onClickRegister = async () => {
     if (validate()) {
-      notificationMessage.value = '入力内容に誤りがあります。';
+      notificationMessage.value = i18n.global.t('Validation.Error.invalid');
       notificationType.value = NotificationType.ERROR;
       showNotification.value = true;
       setTimeout(() => (showNotification.value = false), 3000);
@@ -66,7 +67,7 @@ export const useRegister = () => {
     await accountStore
       .register(mailAddressRef.value, passwordRef.value)
       .then(() => {
-        notificationMessage.value = '登録に成功しました。ログイン画面に遷移します。';
+        notificationMessage.value = i18n.global.t('Register.successfullyRegistered');
         notificationType.value = NotificationType.SUCCESS;
         showNotification.value = true;
         setTimeout(() => {
@@ -77,14 +78,13 @@ export const useRegister = () => {
       .catch((e) => {
         const statusCode = e.response.status.toString();
         if (statusCode === StatusCode.BAD_REQUEST) {
-          notificationMessage.value = 'エラーが発生しました。再度入力してください。';
+          notificationMessage.value = i18n.global.t('ApiError.badRequest');
         } else if (statusCode === StatusCode.FORBIDDEN) {
-          notificationMessage.value = 'このメールアドレスは既に使用されています。';
+          notificationMessage.value = i18n.global.t('ApiError.emailInUse');
         } else if (statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
-          notificationMessage.value = 'エラーが発生しました。時間をおいて再度お試しください。';
+          notificationMessage.value = i18n.global.t('ApiError.internalServerError');
         } else {
-          notificationMessage.value =
-            '予期せぬエラーが発生しました。時間をおいて再度お試しください。';
+          notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
         }
         notificationType.value = NotificationType.ERROR;
         showNotification.value = true;

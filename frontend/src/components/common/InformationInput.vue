@@ -70,9 +70,9 @@ watch(inputValue, () => {
         placeholder=""
         v-model="inputValue"
       />
-      <label v-if="mailAddress">メールアドレス</label>
-      <label v-if="password">パスワード</label>
-      <label v-if="passwordConfirm">確認用パスワード</label>
+      <label v-if="mailAddress">{{ $t('InformationInput.mailAddress') }}</label>
+      <label v-if="password">{{ $t('InformationInput.password') }}</label>
+      <label v-if="passwordConfirm">{{ $t('InformationInput.passwordConfirm') }}</label>
       <label v-if="text">{{ label }}</label>
       <span class="focus_line"><i></i></span>
     </div>

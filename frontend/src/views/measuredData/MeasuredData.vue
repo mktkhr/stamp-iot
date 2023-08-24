@@ -27,10 +27,15 @@ const {
   <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
   <div class="wrapper-content">
     <div class="wrapper-chart">
-      <LineChart ref="lineRef" class="chart" :chartData="sdi12ChartDataSet" :options="sdi12ChartConfig" />
+      <LineChart
+        ref="lineRef"
+        class="chart"
+        :chartData="sdi12ChartDataSet"
+        :options="sdi12ChartConfig"
+      />
       <InformationSelect
         class="selector"
-        title="表示項目"
+        :title="$t('MeasuredData.displayedItem')"
         :option-list="sdi12OptionList"
         @selectedValue="onChangeSdi12Select"
       />
@@ -44,7 +49,7 @@ const {
       />
       <InformationSelect
         class="selector"
-        title="表示項目"
+        :title="$t('MeasuredData.displayedItem')"
         :option-list="environmentalOptionList"
         @selectedValue="onChangeEnvironmentalSelect"
       />
@@ -71,7 +76,7 @@ const {
   width: 80%;
   max-width: 500px;
 }
-.chart{
+.chart {
   width: 100%;
 }
 </style>
