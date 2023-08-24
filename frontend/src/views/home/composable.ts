@@ -6,6 +6,7 @@ import { AccountStore } from '@/store/accountStore';
 import { MicroControllerStore } from '@/store/microControllerStore';
 import { NotificationType } from '@/constants/notificationType';
 import { StatusCode } from '@/constants/statusCode';
+import { i18n } from '@/main';
 
 export const useHome = () => {
   /**
@@ -15,10 +16,9 @@ export const useHome = () => {
     await microControllerStore.fetchMicroControllerList().catch((e) => {
       const statusCode = e.response.status.toString();
       if (statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
-        notificationMessage.value = 'エラーが発生しました。時間をおいて再度お試しください。';
+        notificationMessage.value = i18n.global.t('ApiError.internalServerError');
       } else {
-        notificationMessage.value =
-          '予期せぬエラーが発生しました。時間をおいて再度お試しください。';
+        notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
       }
       notificationType.value = NotificationType.ERROR;
       showNotification.value = true;
@@ -33,7 +33,7 @@ export const useHome = () => {
     await microControllerStore
       .register(accountInfo.value.id.toString(), macAddressRef.value)
       .then(() => {
-        notificationMessage.value = '登録に成功しました。';
+        notificationMessage.value = i18n.global.t('Home.successfullyRegistered');
         notificationType.value = NotificationType.SUCCESS;
         showNotification.value = true;
         fetchMicroController(); // 再取得
@@ -44,15 +44,13 @@ export const useHome = () => {
       .catch((e) => {
         const statusCode = e.response.status.toString();
         if (statusCode === StatusCode.BAD_REQUEST) {
-          notificationMessage.value = '登録に失敗しました。他のMACアドレスで再度お試しください。';
+          notificationMessage.value = i18n.global.t('ApiError.invalidMacAddress');
         } else if (statusCode === StatusCode.UNAUTHORIZED) {
-          notificationMessage.value =
-            'この端末は既に登録されています。別の端末を登録してください。';
+          notificationMessage.value = i18n.global.t('ApiError.macAddressInUse');
         } else if (statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
-          notificationMessage.value = 'エラーが発生しました。時間をおいて再度お試しください。';
+          notificationMessage.value = i18n.global.t('ApiError.internalServerError');
         } else {
-          notificationMessage.value =
-            '予期せぬエラーが発生しました。時間をおいて再度お試しください。';
+          notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
         }
         notificationType.value = NotificationType.ERROR;
         showNotification.value = true;
@@ -93,7 +91,7 @@ export const useHome = () => {
     const macAddressValidateFlag = !validation.macAddressValidate(macAddressRef.value);
 
     if (macAddressValidateFlag) {
-      macAddressError.value = 'MACアドレスが正しく入力されていません。';
+      macAddressError.value = i18n.global.t('Validation.Error.invalidMacAddress');
       return;
     }
 

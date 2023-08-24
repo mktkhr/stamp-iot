@@ -5,6 +5,7 @@ import validation from '@/methods/validation';
 import { AccountStore } from '@/store/accountStore';
 import { StatusCode } from '@/constants/statusCode';
 import { NotificationType } from '@/constants/notificationType';
+import { i18n } from '@/main';
 
 export const useLogin = () => {
   const mailAddressRef = ref('');
@@ -35,10 +36,10 @@ export const useLogin = () => {
     const passwordValidateFlag = passwordRef.value == ''; // セキュリティ確保のため，パスワードは空チェックのみとする
 
     if (mailAddressValidateFlag) {
-      mailAddressError.value = 'メールアドレスが正しく入力されていません。';
+      mailAddressError.value = i18n.global.t('Validation.Error.mailAddress');
     }
     if (passwordValidateFlag) {
-      passwordError.value = 'パスワードを入力して下さい。';
+      passwordError.value = i18n.global.t('Validation.Error.passwordNotEntered');
     }
 
     return mailAddressValidateFlag || passwordValidateFlag;
@@ -52,7 +53,7 @@ export const useLogin = () => {
     passwordError.value = '';
 
     if (validate()) {
-      notificationMessage.value = '入力内容に誤りがあります。';
+      notificationMessage.value = i18n.global.t('Validation.Error.invalid');
       notificationType.value = NotificationType.ERROR;
       showNotification.value = true;
       setTimeout(() => (showNotification.value = false), 3000);
@@ -66,14 +67,12 @@ export const useLogin = () => {
       .catch((e) => {
         const statusCode = e.response.status.toString();
         if (statusCode === StatusCode.BAD_REQUEST || statusCode === StatusCode.UNAUTHORIZED) {
-          notificationMessage.value = 'アカウント情報が間違っています。';
+          notificationMessage.value = i18n.global.t('ApiError.inValidAccountInformation');
         } else if (statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
-          notificationMessage.value = 'エラーが発生しました。時間をおいて再度お試しください。';
+          notificationMessage.value = i18n.global.t('ApiError.internalServerError');
         } else {
-          notificationMessage.value =
-            '予期せぬエラーが発生しました。時間をおいて再度お試しください。';
+          notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
         }
-        notificationMessage.value = '入力内容に誤りがあります。';
         notificationType.value = NotificationType.ERROR;
         showNotification.value = true;
         setTimeout(() => (showNotification.value = false), 3000);

@@ -1,0 +1,15 @@
+export const Home = {
+  registerNewDevice: '端末新規登録',
+  enterMacAddress: '登録する端末のMACアドレスを入力して下さい。',
+  accountInformation: 'アカウント情報',
+  accountName: 'アカウント名',
+  unnamed: '未設定',
+  registrationDate: '登録日',
+  lastUpdatedDate: '最終更新日',
+  unnamedDevice: '端末名称未設定',
+  macAddress: 'MACアドレス',
+  interval: '測定間隔(分)',
+  registrationDateTime: '登録日時',
+  lastUpdatedDateTime: '更新日時',
+  successfullyRegistered: '登録に成功しました。',
+};

@@ -6,6 +6,7 @@ import {
 } from '@/methods/measuredData';
 import { defineStore } from 'pinia';
 import { SpinnerStore } from './spinnerStore';
+import { i18n } from '@/main';
 
 export const MeasuredDataStore = defineStore('MeasuredDataStore', {
   state: () => ({
@@ -65,42 +66,74 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
             data = measuredData.dataList.map((data) => {
               return { x: data.dayOfYear, y: data.vwc };
             });
-            sdi12Dataset.label = '体積含水率(アドレス:' + measuredData.sdiAddress + ')';
+            sdi12Dataset.label =
+              i18n.global.t('MeasuredData.volumetricWaterContent') +
+              '(アドレス:' +
+              measuredData.sdiAddress +
+              ')';
           } else if (dataType == 'brp') {
             data = measuredData.dataList.map((data) => {
               return { x: data.dayOfYear, y: data.brp };
             });
-            sdi12Dataset.label = 'バルク比誘電率(アドレス:' + measuredData.sdiAddress + ')';
+            sdi12Dataset.label =
+              i18n.global.t('MeasuredData.bulkRelativePermittivity') +
+              '(アドレス:' +
+              measuredData.sdiAddress +
+              ')';
           } else if (dataType == 'soilTemp') {
             data = measuredData.dataList.map((data) => {
               return { x: data.dayOfYear, y: data.soilTemp };
             });
-            sdi12Dataset.label = '地温(アドレス:' + measuredData.sdiAddress + ')';
+            sdi12Dataset.label =
+              i18n.global.t('MeasuredData.temperature') +
+              '(アドレス:' +
+              measuredData.sdiAddress +
+              ')';
           } else if (dataType == 'sbec') {
             data = measuredData.dataList.map((data) => {
               return { x: data.dayOfYear, y: data.sbec };
             });
-            sdi12Dataset.label = 'バルク電気伝導度(アドレス:' + measuredData.sdiAddress + ')';
+            sdi12Dataset.label =
+              i18n.global.t('MeasuredData.bulkElectricConductivity') +
+              '(アドレス:' +
+              measuredData.sdiAddress +
+              ')';
           } else if (dataType == 'spwec') {
             data = measuredData.dataList.map((data) => {
               return { x: data.dayOfYear, y: data.spwec };
             });
-            sdi12Dataset.label = '土壌間隙水電気伝導度(アドレス:' + measuredData.sdiAddress + ')';
+            sdi12Dataset.label =
+              i18n.global.t('MeasuredData.soilPoreWaterElectricConductivity') +
+              '(アドレス:' +
+              measuredData.sdiAddress +
+              ')';
           } else if (dataType == 'gax') {
             data = measuredData.dataList.map((data) => {
               return { x: data.dayOfYear, y: data.gax };
             });
-            sdi12Dataset.label = '重力加速度(X)(アドレス:' + measuredData.sdiAddress + ')';
+            sdi12Dataset.label =
+              i18n.global.t('MeasuredData.gravitationalAccelerationX') +
+              '(アドレス:' +
+              measuredData.sdiAddress +
+              ')';
           } else if (dataType == 'gay') {
             data = measuredData.dataList.map((data) => {
               return { x: data.dayOfYear, y: data.gay };
             });
-            sdi12Dataset.label = '重力加速度(Y)(アドレス:' + measuredData.sdiAddress + ')';
+            sdi12Dataset.label =
+              i18n.global.t('MeasuredData.gravitationalAccelerationY') +
+              '(アドレス:' +
+              measuredData.sdiAddress +
+              ')';
           } else if (dataType == 'gaz') {
             data = measuredData.dataList.map((data) => {
               return { x: data.dayOfYear, y: data.gaz };
             });
-            sdi12Dataset.label = '重力加速度(Z)(アドレス:' + measuredData.sdiAddress + ')';
+            sdi12Dataset.label =
+              i18n.global.t('MeasuredData.gravitationalAccelerationZ') +
+              '(アドレス:' +
+              measuredData.sdiAddress +
+              ')';
           }
 
           sdi12Dataset.data = data;
@@ -133,22 +166,24 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
               environmentalDataset.label = '';
               return { x: '', y: '' };
             } else if (dataType === 'airPress') {
-              environmentalDataset.label = '大気圧';
+              environmentalDataset.label = i18n.global.t('MeasuredData.airPressure');
               return { x: data.dayOfYear, y: data.airPress };
             } else if (dataType === 'temp') {
-              environmentalDataset.label = '気温';
+              environmentalDataset.label = i18n.global.t('MeasuredData.temperature');
               return { x: data.dayOfYear, y: data.temp };
             } else if (dataType === 'humi') {
-              environmentalDataset.label = '相対湿度';
+              environmentalDataset.label = i18n.global.t('MeasuredData.relativeHumidity');
               return { x: data.dayOfYear, y: data.humi };
             } else if (dataType === 'co2Concent') {
-              environmentalDataset.label = '二酸化炭素濃度';
+              environmentalDataset.label = i18n.global.t('MeasuredData.co2Concentration');
               return { x: data.dayOfYear, y: data.co2Concent };
             } else if (dataType === 'tvoc') {
-              environmentalDataset.label = '総揮発性有機化合物量';
+              environmentalDataset.label = i18n.global.t(
+                'MeasuredData.totalVolatileOrganicCompounds'
+              );
               return { x: data.dayOfYear, y: data.tvoc };
             } else if (dataType === 'analogValue') {
-              environmentalDataset.label = 'アナログ値';
+              environmentalDataset.label = i18n.global.t('MeasuredData.analogValue');
               return { x: data.dayOfYear, y: data.analogValue };
             }
           }

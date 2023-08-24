@@ -1,3 +1,4 @@
+import { i18n } from '@/main';
 import axios from 'axios';
 
 export class MeasuredDataState {
@@ -105,21 +106,21 @@ export const convertSdi12KeyWordToScale = (dataType: string) => {
     case '':
       return '';
     case 'vwc':
-      return '体積含水率(%)';
+      return i18n.global.t('MeasuredData.volumetricWaterContent') + '(%)';
     case 'brp':
-      return 'バルク比誘電率(-)';
+      return i18n.global.t('MeasuredData.bulkRelativePermittivity') + '(-)';
     case 'soilTemp':
-      return '地温(℃)';
+      return i18n.global.t('MeasuredData.soilTemperature') + '(℃)';
     case 'sbec':
-      return 'バルク電気伝導度';
+      return i18n.global.t('MeasuredData.bulkElectricConductivity') + '(μS/cm)';
     case 'spwec':
-      return '土壌間隙水電気伝導度(μS/cm)';
+      return i18n.global.t('MeasuredData.soilPoreWaterElectricConductivity') + '(μS/cm)';
     case 'gax':
-      return '重力加速度(G)';
+      return i18n.global.t('MeasuredData.gravitationalAccelerationX') + '(G)';
     case 'gay':
-      return '重力加速度(G)';
+      return i18n.global.t('MeasuredData.gravitationalAccelerationY') + '(G)';
     case 'gaz':
-      return '重力加速度(G)';
+      return i18n.global.t('MeasuredData.gravitationalAccelerationZ') + '(G)';
   }
 };
 
@@ -131,23 +132,23 @@ export const convertSdi12KeyWordToScale = (dataType: string) => {
 export const convertSdi12KeyWordToTitle = (dataType: string) => {
   switch (dataType) {
     case '':
-      return '表示するデータを選択してください';
+      return i18n.global.t('MeasuredData.choseData');
     case 'vwc':
-      return '体積含水率';
+      return i18n.global.t('MeasuredData.volumetricWaterContent');
     case 'brp':
-      return 'バルク比誘電率';
+      return i18n.global.t('MeasuredData.bulkRelativePermittivity');
     case 'soilTemp':
-      return '地温';
+      return i18n.global.t('MeasuredData.soilTemperature');
     case 'sbec':
-      return 'バルク電気伝導度';
+      return i18n.global.t('MeasuredData.bulkElectricConductivity');
     case 'spwec':
-      return '土壌間隙水電気伝導度';
+      return i18n.global.t('MeasuredData.soilPoreWaterElectricConductivity');
     case 'gax':
-      return '重力加速度';
+      return i18n.global.t('MeasuredData.gravitationalAccelerationX');
     case 'gay':
-      return '重力加速度';
+      return i18n.global.t('MeasuredData.gravitationalAccelerationY');
     case 'gaz':
-      return '重力加速度';
+      return i18n.global.t('MeasuredData.gravitationalAccelerationZ');
   }
 };
 
@@ -161,17 +162,17 @@ export const convertEnvironmentalKeyWordToScale = (dataType: string) => {
     case '':
       return '';
     case 'airPress':
-      return '大気圧(hPa)';
+      return i18n.global.t('MeasuredData.airPressure') + '(hPa)';
     case 'temp':
-      return '気温(℃)';
+      return i18n.global.t('MeasuredData.temperature') + '(℃)';
     case 'humi':
-      return '相対湿度(%)';
+      return i18n.global.t('MeasuredData.relativeHumidity') + '(%)';
     case 'co2Concent':
-      return '二酸化炭素濃度(ppm)';
+      return i18n.global.t('MeasuredData.co2Concentration') + '(ppm)';
     case 'tvoc':
-      return '総揮発性有機化合物量(-)';
+      return i18n.global.t('MeasuredData.totalVolatileOrganicCompounds') + '(-)';
     case 'analogValue':
-      return 'アナログ値(-)';
+      return i18n.global.t('MeasuredData.analogValue') + '(-)';
   }
 };
 
@@ -183,19 +184,19 @@ export const convertEnvironmentalKeyWordToScale = (dataType: string) => {
 export const convertEnvironmentalKeyWordToTitle = (dataType: string) => {
   switch (dataType) {
     case '':
-      return '表示するデータを選択してください';
+      return i18n.global.t('MeasuredData.choseData');
     case 'airPress':
-      return '大気圧';
+      return i18n.global.t('MeasuredData.airPressure');
     case 'temp':
-      return '気温';
+      return i18n.global.t('MeasuredData.temperature');
     case 'humi':
-      return '相対湿度';
+      return i18n.global.t('MeasuredData.relativeHumidity');
     case 'co2Concent':
-      return '二酸化炭素濃度';
+      return i18n.global.t('MeasuredData.co2Concentration');
     case 'tvoc':
-      return '総揮発性有機化合物量';
+      return i18n.global.t('MeasuredData.totalVolatileOrganicCompounds');
     case 'analogValue':
-      return 'アナログ値';
+      return i18n.global.t('MeasuredData.analogValue');
   }
 };
 

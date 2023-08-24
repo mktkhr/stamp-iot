@@ -21,7 +21,7 @@ const {
 
 <template>
   <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
-  <FormWindow title="新規登録">
+  <FormWindow :title="$t('Register.signUp')">
     <template #icon>
       <img src="@/assets/logo_blue.png" alt="logo" />
     </template>
@@ -52,7 +52,7 @@ const {
     <template #button>
       <div class="wrapper-button">
         <CommonButton
-          button-title="登録"
+          :button-title="$t('Button.register')"
           width="100px"
           height="40px"
           @click-button="onClickRegister"
@@ -61,7 +61,7 @@ const {
     </template>
     <template #link>
       <div class="wrapper-link">
-        <RouterLink to="/login" class="link">ログインはこちら</RouterLink>
+        <RouterLink to="/login" class="link">{{ $t('Register.toLogin') }}</RouterLink>
       </div>
     </template>
   </FormWindow>

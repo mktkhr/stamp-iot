@@ -30,7 +30,7 @@ const toHomePage = () => {
       <li class="navigator-list">
         <button @click="toHomePage">
           <Information style="margin-top: auto; margin-bottom: auto" />
-          <div>ホーム</div>
+          <div>{{ $t('Navigator.home') }}</div>
         </button>
       </li>
       <!-- <li class="navigator-list">
