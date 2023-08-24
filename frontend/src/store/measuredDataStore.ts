@@ -46,10 +46,14 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
      * @param dataType 取得するデータ名
      */
     getSdi12DataList(dataType: string) {
-      const measuredDataStore = MeasuredDataStore()
+      const measuredDataStore = MeasuredDataStore();
       const sdi12DatasetList = new Array<datasetFrame>();
 
-      if (measuredDataStore.getMeasuredDataList.sdi12Data.length > 0) {
+      if (
+        measuredDataStore.getMeasuredDataList &&
+        measuredDataStore.getMeasuredDataList.sdi12Data &&
+        measuredDataStore.getMeasuredDataList.sdi12Data.length > 0
+      ) {
         this.measuredDataList.sdi12Data.forEach((measuredData: Sdi12DataState, index: number) => {
           const sdi12Dataset = new datasetFrame();
           sdi12Dataset.fill = false;
@@ -150,7 +154,7 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
      * @param dataType 取得するデータ名
      */
     getEnvironmentDataList(dataType: string) {
-      const measuredDataStore = MeasuredDataStore()
+      const measuredDataStore = MeasuredDataStore();
       const environmentalDatasetList = new Array<datasetFrame>();
       const environmentalDataset = new datasetFrame();
       environmentalDataset.fill = false;
@@ -159,7 +163,11 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
       environmentalDataset.pointStyle = 'circle';
       environmentalDataset.pointRadius = 0;
 
-      if (measuredDataStore.getMeasuredDataList.environmentalData.length > 0) {
+      if (
+        measuredDataStore.getMeasuredDataList &&
+        measuredDataStore.getMeasuredDataList.environmentalData &&
+        measuredDataStore.getMeasuredDataList.environmentalData.length > 0
+      ) {
         environmentalDataset.data = this.measuredDataList.environmentalData.map(
           (data: EnvironmentalDataState) => {
             if (dataType === '') {
