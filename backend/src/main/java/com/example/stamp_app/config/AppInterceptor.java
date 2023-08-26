@@ -59,24 +59,28 @@ public class AppInterceptor implements HandlerInterceptor {
         var sessionUuid = sessionService.getSessionUuidFromCookie(cookieList);
 
         if (sessionUuid == null) {
-            return false;
+            log.error("セッションの取得に失敗");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
+        String userUuid;
+
         try {
-            var userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
-            if (userUuid != null) {
-                requestedUser.setSessionUuid(sessionUuid);
-                requestedUser.setUserUuid(userUuid);
-                log.info(requestedUser.toString());
-                response.setStatus(HttpStatus.OK.value());
-                return true;
-            }
+            userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        return false;
+        if (userUuid != null) {
+            requestedUser.setSessionUuid(sessionUuid);
+            requestedUser.setUserUuid(userUuid);
+            log.info(requestedUser.toString());
+            response.setStatus(HttpStatus.OK.value());
+            return true;
+        }
+
+        log.error("セッションが無効なリクエスト");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 }

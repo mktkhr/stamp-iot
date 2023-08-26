@@ -85,7 +85,8 @@ public class MicroControllerController {
     @Operation(summary = "マイコン詳細取得API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "取得成功", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = MicroControllerGetResponse.class))),
-            @ApiResponse(responseCode = "400", description = "無効なアカウント", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class)))
+            @ApiResponse(responseCode = "400", description = "不正なリクエスト内容　", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class))),
+            @ApiResponse(responseCode = "403", description = "権限のない操作", content = @Content(schema = @Schema(implementation = ObjectUtils.Null.class)))
     })
     @GetMapping(value = "/detail")
     public ResponseEntity<MicroControllerGetResponse> getMicroControllerDetail(
