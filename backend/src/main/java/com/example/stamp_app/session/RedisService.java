@@ -47,11 +47,6 @@ public class RedisService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // 空の場合，400を返す
-        if(value == null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-
         return value;
     }
 
