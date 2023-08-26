@@ -5,6 +5,7 @@ import com.example.stamp_app.controller.response.MicroControllerGetResponse;
 import com.example.stamp_app.controller.response.MicroControllerPostResponse;
 import com.example.stamp_app.entity.Account;
 import com.example.stamp_app.entity.MicroController;
+import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.repository.AccountRepository;
 import com.example.stamp_app.repository.MicroControllerRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,8 @@ public class MicroControllerService {
     MicroControllerRepository microControllerRepository;
     @Autowired
     AccountRepository accountRepository;
+    @Autowired
+    RequestedUser requestedUser;
 
     public MicroControllerPostResponse addMicroControllerRelation(Long userId, String macAddress) {
 
@@ -93,6 +96,7 @@ public class MicroControllerService {
 
         // アカウントが存在しなかった場合，400を返す
         if (account == null) {
+            log.error("アカウントが存在しない");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
@@ -113,6 +117,7 @@ public class MicroControllerService {
         try {
             microController = microControllerRepository.findByUuid(microControllerUuid);
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -120,6 +125,12 @@ public class MicroControllerService {
         if (microController == null) {
             log.error("該当のマイクロコントローラーの取得に失敗 UUID: " + microControllerUuid);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        // マイコン所有者とリクエストユーザーが異なる場合，403を返す
+        if (!Objects.equals(microController.getAccount().getUuid().toString(), requestedUser.getUserUuid())) {
+            log.error("マイコン所有者とリクエストユーザーの不一致");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
         return microController;
@@ -137,6 +148,7 @@ public class MicroControllerService {
         try {
             microController = microControllerRepository.findByMacAddress(macAddress);
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -162,6 +174,7 @@ public class MicroControllerService {
         try {
             microController = microControllerRepository.findByUuid(param.getMicroControllerUuid());
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -173,8 +186,8 @@ public class MicroControllerService {
 
         // マイコン所有者とリクエストしたアカウントが一致しない場合，400を返す
         if (!Objects.equals(microController.getAccount().getUuid().toString(), userUuid)) {
-            log.error("マイコン所有者とリクエスト内容の不一致 マイコンUUID: " + param.getMicroControllerUuid());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            log.error("マイコン所有者とリクエストユーザーの不一致 マイコンUUID: " + param.getMicroControllerUuid());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
 
