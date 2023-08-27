@@ -49,6 +49,7 @@ services:
     tty: true
     ports:
       - 8082:8082
+      - 5005:5005
     depends_on:
       - postgres
       - redis
