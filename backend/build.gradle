@@ -42,3 +42,8 @@ test {
 jar {
 	enabled = false
 }
+
+bootRun {
+	// RemoteDebug用の設定
+	jvmArgs "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+}

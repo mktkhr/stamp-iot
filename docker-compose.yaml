@@ -1,10 +1,11 @@
-version: '3'
+version: "3"
+
 services:
   postgres:
     image: postgres:14
     container_name: postgres
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
       - postgres-db:/var/lib/postgresql/data
     environment:
@@ -16,7 +17,7 @@ services:
     image: redis:7
     container_name: redis
     ports:
-      - "6379:6379"
+      - 6379
     volumes:
       - redis-db:/data
 
@@ -39,6 +40,25 @@ services:
       - ./docker/local/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./frontend/dist:/usr/share/nginx/dist
       - ./docker/local/nginx/log:/var/log/nginx
+    depends_on:
+      - java
+
+  java:
+    image: amazoncorretto:17
+    container_name: java
+    tty: true
+    ports:
+      - 8082:8082
+      - 5005:5005
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /app/backend
+    working_dir: /app/backend
+    command: /bin/bash -c "./gradlew bootRun --build-cache"
 
 volumes:
   postgres-db:
