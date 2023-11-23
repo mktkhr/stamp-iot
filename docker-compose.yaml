@@ -44,7 +44,7 @@ services:
       - java
 
   java:
-    image: amazoncorretto:17
+    image: amazoncorretto:21.0.1
     container_name: java
     tty: true
     ports:
@@ -58,7 +58,7 @@ services:
         source: ./backend
         target: /app/backend
     working_dir: /app/backend
-    command: /bin/bash -c "./gradlew bootRun --build-cache"
+    command: /bin/bash -c "./gradlew -g cache bootRun --build-cache"
 
 volumes:
   postgres-db:
