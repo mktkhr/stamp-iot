@@ -48,8 +48,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: /usr/share/tmp/backend/${{ github.ref_name }}
-      - name: Create directory for deploy
-        run: mkdir -p /usr/share/deploy/backend/${{ github.ref_name }}
       - name: Copy artifacts
         run: cp -rp /usr/share/tmp/backend/${{ github.ref_name }}/artifact/server.jar /usr/share/deploy/backend/server.jar
       - name: Restart java container

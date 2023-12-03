@@ -50,8 +50,6 @@ jobs:
         with:
           name: dist
           path: /usr/share/tmp/frontend/${{ github.ref_name }}/dist
-      - name: Create directory for deploy
-        run: mkdir -p /usr/share/deploy/frontend/${{ github.ref_name }}
       - name: Copy artifacts
         run: cp -rp /usr/share/tmp/frontend/${{ github.ref_name }}/dist /usr/share/deploy/frontend/dist
 
