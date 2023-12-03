@@ -18,17 +18,13 @@ jobs:
         with:
           path: docker/production/nginx/nginx.conf
       - name: Create directory for download artifacts
-        run: mkdir -p /home/ems/tmp/nginx/${{ github.ref_name }}/
+        run: mkdir -p /usr/share/tmp/nginx/${{ github.ref_name }}/
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
-          path: /home/ems/tmp/nginx/${{ github.ref_name }}/
-      - name: Create directory for deploy
-        run: mkdir -p /home/ems/deploy/nginx/${{ github.ref_name }}/
+          path: /usr/share/tmp/nginx/${{ github.ref_name }}/
       - name: Copy artifacts
-        run: cp -rp /home/ems/tmp/nginx/${{ github.ref_name }}/artifact/nginx.conf /home/ems/deploy/nginx/${{ github.ref_name }}
-      - name: Link artifacts to nginx.conf
-        run: ln -fns /home/ems/deploy/nginx/${{ github.ref_name }}/nginx.conf /home/ems/deploy/nginx/nginx.conf
+        run: cp -rp /usr/share/tmp/nginx/${{ github.ref_name }}/artifact/nginx.conf /usr/share/deploy/nginx/nginx.conf
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

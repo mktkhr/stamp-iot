@@ -44,18 +44,14 @@ jobs:
 
     steps:
       - name: Create directory for download artifacts
-        run: mkdir -p /home/ems/tmp/frontend/${{ github.ref_name }}/dist
+        run: mkdir -p /usr/share/tmp/frontend/${{ github.ref_name }}/dist
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
           name: dist
-          path: /home/ems/tmp/frontend/${{ github.ref_name }}/dist
-      - name: Create directory for deploy
-        run: mkdir -p /home/ems/deploy/frontend/${{ github.ref_name }}
+          path: /usr/share/tmp/frontend/${{ github.ref_name }}/dist
       - name: Copy artifacts
-        run: cp -rp /home/ems/tmp/frontend/${{ github.ref_name }}/* /home/ems/deploy/frontend/${{ github.ref_name }}
-      - name: Link artifacts to dist
-        run: ln -fns /home/ems/deploy/frontend/${{ github.ref_name }}/dist /home/ems/deploy/frontend/dist
+        run: cp -rp /usr/share/tmp/frontend/${{ github.ref_name }}/dist /usr/share/deploy/frontend/dist
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
