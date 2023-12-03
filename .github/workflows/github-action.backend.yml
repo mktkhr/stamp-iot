@@ -43,17 +43,15 @@ jobs:
 
     steps:
       - name: Create directory for download artifacts
-        run: mkdir -p /home/ems/tmp/backend/${{ github.ref_name }}
+        run: mkdir -p /usr/share/tmp/backend/${{ github.ref_name }}
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
-          path: /home/ems/tmp/backend/${{ github.ref_name }}
+          path: /usr/share/tmp/backend/${{ github.ref_name }}
       - name: Create directory for deploy
-        run: mkdir -p /home/ems/deploy/backend/${{ github.ref_name }}
+        run: mkdir -p /usr/share/deploy/backend/${{ github.ref_name }}
       - name: Copy artifacts
-        run: cp -rp /home/ems/tmp/backend/${{ github.ref_name }}/* /home/ems/deploy/backend/${{ github.ref_name }}
-      - name: Link artifacts to server
-        run: ln -fns /home/ems/deploy/backend/${{ github.ref_name }}/artifact/server.jar /home/ems/deploy/backend/server.jar
+        run: cp -rp /usr/share/tmp/backend/${{ github.ref_name }}/artifact/server.jar /usr/share/deploy/backend/server.jar
       - name: Restart java container
         env:
           EMS_PASS: ${{secrets.EMS_PASS}}
