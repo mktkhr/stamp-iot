@@ -71,6 +71,12 @@
           - type: bind
             source: /var/run/docker.sock
             target: /var/run/docker.sock
+          - type: bind
+            source: <一時保存先ディレクトリ>
+            target: /usr/share/tmp
+          - type: bind
+            source: <デプロイディレクトリ>
+            target: /usr/share/deploy
         restart: always
     ```
 
