@@ -25,10 +25,6 @@ jobs:
           path: /usr/share/tmp/nginx/${{ github.ref_name }}/
       - name: Copy artifacts
         run: cp -rp /usr/share/tmp/nginx/${{ github.ref_name }}/artifact/nginx.conf /usr/share/deploy/nginx/nginx.conf
-      - name: Reload nginx settings
-        env:
-          EMS_PASS: ${{secrets.EMS_PASS}}
-        run: echo $EMS_PASS | sudo -S docker exec -it nginx nginx -s reload > /dev/null 2>&1
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
