@@ -3,6 +3,9 @@ package com.example.stamp_app.service;
 import com.example.stamp_app.controller.param.microController.MicroControllerPatchParam;
 import com.example.stamp_app.controller.response.MicroControllerGetResponse;
 import com.example.stamp_app.controller.response.MicroControllerPostResponse;
+import com.example.stamp_app.domain.exception.EMSDatabaseException;
+import com.example.stamp_app.domain.exception.EMSResourceDuplicationException;
+import com.example.stamp_app.domain.exception.EMSResourceNotFoundException;
 import com.example.stamp_app.entity.Account;
 import com.example.stamp_app.entity.MicroController;
 import com.example.stamp_app.entity.RequestedUser;
@@ -10,10 +13,8 @@ import com.example.stamp_app.repository.AccountRepository;
 import com.example.stamp_app.repository.MicroControllerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,29 +41,29 @@ public class MicroControllerService {
             // 対象のMAC Addressのマイクロコントローラー情報を取得
             microController = microControllerRepository.findByMacAddress(macAddress);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
-        // 対象のマイクロコントローラーがDB上に存在しなかった場合，400を返す
+        // 対象のマイクロコントローラーがDB上に存在しなかった場合，404を返す
         if (microController == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new EMSResourceNotFoundException();
         }
 
         try {
             // リクエストしたアカウント情報を取得
             requestedAccount = accountRepository.findById(userId);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
         // 対象のアカウントが存在しなかった場合，400を返す
         if (requestedAccount == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new EMSResourceNotFoundException();
         }
 
         // 既にマイクロコントローラーがアカウントに紐づけられていた場合，401を返す
         if (microController.getAccount() != null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new EMSResourceDuplicationException();
         }
 
         microController.setAccount(requestedAccount);
@@ -71,7 +72,7 @@ public class MicroControllerService {
             // マイクロコントローラー情報を更新する
             microControllerRepository.save(microController);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
         return new MicroControllerPostResponse(microController.getId(), microController.getUuid(), microController.getName(), microController.getMacAddress(), microController.getInterval(), microController.getSdi12Address(), microController.getCreatedAt(), microController.getUpdatedAt(), microController.getDeletedAt());
@@ -91,13 +92,13 @@ public class MicroControllerService {
             account = accountRepository.findByUuid(UUID.fromString(userUuid));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
-        // アカウントが存在しなかった場合，400を返す
+        // アカウントが存在しなかった場合，404を返す
         if (account == null) {
             log.error("アカウントが存在しない");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new EMSResourceNotFoundException();
         }
 
         var microControllerList = account.getMicroController();
@@ -118,19 +119,19 @@ public class MicroControllerService {
             microController = microControllerRepository.findByUuid(microControllerUuid);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
         // マイコンが存在しなかった場合，400を返す
         if (microController == null) {
             log.error("該当のマイクロコントローラーの取得に失敗 UUID: " + microControllerUuid);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new EMSResourceNotFoundException();
         }
 
-        // マイコン所有者とリクエストユーザーが異なる場合，403を返す
+        // マイコン所有者とリクエストユーザーが異なる場合，404を返す
         if (!Objects.equals(microController.getAccount().getUuid().toString(), requestedUser.getUserUuid())) {
             log.error("マイコン所有者とリクエストユーザーの不一致");
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new EMSResourceNotFoundException();
         }
 
         return microController;
@@ -149,13 +150,13 @@ public class MicroControllerService {
             microController = microControllerRepository.findByMacAddress(macAddress);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
-        // マイコンが存在しなかった場合，400を返す
+        // マイコンが存在しなかった場合，404を返す
         if (microController == null) {
             log.error("該当のマイクロコントローラーの取得に失敗 MACアドレス: " + macAddress);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new EMSResourceNotFoundException();
         }
 
         return microController;
@@ -175,21 +176,20 @@ public class MicroControllerService {
             microController = microControllerRepository.findByUuid(param.getMicroControllerUuid());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
-        // マイコンが存在しなかった場合，400を返す
+        // マイコンが存在しなかった場合，404を返す
         if (microController == null) {
             log.error("該当のマイクロコントローラーの取得に失敗 マイコンUUID: " + param.getMicroControllerUuid());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new EMSResourceNotFoundException();
         }
 
-        // マイコン所有者とリクエストしたアカウントが一致しない場合，400を返す
+        // マイコン所有者とリクエストしたアカウントが一致しない場合，404を返す
         if (!Objects.equals(microController.getAccount().getUuid().toString(), userUuid)) {
             log.error("マイコン所有者とリクエストユーザーの不一致 マイコンUUID: " + param.getMicroControllerUuid());
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new EMSResourceNotFoundException();
         }
-
 
         // パラメータのセット
         if (param.getName() != null) {
@@ -207,7 +207,7 @@ public class MicroControllerService {
             microControllerRepository.save(microController);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
         MicroController microControllerUpdateResult;
@@ -215,7 +215,7 @@ public class MicroControllerService {
             microControllerUpdateResult = microControllerRepository.findByUuid(param.getMicroControllerUuid());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
 

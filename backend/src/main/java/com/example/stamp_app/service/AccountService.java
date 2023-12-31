@@ -4,6 +4,9 @@ import com.example.stamp_app.controller.param.account.LoginPostParam;
 import com.example.stamp_app.controller.param.account.RegisterPostParam;
 import com.example.stamp_app.controller.response.AccountGetResponse;
 import com.example.stamp_app.controller.response.AccountLoginResponse;
+import com.example.stamp_app.domain.exception.EMSDatabaseException;
+import com.example.stamp_app.domain.exception.EMSResourceDuplicationException;
+import com.example.stamp_app.domain.exception.EMSResourceNotFoundException;
 import com.example.stamp_app.entity.Account;
 import com.example.stamp_app.repository.AccountRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -39,12 +41,12 @@ public class AccountService {
             isNewUser = accountRepository.findByEmail(registerPostParam.getEmail()) == null;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
         if (!isNewUser) {
             log.error(" The email address has already been used.");
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new EMSResourceDuplicationException();
         }
 
         String hashedPassword = DigestUtils.md5DigestAsHex(registerPostParam.getPassword().getBytes());
@@ -60,7 +62,7 @@ public class AccountService {
             accountRepository.save(newUser);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
         log.info("Successfully registered.");
@@ -72,22 +74,22 @@ public class AccountService {
      * @param loginPostParam ログイン情報
      * @return HttpStatus
      */
-    public AccountLoginResponse login(LoginPostParam loginPostParam) {
+    public AccountLoginResponse login(LoginPostParam loginPostParam) throws IllegalAccessException {
 
-        Account loginUser = new Account();
+        Account loginUser;
 
         try {
             loginUser = accountRepository.findByEmailAndDeletedAtIsNull(loginPostParam.getEmail());
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
-        // 対象のアカウントが存在しない場合，400を返す
+        // 対象のアカウントが存在しない場合，404を返す
         if (loginUser == null) {
             log.error("This account does not exist.");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new EMSResourceNotFoundException();
         }
 
         boolean isCorrectPassword = loginUser.getPassword().matches(md5DigestAsHex(loginPostParam.getPassword().getBytes()));
@@ -95,7 +97,7 @@ public class AccountService {
         // パスワードが合致しない場合，401を返す
         if (!isCorrectPassword) {
             log.error("Account Information are not correct.");
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new IllegalAccessException();
         }
 
         log.info("Successfully logged in.");
@@ -117,13 +119,13 @@ public class AccountService {
             account = accountRepository.findByUuid(UUID.fromString(userUuid));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
         // アカウントが存在しない場合，400を返す
         if (account == null) {
             log.error("This account does not exist.");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException();
         }
 
         // IDと名前のみを返す
@@ -143,13 +145,13 @@ public class AccountService {
             account = accountRepository.findByUuid(UUID.fromString(userUuid));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
         // アカウントが存在しない場合，400を返す
         if (account == null) {
             log.error("This account does not exist.");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException();
         }
 
         // 論理削除
@@ -161,7 +163,7 @@ public class AccountService {
         } catch (Exception e) {
             log.error("アカウント削除に失敗したユーザーUUID: " + userUuid);
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
     }
 }
