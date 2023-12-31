@@ -1,6 +1,6 @@
 package com.example.stamp_app.controller.account;
 
-import com.example.stamp_app.config.AppInterceptor;
+import com.example.stamp_app.common.interceptor.AppInterceptor;
 import com.example.stamp_app.controller.AccountController;
 import com.example.stamp_app.controller.param.account.RegisterPostParam;
 import com.example.stamp_app.entity.DummyData;

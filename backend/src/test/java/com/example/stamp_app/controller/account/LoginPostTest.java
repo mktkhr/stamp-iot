@@ -1,6 +1,6 @@
 package com.example.stamp_app.controller.account;
 
-import com.example.stamp_app.config.AppInterceptor;
+import com.example.stamp_app.common.interceptor.AppInterceptor;
 import com.example.stamp_app.controller.AccountController;
 import com.example.stamp_app.controller.param.account.LoginPostParam;
 import com.example.stamp_app.controller.response.AccountLoginResponse;
@@ -57,7 +57,7 @@ public class LoginPostTest {
     }
 
     @BeforeEach
-    void setup() {
+    void setup() throws IllegalAccessException {
         when(appInterceptor.preHandle(any(), any(), any())).thenReturn(true);
 
         var account = new Account();

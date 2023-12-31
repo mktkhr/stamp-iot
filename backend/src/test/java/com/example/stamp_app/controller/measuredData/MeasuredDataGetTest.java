@@ -1,6 +1,6 @@
 package com.example.stamp_app.controller.measuredData;
 
-import com.example.stamp_app.config.AppInterceptor;
+import com.example.stamp_app.common.interceptor.AppInterceptor;
 import com.example.stamp_app.controller.MeasuredDataController;
 import com.example.stamp_app.entity.DummyData;
 import com.example.stamp_app.entity.RequestedUser;

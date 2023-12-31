@@ -1,5 +1,6 @@
 package com.example.stamp_app.config;
 
+import com.example.stamp_app.common.interceptor.AppInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

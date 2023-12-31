@@ -1,6 +1,6 @@
 package com.example.stamp_app.controller.microController;
 
-import com.example.stamp_app.config.AppInterceptor;
+import com.example.stamp_app.common.interceptor.AppInterceptor;
 import com.example.stamp_app.controller.MicroControllerController;
 import com.example.stamp_app.controller.param.microController.MicroControllerPatchParam;
 import com.example.stamp_app.entity.DummyData;
