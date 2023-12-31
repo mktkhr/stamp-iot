@@ -1,5 +1,6 @@
-package com.example.stamp_app.config;
+package com.example.stamp_app.common.interceptor;
 
+import com.example.stamp_app.domain.exception.EMSDatabaseException;
 import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.session.RedisService;
 import com.example.stamp_app.session.SessionService;
@@ -69,7 +70,7 @@ public class AppInterceptor implements HandlerInterceptor {
             userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
         if (userUuid != null) {
