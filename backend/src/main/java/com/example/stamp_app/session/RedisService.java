@@ -1,11 +1,10 @@
 package com.example.stamp_app.session;
 
+import com.example.stamp_app.domain.exception.EMSDatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -41,10 +40,10 @@ public class RedisService {
     public String getUserUuidFromSessionUuid(String key) {
         String value = null;
 
-        try{
+        try {
             value = (String) redisTemplate.opsForValue().get(key);
-        }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            throw new EMSDatabaseException();
         }
 
         return value;
@@ -53,7 +52,7 @@ public class RedisService {
     /**
      * セッション情報の保存
      *
-     * @param key セッションUUID
+     * @param key   セッションUUID
      * @param value ユーザーUUID
      */
     public void set(String key, String value, long timeInSec) {

@@ -5,12 +5,13 @@ import com.example.stamp_app.controller.response.measuredDataGetResponse.Environ
 import com.example.stamp_app.controller.response.measuredDataGetResponse.MeasuredDataGetResponse;
 import com.example.stamp_app.controller.response.measuredDataGetResponse.Sdi12DataGetResponse;
 import com.example.stamp_app.controller.response.measuredDataGetResponse.VoltageDataGetResponse;
+import com.example.stamp_app.domain.exception.EMSDatabaseException;
+import com.example.stamp_app.domain.exception.EMSResourceNotFoundException;
 import com.example.stamp_app.entity.*;
 import com.example.stamp_app.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -58,13 +59,13 @@ public class MeasuredDataService {
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
         // DBに登録されていないマイコンの場合
         if (microController == null) {
             log.error("登録されていないマイコン");
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new EMSResourceNotFoundException();
         }
 
         var accountId = microController.getAccount().getUuid().toString();
@@ -73,7 +74,7 @@ public class MeasuredDataService {
         // 所有者UUIDがnullの場合401を返す
         if (accountId == null) {
             log.error("所有者の不一致");
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new EMSResourceNotFoundException(); // NOTE: 所有者の有無を秘匿するため，404で返す
         }
 
         // 測定時刻，DOYの算出
@@ -112,7 +113,7 @@ public class MeasuredDataService {
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
     }
@@ -130,17 +131,17 @@ public class MeasuredDataService {
         try {
             microController = microControllerRepository.findByUuid(microControllerUuid);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new EMSDatabaseException();
         }
 
         // マイコンが存在しない場合，400を返す
         if (microController == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new EMSResourceNotFoundException();
         }
 
         // マイコン保有者IDとパラメータ内のユーザーIDが異なる場合，403を返す
         if (!Objects.equals(microController.getAccount().getUuid(), UUID.fromString(userUuid))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new EMSResourceNotFoundException();
         }
 
         // 大枠クラスの定義

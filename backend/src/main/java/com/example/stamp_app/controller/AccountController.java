@@ -82,7 +82,7 @@ public class AccountController {
                     @Content(schema = @Schema(implementation = LoginPostParam.class))
             })
             @RequestBody
-            @Validated LoginPostParam loginPostParam, HttpServletResponse httpServletResponse) {
+            @Validated LoginPostParam loginPostParam, HttpServletResponse httpServletResponse) throws IllegalAccessException {
 
         AccountLoginResponse accountLoginResponse = accountService.login(loginPostParam);
 
