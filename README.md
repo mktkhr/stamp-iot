@@ -6,20 +6,11 @@
 
 ---
 
-## システム構成
+## システム構成図
 
-- 本システムのアクターは下記の通りである(権限は未定)
-  - 管理者
-  - ユーザー
-- 本システムは下記に大別される
-  - マイクロコントローラー(C++)
-  - フロントエンド(Vue, TypeScript)
-  - バックエンド(Spring)
-  - セッション(Redis)
-  - データベース(Postgres)
-- システム構成図
-  ![システム構成図](document/systemConstitution/systemConstitution.svg)
+  ![システム構成図](document/systemConstitution/system_prod.svg)
 
+---
 ## コンセプト(未達成も含む)
 
 - マイクロコントローラーおよび各種センサを用いて大気・土壌(主に作土層)環境を可視化
@@ -27,34 +18,7 @@
 - マイクロコントローラーを用いてセンサより測定した値はローカル(microSD カード)だけでなく，サーバー上に保存される
 - マイクロコントローラーに紐づくユーザーは測定した値をブラウザ上で表示できる(グラフ化，変動予測等)
 
-## 各種バージョン
-
-- フロントエンド
-  - node v.18.16.0
-  - vue v.3.2.13
-  - vue-router v.4.0.3
-  - vuetify v.3.2.2
-  - pinia v.2.0.27
-  - axios v.1.2.0
-  - dayjs v.1.11.7
-  - vue-material-design-icon v.5.1.2
-  - core-js v.3.8.3
-  - vue-chart-3: v.3.1.8
-  - chart.js: v.3.9.1,
-- バックエンド
-  - Java 17
-  - spring boot v.3.0.0
-  - lombok v.1.18.24
-  - spring boot 系 ([公式](https://spring.pleiades.io/spring-boot/docs/current/reference/html/using.html)が推奨しているためバージョンは指定しない方が良い?)
-    - spring boot starter data jpa
-    - spring boot starter web
-    - spring boot starter validation
-    - spring boot starter data redis
-- Docker
-  - postgres v.14
-  - redis v.7
-  - redisinsight v.1.12.0
-
+---
 ## マイクロコントローラー, 基板概要
 
 - 給電方法は下記の通りである
@@ -90,14 +54,14 @@
 
 ### OS
 
-- macOS Ventura v.13.0
+- macOS Ventura v.14.2
 - Windows10 64bit
 
 ### IDE
 
 - VSCode
 - IntelliJ IDEA CE
-- Arduino IDE v.1.8.16
+- Arduino IDE v.2.2.1
 
 ---
 
@@ -118,7 +82,7 @@
 
 ### バックエンド
 
-1. Java17 をインストール ([Oracle](https://www.oracle.com/jp/java/technologies/downloads/#java17), [Amazon Corretto](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html))
+1. Java21 をインストール ([Oracle](https://www.oracle.com/jp/java/technologies/downloads/#java21), [Amazon Corretto](https://docs.aws.amazon.com/corretto/latest/corretto-21-ug/downloads-list.html))
 2. `stamp-iot/backend` へ移動
 3. IntelliJ で `BackendApplication` を実行
 
