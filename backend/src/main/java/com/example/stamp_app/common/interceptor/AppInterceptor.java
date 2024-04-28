@@ -32,8 +32,10 @@ public class AppInterceptor implements HandlerInterceptor {
     /**
      * Cookieを基に，セッションの有無を確認する
      */
+    @SuppressWarnings("null")
     @Override
-    public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws ResponseStatusException {
+    public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler)
+            throws ResponseStatusException {
 
         var path = request.getRequestURI();
 
@@ -51,7 +53,8 @@ public class AppInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        if (path.contains("/micro-controller/detail/no-session") && Objects.equals(request.getMethod(), HttpMethod.GET.name())) {
+        if (path.contains("/micro-controller/detail/no-session")
+                && Objects.equals(request.getMethod(), HttpMethod.GET.name())) {
             return true;
         }
 
