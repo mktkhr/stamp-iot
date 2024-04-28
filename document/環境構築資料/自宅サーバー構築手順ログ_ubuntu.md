@@ -13,7 +13,6 @@
   - `echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null`
   - `sudo apt-get update`
   - `sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
-  - ``
 
 ---
 #### サーバーのローカル IP を固定
@@ -26,25 +25,56 @@
 - `sudo vim 100-enp0s25-fixed.yaml`
   - **注意** 拡張子が .yml だとネットワークに接続できなくなった
   - 下記を記載
-  
-    ```yaml
-    network:
-    version: 2
-    renderer: networkd
-    ethernets:
-      enp0s25:
-        dhcp4: false
-        addresses: 
-          - 192.168.0.100/24 # 任意の値
-        nameservers:
-          addresses: 
-            - 192.168.0.1
-        routes:
-          - to: default
-            via: 192.168.0.1
-    ```
 
+    * 有線の場合
+  
+      ```yaml
+      network:
+        version: 2
+        renderer: networkd
+        ethernets:
+          enp0s25:
+            dhcp4: false
+            addresses: 
+              - 192.168.0.100/24 # 任意の値
+            nameservers:
+              addresses: 
+                - 192.168.0.1
+            routes:
+              - to: default
+                via: 192.168.0.1
+      ```
+
+    * wifiの場合
+    
+      ```yaml
+      network:
+        version: 2
+        wifis:
+          renderer: networkd
+          wlan0:
+            dhcp4: false
+            optional: true
+            addresses:
+              - 192.168.0.100/24 # 任意の値
+            nameservers:
+              addresses: 
+                - 192.168.0.1
+            routes:
+              - to: default
+                via: 192.168.0.1
+            access-points:
+              <アクセスポイントのSSID>:
+                password: <アクセスポイントのPSK-AES>
+      ```
+
+- `sudo chmod 600 100-enp0s25-fixed.yaml`
+- `sudo netplan try --timeout 10`
+  - テストする
 - `sudo netplan apply`
+- 下記のエラーが発生した場合は追加でパッケージをインストールし，再度applyを試す(24.04では表示されなくなった)
+  - `WARNING:root:Cannot call Open vSwitch: ovsdb-server.service is not running.`
+  - `sudo apt-get install openvswitch-switch`
 - `ip a`
   - 変更を確認
 
@@ -94,6 +124,7 @@
       - `PasswordAuthentication yes`
   - `sudo service sshd restart`
     - sshd を再起動
+    - `24.04` の場合は `ssh` でOK
   - `mkdir ~/.ssh`
     - .ssh ディレクトリがない場合に実行
 
@@ -115,6 +146,7 @@
     - 下記に変更
       - `PasswordAuthentication no`
   - `sudo service sshd restart`
+    - `24.04` の場合は `ssh` でOK
 
 - クライアント側で作業
   - `vim ~/.ssh/config`
