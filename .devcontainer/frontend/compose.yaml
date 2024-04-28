@@ -1,3 +1,5 @@
+name: ems
+
 services:
   node:
     image: node:${NODE_VERSION}
@@ -8,3 +10,10 @@ services:
         source: ../../frontend
         target: /frontend
     user: node
+    networks:
+      - ems_compose-network
+
+networks:
+  ems_compose-network:
+    driver: bridge
+    external: true
