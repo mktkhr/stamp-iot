@@ -45,6 +45,9 @@
     ```
 
 - `sudo netplan apply`
+- 下記のエラーが発生した場合は追加でパッケージをインストールし，再度applyを試す(24.04では表示されなくなった)
+  - `WARNING:root:Cannot call Open vSwitch: ovsdb-server.service is not running.`
+  - `sudo apt-get install openvswitch-switch`
 - `ip a`
   - 変更を確認
 
@@ -94,6 +97,7 @@
       - `PasswordAuthentication yes`
   - `sudo service sshd restart`
     - sshd を再起動
+    - `24.04` の場合は `ssh` でOK
   - `mkdir ~/.ssh`
     - .ssh ディレクトリがない場合に実行
 
@@ -115,6 +119,7 @@
     - 下記に変更
       - `PasswordAuthentication no`
   - `sudo service sshd restart`
+    - `24.04` の場合は `ssh` でOK
 
 - クライアント側で作業
   - `vim ~/.ssh/config`
