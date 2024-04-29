@@ -1,0 +1,21 @@
+name: ems
+
+services:
+  java:
+    image: mcr.microsoft.com/devcontainers/java:${JAVA_VERSION}
+    container_name: java
+    tty: true
+    volumes:
+      - type: bind
+        source: ../../backend
+        target: /backend
+    ports:
+      - 8082:8082
+      - 5005:5005
+    networks:
+      - ems_compose-network
+
+networks:
+  ems_compose-network:
+    driver: bridge
+    external: true

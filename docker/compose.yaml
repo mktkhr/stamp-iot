@@ -1,0 +1,66 @@
+name: ems
+
+services:
+  postgres:
+    image: postgres:16.2
+    container_name: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - type: volume
+        source: postgres-db
+        target: /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ems_db
+    networks:
+      - compose-network
+
+  redis:
+    image: redis:7.2.4
+    container_name: redis
+    expose:
+      - 6379
+    volumes:
+      - type: volume
+        source: redis-db
+        target: /data
+    networks:
+      - compose-network
+
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    container_name: redisinsight
+    ports:
+      - 8001:8001
+    depends_on:
+      - redis
+    networks:
+      - compose-network
+
+  nginx:
+    image: nginx:1.25.5
+    container_name: nginx
+    ports:
+      - 8080:80
+    volumes:
+      - type: bind
+        source: ./local/nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
+      - type: bind
+        source: ./local/nginx/log
+        target: /var/log/nginx
+      - type: bind
+        source: ../frontend/dist
+        target: /usr/share/nginx/dist
+    networks:
+      - compose-network
+
+volumes:
+  postgres-db:
+  redis-db:
+
+networks:
+  compose-network:
+    driver: bridge

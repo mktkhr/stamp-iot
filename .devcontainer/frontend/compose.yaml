@@ -1,0 +1,19 @@
+name: ems
+
+services:
+  node:
+    image: node:${NODE_VERSION}
+    container_name: node
+    tty: true
+    volumes:
+      - type: bind
+        source: ../../frontend
+        target: /frontend
+    user: node
+    networks:
+      - ems_compose-network
+
+networks:
+  ems_compose-network:
+    driver: bridge
+    external: true

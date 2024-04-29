@@ -12,6 +12,7 @@ public class WebMVCConfig implements WebMvcConfigurer {
     @Autowired
     AppInterceptor appInterceptor;
 
+    @SuppressWarnings("null")
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(appInterceptor);
