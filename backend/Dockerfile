@@ -19,4 +19,3 @@ COPY server.jar /app/server.jar
 WORKDIR /
 
 EXPOSE 8082
-CMD [ "/bin/sh","-c","POSTGRES_HOST=${POSTGRES_HOST} POSTGRES_PORT=${POSTGRES_PORT} POSTGRES_DB_USER=${POSTGRES_USER} POSTGRES_DB_PASS=${POSTGRES_PASSWORD} REDIS_HOST=${REDIS_HOST} REDIS_PORT=${REDIS_PORT} java -jar /app/server.jar --spring.profiles.active=prod" ]
