@@ -1,4 +1,4 @@
-FROM nginx:1.25.5
+FROM --platform=linux/amd64 nginx:1.25.5
 
 ARG ENVIRONMENT
 
