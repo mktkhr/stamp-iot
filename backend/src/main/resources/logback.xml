@@ -66,9 +66,10 @@
         </root>
     </springProfile>
 
-    <!-- production では WARN 以上を出力 -->
+    <!-- production では INFO 以上を出力 -->
     <springProfile name="prod">
         <root level="INFO">
+            <appender-ref ref="STDOUT"/>
             <appender-ref ref="STDERR"/>
         </root>
     </springProfile>
