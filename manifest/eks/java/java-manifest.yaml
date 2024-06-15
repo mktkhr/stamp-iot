@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-deployment
+spec:
+  selector:
+    matchLabels:
+      app: java
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: java
+    spec:
+      containers:
+        - name: java
+          # image は必要に応じて変更すること
+          # TODO: SECRETや環境変数で渡す方法が分からないので，一時的にベタ書きとする
+          image: <ECRのURIを指定>
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082
+          command: ["/bin/sh","-c","POSTGRES_DB_HOST=${POSTGRES_DB_HOST} POSTGRES_DB_PORT=${POSTGRES_DB_PORT} POSTGRES_DB_USER=${POSTGRES_DB_USER} POSTGRES_DB_PASS=${POSTGRES_DB_PASS} REDIS_HOST=${REDIS_HOST} REDIS_PORT=${REDIS_PORT} java -jar /app/server.jar --spring.profiles.active=prod"]
+          envFrom:
+            - secretRef:
+                name: stamp-iot-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-service
+  labels:
+    app: java
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8082
+    targetPort: 8082
+    protocol: TCP
+  selector:
+    app: java

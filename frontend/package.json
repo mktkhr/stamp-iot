@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vite",
-    "build:dev": "vite build --mode dev",
-    "build:prod": "vite build --mode prod",
+    "build:dev": "vite build --mode development",
+    "build:prod": "vite build",
     "test:unit": "jest",
     "lint": "eslint lint"
   },
