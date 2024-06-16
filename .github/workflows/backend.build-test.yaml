@@ -68,14 +68,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Prepare build tag
-        id: tag
-        run: |
-          VERSION=`echo ${GITHUB_REF#refs/tags/} | grep -o '[0-9]*\..*'`
-          COMMITID=$(git rev-parse --short ${{ github.sha }})
-          IMAGE=ghcr.io/mktkhr/stamp-iot/backend-java
-          TAGS=`echo ${IMAGE}:latest --tag ${IMAGE}:${VERSION}`
-          echo ::set-output name=TAGS::${TAGS}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ghcr.io/mktkhr/stamp-iot/java
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=,suffix=,format=short
 
       - name: test
         run: |
@@ -89,7 +90,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ steps.tag.outputs.TAGS }}
+          tags: ${{ steps.meta.outputs.tags }}
           platforms: linux/amd64,linux/arm64
 
 concurrency:
