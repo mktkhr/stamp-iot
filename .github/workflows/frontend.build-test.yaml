@@ -63,7 +63,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: dist
-          path: ./frontend
+          path: ./frontend/dist
 
       - name: Docker Login
         uses: docker/login-action@v1
