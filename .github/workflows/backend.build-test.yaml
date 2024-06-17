@@ -78,12 +78,6 @@ jobs:
             type=raw,value=latest
             type=sha,prefix=,suffix=,format=short
 
-      - name: test
-        run: |
-          pwd
-          ls
-          ls ./backend
-
       - name: Build and Push
         uses: docker/build-push-action@v2
         with:
