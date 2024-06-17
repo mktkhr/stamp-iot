@@ -1,0 +1,26 @@
+name: Nginx CD
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Nginx Deploy
+    runs-on: [self-hosted]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # NOTE: 開発環境はlatest運用のため，imageを明示的にpullする
+      - name: Docker image pull
+        run: echo $EMS_PASS | sudo -S docker compose pull -f docker-frontend-compose.yaml
+
+      - name: Stop docker service
+        run: cd /usr/share/deploy && echo $EMS_PASS | sudo -S docker compose -f docker-frontend-compose.yaml down
+
+      - name: Start docker service
+        run: cd /usr/share/deploy && echo $EMS_PASS | sudo -S docker compose -f docker-frontend-compose.yaml up -d
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
