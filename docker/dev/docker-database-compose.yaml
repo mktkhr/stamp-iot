@@ -1,0 +1,43 @@
+name: ems
+
+services:
+  postgres:
+    image: postgres:16.3
+    container_name: postgres
+    tty: true
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_DB_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASS}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - type: volume
+        source: postgres-db
+        target: /var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - ems-network
+
+  redis:
+    image: redis:7.2.5
+    container_name: redis
+    tty: true
+    restart: always
+    volumes:
+      - type: volume
+        source: redis-db
+        target: /data
+    expose:
+      - 6379
+    networks:
+      - ems-network
+
+networks:
+  ems-network:
+    name: ems-network
+    driver: bridge
+
+volumes:
+  postgres-db:
+  redis-db:
