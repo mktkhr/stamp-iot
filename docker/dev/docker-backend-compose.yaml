@@ -1,0 +1,25 @@
+name: ems
+
+services:
+  java-service:
+    image: ghcr.io/mktkhr/stamp-iot/java:latest
+    container_name: java
+    tty: true
+    restart: always
+    environment:
+      POSTGRES_DB_HOST: ${POSTGRES_DB_HOST}
+      POSTGRES_DB_PORT: ${POSTGRES_DB_PORT}
+      POSTGRES_USER: ${POSTGRES_DB_USER}
+      POSTGRES_DB_PASS: ${POSTGRES_DB_PASS}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+    command: /bin/bash -c "POSTGRES_DB_HOST=${POSTGRES_DB_HOST} POSTGRES_DB_PORT=${POSTGRES_DB_PORT} POSTGRES_DB_USER=${POSTGRES_DB_USER} POSTGRES_DB_PASS=${POSTGRES_DB_PASS} REDIS_HOST=${REDIS_HOST} REDIS_PORT=${REDIS_PORT} java -jar /app/server.jar --spring.profiles.active=prod"
+    ports:
+      - 8082:8082
+    networks:
+      - ems-network
+
+networks:
+  ems-network:
+    driver: bridge
+    external: true
