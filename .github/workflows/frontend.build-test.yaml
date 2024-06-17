@@ -65,14 +65,14 @@ jobs:
           name: dist
           path: ./frontend/dist
 
-      - name: Docker Login
+      - name: Docker login
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{secrets.GHCR_USER_NAME}}
           password: ${{secrets.GHCR_ACCESS_TOKEN}}
 
-      - name: Set up Docker Buildx
+      - name: Set up docker buildx
         uses: docker/setup-buildx-action@v1
 
       - name: Docker meta
@@ -85,7 +85,7 @@ jobs:
             type=raw,value=latest
             type=sha,prefix=,suffix=,format=short
 
-      - name: Build and Push
+      - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: ./frontend
