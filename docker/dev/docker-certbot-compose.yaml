@@ -1,0 +1,9 @@
+name: ems
+
+services:
+  certbot:
+    image: certbot/certbot:v1.7.0
+    volumes:
+      - ./ssl:/etc/letsencrypt
+      - ./dist:/usr/share/nginx/dist
+    command: ["--version"]
