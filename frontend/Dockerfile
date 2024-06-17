@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 nginx:1.25.5
+FROM --platform=$BUILDPLATFORM nginx:1.27.0
 
 ARG ENVIRONMENT
 
