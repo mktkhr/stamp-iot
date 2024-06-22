@@ -57,6 +57,12 @@ public class AppHighPrecedenceExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * TODO: JPA/Hibernate等のinterceptorを実装してそちらでDBアクセスの例外をcatchできるか確認する
+     *
+     * @param exception 例外
+     * @return レスポンス
+     */
     @ExceptionHandler(EMSDatabaseException.class)
     public ResponseEntity<AppResponseObject> handleEMSDatabaseException(EMSDatabaseException exception) {
 
