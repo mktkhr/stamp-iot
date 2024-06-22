@@ -34,27 +34,16 @@ public class MicroControllerService {
 
     public MicroControllerPostResponse addMicroControllerRelation(Long userId, String macAddress) {
 
-        MicroController microController;
-        Account requestedAccount;
-
-        try {
-            // 対象のMAC Addressのマイクロコントローラー情報を取得
-            microController = microControllerRepository.findByMacAddress(macAddress);
-        } catch (Exception e) {
-            throw new EMSDatabaseException();
-        }
+        // 対象のMAC Addressのマイクロコントローラー情報を取得
+        var microController = microControllerRepository.findByMacAddress(macAddress);
 
         // 対象のマイクロコントローラーがDB上に存在しなかった場合，404を返す
         if (microController == null) {
             throw new EMSResourceNotFoundException();
         }
 
-        try {
-            // リクエストしたアカウント情報を取得
-            requestedAccount = accountRepository.findById(userId);
-        } catch (Exception e) {
-            throw new EMSDatabaseException();
-        }
+        // リクエストしたアカウント情報を取得
+        var requestedAccount = accountRepository.findById(userId);
 
         // 対象のアカウントが存在しなかった場合，400を返す
         if (requestedAccount == null) {
@@ -68,12 +57,8 @@ public class MicroControllerService {
 
         microController.setAccount(requestedAccount);
 
-        try {
-            // マイクロコントローラー情報を更新する
-            microControllerRepository.save(microController);
-        } catch (Exception e) {
-            throw new EMSDatabaseException();
-        }
+        // マイクロコントローラー情報を更新する
+        microControllerRepository.save(microController);
 
         return new MicroControllerPostResponse(microController.getId(), microController.getUuid(), microController.getName(), microController.getMacAddress(), microController.getInterval(), microController.getSdi12Address(), microController.getCreatedAt(), microController.getUpdatedAt(), microController.getDeletedAt());
 
@@ -86,14 +71,8 @@ public class MicroControllerService {
      * @return アカウントに紐づくマイコンリスト
      */
     public List<MicroControllerGetResponse> getMicroControllerList(String userUuid) {
-        Account account;
 
-        try {
-            account = accountRepository.findByUuid(UUID.fromString(userUuid));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        final var account = accountRepository.findByUuid(UUID.fromString(userUuid));
 
         // アカウントが存在しなかった場合，404を返す
         if (account == null) {
@@ -113,14 +92,8 @@ public class MicroControllerService {
      * @return マイコン詳細
      */
     public MicroController getMicroControllerDetail(String microControllerUuid) {
-        MicroController microController;
 
-        try {
-            microController = microControllerRepository.findByUuid(microControllerUuid);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        final var microController = microControllerRepository.findByUuid(microControllerUuid);
 
         // マイコンが存在しなかった場合，400を返す
         if (microController == null) {
@@ -144,14 +117,8 @@ public class MicroControllerService {
      * @return マイコン詳細
      */
     public MicroController getMicroControllerDetailWithMacAddress(String macAddress) {
-        MicroController microController;
 
-        try {
-            microController = microControllerRepository.findByMacAddress(macAddress);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        var microController = microControllerRepository.findByMacAddress(macAddress);
 
         // マイコンが存在しなかった場合，404を返す
         if (microController == null) {
@@ -170,14 +137,8 @@ public class MicroControllerService {
      */
     @Transactional(rollbackFor = Exception.class)
     public MicroController updateMicroControllerDetail(String userUuid, MicroControllerPatchParam param) {
-        MicroController microController;
 
-        try {
-            microController = microControllerRepository.findByUuid(param.getMicroControllerUuid());
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        var microController = microControllerRepository.findByUuid(param.getMicroControllerUuid());
 
         // マイコンが存在しなかった場合，404を返す
         if (microController == null) {
@@ -203,22 +164,8 @@ public class MicroControllerService {
         }
         microController.setUpdatedAt(LocalDateTime.now());
 
-        try {
-            microControllerRepository.save(microController);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        microControllerRepository.save(microController);
 
-        MicroController microControllerUpdateResult;
-        try {
-            microControllerUpdateResult = microControllerRepository.findByUuid(param.getMicroControllerUuid());
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
-
-
-        return microControllerUpdateResult;
+        return microControllerRepository.findByUuid(param.getMicroControllerUuid());
     }
 }

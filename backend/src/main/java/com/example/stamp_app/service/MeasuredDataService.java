@@ -49,18 +49,10 @@ public class MeasuredDataService {
     @Transactional(rollbackOn = Exception.class)
     public void addMeasuredData(MeasuredDataPostParam measuredDataPostParam) throws ResponseStatusException {
 
-        MicroController microController;
-
         // マイコンと所有者の一致確認
-        try {
-            // microControllerをprintしてはいけない理由(https://blogenist.jp/2020/12/17/11185/#i)
-            log.info("測定データ送信元MACアドレス: " + measuredDataPostParam.getMacAddress());
-            microController = microControllerRepository.findByMacAddress(measuredDataPostParam.getMacAddress());
-
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        // microControllerをprintしてはいけない理由(https://blogenist.jp/2020/12/17/11185/#i)
+        log.info("測定データ送信元MACアドレス: " + measuredDataPostParam.getMacAddress());
+        var microController = microControllerRepository.findByMacAddress(measuredDataPostParam.getMacAddress());
 
         // DBに登録されていないマイコンの場合
         if (microController == null) {
@@ -99,21 +91,15 @@ public class MeasuredDataService {
         measuredDataMaster.setMicroController(microController);
 
         // 測定データの保存
-        try {
-            measuredDataMasterRepository.save(measuredDataMaster);
+        measuredDataMasterRepository.save(measuredDataMaster);
 
-            for (var sdi12Param : sdi12ParamList) {
-                Sensor sensor = sensorRepository.findById(sdi12Param.getSensorId());
-                sdi12DataRepository.save(Sdi12Data.createSdi12Data(sdi12Param, measuredDataMaster, sensor));
-            }
+        for (var sdi12Param : sdi12ParamList) {
+            Sensor sensor = sensorRepository.findById(sdi12Param.getSensorId());
+            sdi12DataRepository.save(Sdi12Data.createSdi12Data(sdi12Param, measuredDataMaster, sensor));
+        }
 
-            for (var environmentalDataParam : environmentalDataList) {
-                environmentalDataRepository.save(EnvironmentalData.createEnvironmentalData(environmentalDataParam, measuredDataMaster));
-            }
-
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
+        for (var environmentalDataParam : environmentalDataList) {
+            environmentalDataRepository.save(EnvironmentalData.createEnvironmentalData(environmentalDataParam, measuredDataMaster));
         }
 
     }
@@ -126,13 +112,8 @@ public class MeasuredDataService {
      * @return 測定結果リスト
      */
     public MeasuredDataGetResponse getMeasuredData(String userUuid, String microControllerUuid) {
-        MicroController microController = null;
 
-        try {
-            microController = microControllerRepository.findByUuid(microControllerUuid);
-        } catch (Exception e) {
-            throw new EMSDatabaseException();
-        }
+        var microController = microControllerRepository.findByUuid(microControllerUuid);
 
         // マイコンが存在しない場合，400を返す
         if (microController == null) {
