@@ -67,14 +67,7 @@ public class AppInterceptor implements HandlerInterceptor {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        String userUuid;
-
-        try {
-            userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        var userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid);
 
         if (userUuid != null) {
             requestedUser.setSessionUuid(sessionUuid);

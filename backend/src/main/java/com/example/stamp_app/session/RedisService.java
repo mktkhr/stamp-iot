@@ -38,15 +38,7 @@ public class RedisService {
      * @return String ユーザーUUID or null
      */
     public String getUserUuidFromSessionUuid(String key) {
-        String value = null;
-
-        try {
-            value = (String) redisTemplate.opsForValue().get(key);
-        } catch (Exception e) {
-            throw new EMSDatabaseException();
-        }
-
-        return value;
+        return (String) redisTemplate.opsForValue().get(key);
     }
 
     /**

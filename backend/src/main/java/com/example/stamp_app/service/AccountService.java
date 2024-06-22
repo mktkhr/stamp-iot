@@ -35,14 +35,7 @@ public class AccountService {
      */
     public void addAccount(RegisterPostParam registerPostParam) {
 
-        boolean isNewUser;
-
-        try {
-            isNewUser = accountRepository.findByEmail(registerPostParam.getEmail()) == null;
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        var isNewUser = accountRepository.findByEmail(registerPostParam.getEmail()) == null;
 
         if (!isNewUser) {
             log.error(" The email address has already been used.");
@@ -58,14 +51,8 @@ public class AccountService {
         newUser.setCreatedAt(localDateTime);
         newUser.setUpdatedAt(localDateTime);
 
-        try {
-            accountRepository.save(newUser);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        accountRepository.save(newUser);
 
-        log.info("Successfully registered.");
     }
 
     /**
@@ -76,15 +63,7 @@ public class AccountService {
      */
     public AccountLoginResponse login(LoginPostParam loginPostParam) throws IllegalAccessException {
 
-        Account loginUser;
-
-        try {
-            loginUser = accountRepository.findByEmailAndDeletedAtIsNull(loginPostParam.getEmail());
-
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        var loginUser = accountRepository.findByEmailAndDeletedAtIsNull(loginPostParam.getEmail());
 
         // 対象のアカウントが存在しない場合，404を返す
         if (loginUser == null) {
@@ -113,14 +92,7 @@ public class AccountService {
      */
     public AccountGetResponse getAccountInfo(String userUuid) {
 
-        Account account;
-
-        try {
-            account = accountRepository.findByUuid(UUID.fromString(userUuid));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        var account = accountRepository.findByUuid(UUID.fromString(userUuid));
 
         // アカウントが存在しない場合，400を返す
         if (account == null) {
@@ -139,14 +111,7 @@ public class AccountService {
      */
     public void deleteAccount(String userUuid) {
 
-        Account account;
-
-        try {
-            account = accountRepository.findByUuid(UUID.fromString(userUuid));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        var account = accountRepository.findByUuid(UUID.fromString(userUuid));
 
         // アカウントが存在しない場合，400を返す
         if (account == null) {
@@ -157,13 +122,7 @@ public class AccountService {
         // 論理削除
         account.setDeletedAt(LocalDateTime.now());
 
-        try {
-            // 論理削除したデータで上書き
-            accountRepository.save(account);
-        } catch (Exception e) {
-            log.error("アカウント削除に失敗したユーザーUUID: " + userUuid);
-            log.error(e.getMessage(), e);
-            throw new EMSDatabaseException();
-        }
+        // 論理削除したデータで上書き
+        accountRepository.save(account);
     }
 }
