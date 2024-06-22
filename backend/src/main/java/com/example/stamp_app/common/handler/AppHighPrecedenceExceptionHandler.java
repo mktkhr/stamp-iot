@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Objects;
+
 @Slf4j
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -25,7 +27,7 @@ public class AppHighPrecedenceExceptionHandler {
 
         var errorMessage = exception.getMessage() != null ? exception.getMessage() : ErrorCode.CONSTRAINT_VIOLATION_EXCEPTION.getMessage();
 
-        log.error(errorMessage);
+        log.error(errorMessage, exception);
 
         var response = AppResponseObject.createErrorResponse(ErrorCode.CONSTRAINT_VIOLATION_EXCEPTION.getCode(), errorMessage);
 
@@ -38,19 +40,28 @@ public class AppHighPrecedenceExceptionHandler {
 
         var errorMessage = exception.getMessage() != null ? exception.getMessage() : ErrorCode.ILLEGAL_ACCESS_EXCEPTION.getMessage();
 
-        log.error(errorMessage);
+        log.error(errorMessage, exception);
 
         var response = AppResponseObject.createErrorResponse(ErrorCode.ILLEGAL_ACCESS_EXCEPTION.getCode(), errorMessage);
 
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
+    /**
+     * NOTE: 例外メッセージが存在しない場合は呼び出し箇所でstacktraceを出力すること
+     *
+     * @param exception 例外
+     * @return レスポンス
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<AppResponseObject> handleIllegalArgumentException(IllegalArgumentException exception) {
 
         var errorMessage = exception.getMessage() != null ? exception.getMessage() : ErrorCode.ILLEGAL_ARGUMENT_EXCEPTION.getMessage();
 
-        log.error(errorMessage);
+        // 例外内容が存在する場合はここでstacktraceを出力
+        if(Objects.nonNull(exception.getMessage())){
+            log.error(errorMessage, exception);
+        }
 
         var response = AppResponseObject.createErrorResponse(ErrorCode.ILLEGAL_ARGUMENT_EXCEPTION.getCode(), errorMessage);
 
@@ -68,7 +79,7 @@ public class AppHighPrecedenceExceptionHandler {
 
         var errorMessage = exception.getMessage() != null ? exception.getMessage() : ErrorCode.EMS_DATABASE_EXCEPTION.getMessage();
 
-        log.error(errorMessage);
+        log.error(errorMessage, exception);
 
         var response = AppResponseObject.createErrorResponse(ErrorCode.EMS_DATABASE_EXCEPTION.getCode(), errorMessage);
 
@@ -80,7 +91,7 @@ public class AppHighPrecedenceExceptionHandler {
 
         var errorMessage = exception.getMessage() != null ? exception.getMessage() : ErrorCode.EMS_RESOURCE_NOT_FOUND_EXCEPTION.getMessage();
 
-        log.error(errorMessage);
+        log.error(errorMessage, exception);
 
         var response = AppResponseObject.createErrorResponse(ErrorCode.EMS_RESOURCE_NOT_FOUND_EXCEPTION.getCode(), errorMessage);
 
@@ -92,7 +103,7 @@ public class AppHighPrecedenceExceptionHandler {
 
         var errorMessage = exception.getMessage() != null ? exception.getMessage() : ErrorCode.EMS_RESOURCE_DUPLICATION_EXCEPTION.getMessage();
 
-        log.error(errorMessage);
+        log.error(errorMessage, exception);
 
         var response = AppResponseObject.createErrorResponse(ErrorCode.EMS_RESOURCE_DUPLICATION_EXCEPTION.getCode(), errorMessage);
 

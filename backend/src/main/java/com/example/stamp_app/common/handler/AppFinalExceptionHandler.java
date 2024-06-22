@@ -24,7 +24,9 @@ public class AppFinalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        log.error("Uncaught Exception", throwable);
+        var errorMessage = throwable.getMessage() != null ? throwable.getMessage() : ErrorCode.EMS_UNCAUGHT_EXCEPTION.getMessage();
+
+        log.error(errorMessage, throwable);
 
         var apiResponse = new AppResponseObject();
         apiResponse.addError(new Error(ErrorCode.EMS_UNCAUGHT_EXCEPTION.getCode(), ErrorCode.EMS_UNCAUGHT_EXCEPTION.getMessage()));
