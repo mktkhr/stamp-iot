@@ -1,16 +1,35 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-autoscaler
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-deployment
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-app
+  name: nginx-deployment
 spec:
   selector:
     matchLabels:
-      app: nginx-app
+      app: nginx
   replicas: 1
   template:
     metadata:
       labels:
-        app: nginx-app
+        app: nginx
     spec:
       containers:
         - name: nginx
@@ -23,6 +42,12 @@ spec:
           envFrom:
             - secretRef:
                 name: stamp-iot-secret
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 300m
+            limits:
+              cpu: 500m
 ---
 apiVersion: v1
 kind: Service
