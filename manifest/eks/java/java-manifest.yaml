@@ -25,6 +25,8 @@ spec:
   selector:
     matchLabels:
       app: java
+  # javaの起動時間待ち時間を十分満たすことができるように30sを設定
+  minReadySeconds: 30
   replicas: 1
   template:
     metadata:
