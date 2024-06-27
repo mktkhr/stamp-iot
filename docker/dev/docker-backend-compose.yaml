@@ -21,5 +21,6 @@ services:
 
 networks:
   ems-network:
+    name: ems-network
     driver: bridge
     external: true
