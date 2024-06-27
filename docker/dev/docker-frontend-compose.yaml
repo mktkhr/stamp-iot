@@ -8,7 +8,7 @@ services:
     restart: always
     volumes:
       - type: bind
-        source: ./ssl
+        source: ${SSL_PATH}/ssl
         target: /etc/ssl
     ports:
       - 80:80
@@ -18,5 +18,6 @@ services:
 
 networks:
   ems-network:
+    name: ems-network
     driver: bridge
     external: true
