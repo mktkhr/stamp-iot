@@ -13,13 +13,13 @@ jobs:
 
       # NOTE: 開発環境はlatest運用のため，imageを明示的にpullする
       - name: Docker image pull
-        run: echo $EMS_PASS | sudo -S docker compose -f docker-frontend-compose.yaml pull
+        run: echo $EMS_PASS | sudo -S docker compose -f $DEV_DOCKER_DIRECTORY/docker-frontend-compose.yaml pull
 
       - name: Stop docker service
-        run: cd /usr/share/deploy && echo $EMS_PASS | sudo -S docker compose -f docker-frontend-compose.yaml down
+        run: cd /usr/share/deploy && echo $EMS_PASS | sudo -S docker compose -f $DEV_DOCKER_DIRECTORY/docker-frontend-compose.yaml down
 
       - name: Start docker service
-        run: cd /usr/share/deploy && echo $EMS_PASS | sudo -S docker compose -f docker-frontend-compose.yaml up -d
+        run: cd /usr/share/deploy && echo $EMS_PASS | sudo -S docker compose -f $DEV_DOCKER_DIRECTORY/docker-frontend-compose.yaml up -d
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
