@@ -15,7 +15,7 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 10
+        averageUtilization: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -27,7 +27,6 @@ spec:
       app: java
   # javaの起動時間待ち時間を十分満たすことができるように30sを設定
   minReadySeconds: 30
-  replicas: 1
   template:
     metadata:
       labels:
@@ -65,4 +64,4 @@ spec:
     targetPort: 8082
     protocol: TCP
   selector:
-    app: java
+    app: java-deployment
