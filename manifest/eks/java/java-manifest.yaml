@@ -64,4 +64,4 @@ spec:
     targetPort: 8082
     protocol: TCP
   selector:
-    app: java
+    app: java-deployment

@@ -62,4 +62,4 @@ spec:
       targetPort: 80
       protocol: TCP
   selector:
-    app: nginx-app
+    app: nginx-deployment
