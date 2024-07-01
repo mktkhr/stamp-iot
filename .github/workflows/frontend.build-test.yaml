@@ -92,8 +92,33 @@ jobs:
         with:
           context: ./frontend
           file: ./frontend/Dockerfile
+          build-args: |
+            CONF_PATH=./nginx.conf
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Docker meta
+        id: meta_eks
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/mktkhr/stamp-iot/nginx-eks
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=,suffix=,format=short
+
+      - name: Build and push for EKS
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          build-args: |
+            CONF_PATH=./nginx-eks.conf
+          push: true
+          tags: ${{ steps.meta_eks.outputs.tags }}
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
