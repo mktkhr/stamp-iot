@@ -15,7 +15,7 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 10
+        averageUtilization: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
