@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # NOTE: 開発環境はlatest運用のため，imageを明示的にpullする
       - name: Docker image pull
