@@ -6,7 +6,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: nginx-deployment
+    name: nginx-app
   minReplicas: 1
   maxReplicas: 3
   metrics:
@@ -20,15 +20,15 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: nginx-app
 spec:
   selector:
     matchLabels:
-      app: nginx
+      app: nginx-app
   template:
     metadata:
       labels:
-        app: nginx
+        app: nginx-app
     spec:
       containers:
         - name: nginx
@@ -62,4 +62,4 @@ spec:
       targetPort: 80
       protocol: TCP
   selector:
-    app: nginx-deployment
+    app: nginx-app
