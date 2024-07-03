@@ -6,7 +6,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: java-deployment
+    name: java-app
   minReplicas: 1
   maxReplicas: 3
   metrics:
@@ -20,17 +20,17 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: java-deployment
+  name: java-app
 spec:
   selector:
     matchLabels:
-      app: java
+      app: java-app
   # javaの起動時間待ち時間を十分満たすことができるように30sを設定
   minReadySeconds: 30
   template:
     metadata:
       labels:
-        app: java
+        app: java-app
     spec:
       containers:
         - name: java
@@ -64,4 +64,4 @@ spec:
     targetPort: 8082
     protocol: TCP
   selector:
-    app: java-deployment
+    app: java-app
