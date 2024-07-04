@@ -40,7 +40,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8082
-          command: ["/bin/sh","-c","POSTGRES_DB_HOST=${POSTGRES_DB_HOST} POSTGRES_DB_PORT=${POSTGRES_DB_PORT} POSTGRES_DB_USER=${POSTGRES_DB_USER} POSTGRES_DB_PASS=${POSTGRES_DB_PASS} REDIS_HOST=${REDIS_HOST} REDIS_PORT=${REDIS_PORT} java -jar /app/server.jar --spring.profiles.active=prod"]
+          command: ["/bin/sh","-c", "java -jar /app/server.jar --spring.profiles.active=prod"]
           envFrom:
             - secretRef:
                 name: stamp-iot-secret
