@@ -25,8 +25,6 @@ spec:
   selector:
     matchLabels:
       app: java-app
-  # javaの起動時間待ち時間を十分満たすことができるように30sを設定
-  minReadySeconds: 30
   template:
     metadata:
       labels:
@@ -50,6 +48,26 @@ spec:
               cpu: 500m
             limits:
               cpu: 1000m
+          livenessProbe:
+            # jarの起動時間と近しい値を設定する
+            initialDelaySeconds: 20
+            httpGet:
+              port: 7082
+              path: /actuator/health/liveness
+            periodSeconds: 5
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 2
+          readinessProbe:
+            # jarの起動時間と近しい値を設定する
+            initialDelaySeconds: 20
+            httpGet:
+              port: 7082
+              path: /actuator/health/readiness
+            periodSeconds: 5
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 2
 ---
 apiVersion: v1
 kind: Service
