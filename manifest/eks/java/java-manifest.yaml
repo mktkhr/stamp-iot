@@ -35,10 +35,19 @@ spec:
           # image は必要に応じて変更すること
           # TODO: SECRETや環境変数で渡す方法が分からないので，一時的にベタ書きとする
           image: <ECRのURIを指定>
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - "ALL"
+            seccompProfile:
+              type: RuntimeDefault
+            runAsNonRoot: true
+            runAsUser: 10001
           imagePullPolicy: Always
           ports:
             - containerPort: 8082
-          command: ["/bin/sh","-c", "java -jar /app/server.jar --spring.profiles.active=prod"]
+          command: ["/bin/sh","-c", "java -jar server.jar --spring.profiles.active=prod"]
           envFrom:
             - secretRef:
                 name: stamp-iot-secret

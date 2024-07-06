@@ -35,9 +35,18 @@ spec:
           # image は必要に応じて変更すること
           # TODO: SECRETや環境変数で渡す方法が分からないので，一時的にベタ書きとする
           image: <ECRのURIを指定>
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - "ALL"
+            seccompProfile:
+              type: RuntimeDefault
+            runAsNonRoot: true
+            runAsUser: 100
           imagePullPolicy: Always
           ports:
-            - containerPort: 80
+            - containerPort: 8080
           envFrom:
             - secretRef:
                 name: stamp-iot-secret
@@ -50,7 +59,7 @@ spec:
           livenessProbe:
             initialDelaySeconds: 5
             httpGet:
-              port: 80
+              port: 8080
               path: /
               scheme: HTTP
             periodSeconds: 5
@@ -77,7 +86,7 @@ spec:
   ports:
     - name: http
       port: 80
-      targetPort: 80
+      targetPort: 8080
       protocol: TCP
   selector:
     app: nginx-app
