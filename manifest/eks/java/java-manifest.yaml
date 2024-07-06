@@ -47,7 +47,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8082
-          command: ["/bin/sh","-c", "java -jar /app/server.jar --spring.profiles.active=prod"]
+          command: ["/bin/sh","-c", "java -jar server.jar --spring.profiles.active=prod"]
           envFrom:
             - secretRef:
                 name: stamp-iot-secret
