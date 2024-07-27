@@ -3,7 +3,7 @@ import App from '@/App.vue';
 import router from '@/router';
 import { createPinia } from 'pinia';
 import { createVuetify } from 'vuetify';
-import '@/style/common-style.css';
+import '@/style/common-style.scss';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import { createI18n } from 'vue-i18n';
