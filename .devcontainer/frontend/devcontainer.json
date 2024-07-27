@@ -19,15 +19,15 @@
         "i18n-ally.keystyle": "nested",
         "[vue]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode",
-          "editor.formatOnSave": false
+          "editor.formatOnSave": true
         },
         "[javascript]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode",
-          "editor.formatOnSave": false
+          "editor.formatOnSave": true
         },
         "[typescript]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode",
-          "editor.formatOnSave": false
+          "editor.formatOnSave": true
         },
         "editor.codeActionsOnSave": {
           "source.organizeImports": "explicit"
