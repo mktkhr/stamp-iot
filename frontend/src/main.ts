@@ -1,14 +1,14 @@
-import { createApp } from 'vue';
 import App from '@/App.vue';
+import en from '@/locales/en';
+import ja from '@/locales/ja';
 import router from '@/router';
+import '@/styles/style.scss';
 import { createPinia } from 'pinia';
+import { createApp } from 'vue';
+import { createI18n } from 'vue-i18n';
 import { createVuetify } from 'vuetify';
-import '@/style/common-style.scss';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import { createI18n } from 'vue-i18n';
-import ja from '@/locales/ja';
-import en from '@/locales/en';
 
 const app = createApp(App);
 
