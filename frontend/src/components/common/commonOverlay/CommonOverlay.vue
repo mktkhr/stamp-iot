@@ -76,7 +76,7 @@ const {
     </div>
   </Teleport>
 </template>
-<style lang="scss">
+<style lang="scss" scoped>
 $overlay_z_index: v-bind(OVERLAY_Z_INDEX);
 $overlay_content_z_index: v-bind(OVERLAY_CONTENT_Z_IDNEX);
 $animation_span: 0.1s;
