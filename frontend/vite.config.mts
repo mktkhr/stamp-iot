@@ -1,5 +1,5 @@
-import vue from '@vitejs/plugin-vue'
-import path from 'path'
+import vue from '@vitejs/plugin-vue';
+import path from 'path';
 
 export default {
   plugins: [vue()],
@@ -15,7 +15,7 @@ export default {
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
-    }
-  }
-}
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+};
