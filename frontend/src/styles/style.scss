@@ -39,6 +39,42 @@ div::-webkit-scrollbar {
   display: none; /* Chrome スクロールバー非表示 */
 }
 
+.common-icon-style {
+  font-size: 24px;
+  color: #777;
+  transition: 0.4s ease;
+  &-active {
+    color: #3687cc;
+  }
+}
+
+.common-effect-ripple {
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  display: inline-block;
+  outline: none;
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: radial-gradient(circle, #3687cc99 10%, transparent 10%) no-repeat 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.3s, opacity 1s;
+    pointer-events: none;
+  }
+  &:active::after {
+    transform: scale(0, 0);
+    transition: 0s;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+}
+
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
