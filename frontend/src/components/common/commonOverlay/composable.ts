@@ -11,7 +11,7 @@ export const useOverlay = (
     maxHeight?: string;
   },
   emit: {
-    (e: 'onClickBackgroud'): void;
+    (e: 'onClickBackground'): void;
     (e: 'update:modelValue', value: boolean): boolean;
   },
   modelValue: Ref<boolean>
@@ -54,8 +54,8 @@ export const useOverlay = (
   /**
    * 背景クリック時の処理
    */
-  const onClickBackgroud = () => {
-    emit('onClickBackgroud');
+  const onClickBackground = () => {
+    emit('onClickBackground');
 
     if (props.customBackgroundClickEvent) {
       props.customBackgroundClickEvent();
@@ -85,6 +85,6 @@ export const useOverlay = (
     persistAnimationFlag,
     hideInProgress,
     TRANSITION_DELAY_IN_SEC: TRANSITION_DELAY_IN_SEC + 's', // css 用に s を付与
-    onClickBackgroud,
+    onClickBackground,
   };
 };

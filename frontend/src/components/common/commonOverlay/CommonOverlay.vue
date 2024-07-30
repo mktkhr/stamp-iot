@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'onClickBackgroud'): void;
+  (e: 'onClickBackground'): void;
   (e: 'update:modelValue', value: boolean): boolean;
 }>();
 
@@ -50,7 +50,7 @@ const {
   persistAnimationFlag,
   hideInProgress,
   TRANSITION_DELAY_IN_SEC,
-  onClickBackgroud,
+  onClickBackground,
 } = useOverlay(props, emit, modelValue);
 </script>
 <template>
@@ -63,7 +63,7 @@ const {
       <div
         class="wrapper-fullscreen"
         :class="{ persist: persistAnimationFlag }"
-        @click.self="onClickBackgroud"
+        @click.self="onClickBackground"
       >
         <div
           class="wrapper-content"
