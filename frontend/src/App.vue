@@ -1,16 +1,37 @@
 <script setup lang="ts">
-import { watch, ref, computed } from 'vue';
 import router from '@/router';
+import { computed, ref } from 'vue';
 
-import HeaderComponent from '@/components/HeaderComponent.vue';
-import NavigatorComponent from '@/components/NavigatorComponent.vue';
-import NotificationBar from '@/components/common/NotificationBar.vue';
-
-import { SpinnerStore } from './store/spinnerStore';
-import { AccountStore } from './store/accountStore';
-import { StatusCode } from './constants/statusCode';
+import CommonLoader from '@/components/common/commonLoader/CommonLoader.vue';
+import { LOADER_TYPE } from './components/common/commonLoader/composable';
 import { NotificationType } from './constants/notificationType';
+import { StatusCode } from './constants/statusCode';
 import { i18n } from './main';
+import { AccountStore } from './store/accountStore';
+import { SidebarStore } from './store/sidebarStore';
+import { SpinnerStore } from './store/spinnerStore';
+
+import { HEADER_Z_INDEX, SIDEBAR_Z_INDEX } from '@/config/zindex';
+import CommonHeader from './components/common/commonHeader/CommonHeader.vue';
+import CommonOverlay from './components/common/commonOverlay/CommonOverlay.vue';
+import CommonSidebar from './components/common/commonSidebar/CommonSidebar.vue';
+
+const sidebarStore = SidebarStore();
+
+const svh = ref('0px');
+const calcInnerHeight = () => {
+  svh.value = `${window.innerHeight}px`;
+};
+window.addEventListener('resize', () => calcInnerHeight);
+calcInnerHeight();
+
+const sidebarRef = ref<HTMLDivElement>();
+const sideBarWidth = computed(() => {
+  if (!sidebarRef.value) return '0px';
+  return `${sidebarRef.value.clientWidth}px`;
+});
+
+const isSidebarActive = computed(() => sidebarStore.isActive);
 
 // スピナー表示状態管理
 const spinnerStore = SpinnerStore();
@@ -45,59 +66,85 @@ const onClickLogout = async () => {
       setTimeout(() => (showNotification.value = false), 3000);
     });
 };
-
-// ハンバーガーメニューの非表示設定
-const showHamburgerMenu = ref(false);
-watch(router.currentRoute, () => {
-  menuStateRef.value = false; // 画面遷移時にメニューを隠す
-  if (router.currentRoute.value.name === 'login' || router.currentRoute.value.name === 'register') {
-    showHamburgerMenu.value = false;
-  } else {
-    showHamburgerMenu.value = true;
-  }
-});
 </script>
 
 <template>
-  <HeaderComponent
-    :showHamburgerMenu="showHamburgerMenu"
-    :menuState="menuStateRef"
-    @clickEvent="changeState"
-    @onClickLogout="onClickLogout"
-  />
-  <NavigatorComponent :menuState="menuStateRef" v-if="showHamburgerMenu" />
-
-  <div class="main-view">
-    <div v-if="showSpinner" class="spinner">
-      <v-progress-circular color="blue" indeterminate />
+  <div class="wrapper-root">
+    <div class="wrapper-header">
+      <CommonHeader />
     </div>
-    <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
-    <router-view />
+    <div class="wrapper-content">
+      <div ref="sidebarRef" class="sidebar-container" :class="{ active: isSidebarActive }">
+        <CommonSidebar />
+      </div>
+      <RouterView />
+    </div>
+
+    <CommonOverlay v-model="showSpinner" persistent>
+      <CommonLoader :pattern="LOADER_TYPE.CIRCLE" />
+    </CommonOverlay>
+
+    <div id="teleport-container"></div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-$header-height: 50px;
-.main-view {
-  height: calc(100vh - $header-height);
-  height: calc(100svh - $header-height);
-  width: 100vw;
-  margin-top: $header-height;
-  position: relative;
+$header_height: 50px;
+$header_z_index: v-bind(HEADER_Z_INDEX);
+$sidebar_width: v-bind(sideBarWidth);
+$sidebar_z_index: v-bind(SIDEBAR_Z_INDEX);
+$sidebar_top_bottom_margin: 32px;
+$sidebar_max_width: 300px;
+$common_left_margin: 16px;
+
+.wrapper {
+  &-root {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  &-header {
+    height: $header_height;
+    width: 100%;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.6);
+    z-index: $header_z_index;
+  }
+  &-content {
+    height: calc(100% - $header_height);
+    width: 100%;
+    position: relative;
+  }
 }
-.spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100vh;
-  height: 100svh;
-  z-index: 9999;
+
+.sidebar-container {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(#000, 0.5);
+  top: calc($sidebar_top_bottom_margin);
+  left: calc($sidebar_max_width * -1);
+  transition: 0.4s ease;
+  max-height: calc(100% - $sidebar_top_bottom_margin * 2);
+  width: auto;
+  max-width: $sidebar_max_width;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.6);
+  z-index: $sidebar_z_index;
+
+  &.active {
+    left: $common_left_margin;
+  }
+}
+</style>
+
+<style lang="scss">
+#app {
+  height: 100vh;
+  height: v-bind(svh);
+  height: 100svh;
+  width: 100vw;
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--v-font-normal);
+  overflow: hidden;
 }
 </style>
