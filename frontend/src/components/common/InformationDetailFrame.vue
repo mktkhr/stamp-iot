@@ -28,7 +28,7 @@ const emit = defineEmits<Emits>();
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 // wrapper-button > i にcssを当てるため，scopedをつけない
 .information-detail-frame {
   &-box {
