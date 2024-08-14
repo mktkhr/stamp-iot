@@ -123,6 +123,9 @@ export const useMenu = (
         }
       }
     });
+
+    // 画面リサイズ時にcontentの位置を再計算する
+    window.addEventListener('resize', () => updateContentPosition());
   });
 
   return {
