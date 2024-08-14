@@ -2,8 +2,8 @@
 import router from '@/router';
 import { SidebarStore } from '@/store/sidebarStore';
 import { computed, ref, watch } from 'vue';
-import CommonButton from '../CommonButton.vue';
 import CommonMenu from '../commonMenu/CommonMenu.vue';
+import AccountMenu from './components/accountMenu/AccountMenu.vue';
 
 const sidebarStore = SidebarStore();
 const isActive = computed(() => sidebarStore.isActive);
@@ -38,7 +38,7 @@ watch(router.currentRoute, () => {
         <template #activator>
           <span class="ems-account_circle common-effect-ripple icon"></span>
         </template>
-        <CommonButton />
+        <AccountMenu />
       </CommonMenu>
     </div>
   </div>
