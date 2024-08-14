@@ -39,24 +39,15 @@ export type MicroControllerDetailPatchParam = {
  * @return  アカウントに紐づくマイコン情報 or null
  */
 export const microControllerGet = async (): Promise<Array<MicroController>> => {
-  try {
-    const rawResponse = await axios.get('/api/ems/micro-controller/info');
-    const response: Array<MicroController> = rawResponse.data;
-    return response;
-  } catch (e) {
-    throw e;
-  }
+  const rawResponse = await axios.get('/api/ems/micro-controller/info');
+  return rawResponse.data;
 };
 
 export const microControllerRegister = async (userId: string, macAddress: string) => {
-  try {
-    await axios.post('/api/ems/micro-controller', {
-      userId: userId,
-      macAddress: macAddress,
-    });
-  } catch (e) {
-    throw e;
-  }
+  await axios.post('/api/ems/micro-controller', {
+    userId: userId,
+    macAddress: macAddress,
+  });
 };
 
 /**
@@ -66,15 +57,10 @@ export const microControllerRegister = async (userId: string, macAddress: string
 export const microControllerDetailGet = async (
   microControllerUuid: string
 ): Promise<MicroController> => {
-  try {
-    const rawResponse = await axios.get('/api/ems/micro-controller/detail', {
-      params: { microControllerUuid: microControllerUuid },
-    });
-    const response: MicroController = rawResponse.data;
-    return response;
-  } catch (e) {
-    throw e;
-  }
+  const rawResponse = await axios.get('/api/ems/micro-controller/detail', {
+    params: { microControllerUuid: microControllerUuid },
+  });
+  return rawResponse.data;
 };
 
 /**
@@ -84,11 +70,6 @@ export const microControllerDetailGet = async (
 export const microControllerDetailPatch = async (
   param: MicroControllerDetailPatchParam
 ): Promise<MicroController> => {
-  try {
-    const rawResponse = await axios.patch('/api/ems/micro-controller/detail', param);
-    const response: MicroController = rawResponse.data;
-    return response;
-  } catch (e) {
-    throw e;
-  }
+  const rawResponse = await axios.patch('/api/ems/micro-controller/detail', param);
+  return rawResponse.data;
 };

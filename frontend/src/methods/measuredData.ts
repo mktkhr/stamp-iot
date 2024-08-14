@@ -207,13 +207,8 @@ export const convertEnvironmentalKeyWordToTitle = (dataType: string) => {
 export const fetchMeasuredData = async (
   microControllerUuid: string
 ): Promise<MeasuredDataState> => {
-  try {
-    const rawResponse = await axios.get('/api/ems/measured-data', {
-      params: { microControllerUuid: microControllerUuid },
-    });
-    const response: MeasuredDataState = rawResponse.data;
-    return response;
-  } catch (e) {
-    throw e;
-  }
+  const rawResponse = await axios.get('/api/ems/measured-data', {
+    params: { microControllerUuid: microControllerUuid },
+  });
+  return rawResponse.data;
 };

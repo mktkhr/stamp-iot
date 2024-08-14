@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 
 export class Account {
   id: number;
@@ -37,44 +37,32 @@ export const getAccountInfo = async (): Promise<AccountInfoState> => {
 };
 
 export const login = async (mailAddress: string, password: string) => {
-  try {
-    const response = await axios.post('/api/ems/account/login', {
-      email: mailAddress,
-      password: password,
-    });
-    return response;
-  } catch (e) {
-    throw e;
-  }
+  return await axios.post('/api/ems/account/login', {
+    email: mailAddress,
+    password: password,
+  });
 };
 
 export const logout = async () => {
-  try {
-    await axios.post('/api/ems/account/logout');
-  } catch (e) {
-    throw e;
-  }
+  await axios.post('/api/ems/account/logout');
 };
 
 export const register = async (mailAddress: string, password: string) => {
-  try {
-    const response = await axios.post('/api/ems/account/register', {
-      email: mailAddress,
-      password: password,
-    });
-    return response;
-  } catch (e) {
-    throw e;
-  }
+  return await axios.post('/api/ems/account/register', {
+    email: mailAddress,
+    password: password,
+  });
 };
 /**
  * アカウント削除API
  */
 export const deleteAccount = async () => {
-  try{
+  try {
     const response = await axios.delete('api/ems/account/delete');
     return response;
-  }catch(e){
-    throw e;
+  } catch (e) {
+    if (isAxiosError(e)) {
+      throw e;
+    }
   }
-}
+};
