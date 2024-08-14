@@ -41,16 +41,16 @@ const clickButton = () => {
   border-radius: 5px;
   border: none;
   cursor: pointer;
-}
-.button:hover {
-  filter: brightness(1.2);
-}
-.button:active {
-  filter: brightness(1.2);
-}
-.button-title {
-  font-size: 16px;
-  letter-spacing: 2px;
-  color: #333333;
+  &-title {
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: #333333;
+  }
+  &:hover {
+    filter: brightness(1.2);
+  }
+  &:active {
+    filter: brightness(1.2);
+  }
 }
 </style>
