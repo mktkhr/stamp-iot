@@ -99,8 +99,14 @@ div::-webkit-scrollbar {
   --ems-theme: #3687cc;
   --ems-theme-rgb: 54, 135, 204;
 
-  --ems-alert-theme: #fc3838;
-  --ems-alert-rgb: 252, 56, 62;
+  --ems-alert-theme: #f23951;
+  --ems-alert-rgb: 242, 57, 81;
+
+  --ems-warning-theme: #ffb80a;
+  --ems-warning-rgb: 255, 184, 10;
+
+  --ems-success-theme: #2cbf6e;
+  --ems-success-rgb: 44, 191, 110;
 }
 
 /* semantic color variables for this project */
