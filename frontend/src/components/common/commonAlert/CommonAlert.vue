@@ -1,28 +1,25 @@
 <script setup lang="ts">
 import { ALERT_Z_INDEX } from '@/config/zindex';
+import { AlertContent, AlertStore } from '@/store/alertStore';
 import { nextTick, onMounted, ref } from 'vue';
 
 interface Props {
-  alertType: 'alert' | 'warning' | 'success' | 'info';
-  content: string;
-  timeInSec?: number | null;
+  alert: AlertContent;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  alertType: 'alert',
-  content: '',
-  timeInSec: 5,
-});
+const props = defineProps<Props>();
 
-const emit = defineEmits<{
-  (e: 'onClickAlert'): void;
-}>();
+const alertStore = AlertStore();
+
+// transition後の状態で表示されているかフラグ
+const showAlert = ref(false);
 
 // プログレスバーの要素
 const progressRef = ref<HTMLDivElement | null>(null);
 
 // 固定値
-const TIME_IN_SEC = props.timeInSec ? props.timeInSec + 's' : '0s';
+const TRANSITION_DELAY_IN_SEC = '0.2s'; // transitionにかける時間
+const TIME_IN_SEC = props.alert.timeInSec ? props.alert.timeInSec + 's' : '0s';
 const ALERT_RGB = 'rgba(var(--ems-alert-rgb), 0.2)';
 const WARNING_RGB = 'rgba(var(--ems-warning-rgb), 0.2)';
 const SUCCESS_RGB = 'rgba(var(--ems-success-rgb), 0.2)';
@@ -55,7 +52,7 @@ const alertIcon = ref<
  * アラートタイプに応じた色の算出
  */
 const calculateColor = () => {
-  switch (props.alertType) {
+  switch (props.alert.type) {
     case 'alert':
       alertColor.value = ALERT_COLOR;
       alertBackgroundColor.value = ALERT_RGB;
@@ -80,6 +77,13 @@ const calculateColor = () => {
 };
 calculateColor();
 
+/**
+ * キーを指定してアラートを削除
+ */
+const onClickAlert = () => {
+  alertStore.deleteAlert(props.alert.id);
+};
+
 onMounted(() => {
   if (!progressRef.value) return;
 
@@ -87,18 +91,23 @@ onMounted(() => {
   nextTick(() => {
     if (!progressRef.value) return;
     progressRef.value.classList.add('progress-bar-zero');
+
+    // NOTE: 時間をおいてからtrueにしないとtransitionが効かないため，少し待機する
+    setTimeout(() => {
+      showAlert.value = true;
+    }, 10);
   });
 });
 </script>
 
 <template>
-  <div class="wrapper-alert" @click="emit('onClickAlert')">
+  <div class="wrapper-alert" :class="{ 'wrapper-alert-show': showAlert }" @click="onClickAlert">
     <div class="wrapper-icon">
       <span class="alert-icon" :class="alertIcon"></span>
     </div>
     <div class="wrapper-content">
       <slot>
-        <span class="alert-content"> {{ content }}</span>
+        <span class="alert-content"> {{ alert.content }}</span>
       </slot>
       <div ref="progressRef" class="progress-bar" />
     </div>
@@ -124,6 +133,11 @@ $alert_background_color: v-bind(alertBackgroundColor);
     z-index: v-bind(ALERT_Z_INDEX);
     background-color: white;
     cursor: pointer;
+    transform: translateX(100%); // スライドイン前の位置
+    transition: all v-bind(TRANSITION_DELAY_IN_SEC) ease;
+    &-show {
+      transform: translateX(0); // スライドイン先の位置
+    }
   }
   &-icon {
     width: $icon_wrapper_width;
