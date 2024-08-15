@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import CommonButton from '@/components/common/commonButton/CommonButton.vue';
 import FormWindow from '@/components/common/FormWindow.vue';
 import InformationInput from '@/components/common/InformationInput.vue';
-import CommonButton from '@/components/common/CommonButton.vue';
 import NotificationBar from '@/components/common/NotificationBar.vue';
 import { useLogin } from './composable';
 

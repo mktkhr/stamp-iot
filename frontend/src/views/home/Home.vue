@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import NotificationBar from '@/components/common/NotificationBar.vue';
-import InformationDetailFrame from '@/components/common/InformationDetailFrame.vue';
-import DisplayInformation from '@/components/common/DisplayInformation.vue';
-import ModalWindow from '@/components/common/ModalWindow.vue';
-import InformationInput from '@/components/common/InformationInput.vue';
-import CommonButton from '@/components/common/CommonButton.vue';
 import DefaultFrame from '@/components/DefaultFrame.vue';
+import DisplayInformation from '@/components/common/DisplayInformation.vue';
 import GridFrame from '@/components/common/GridFrame.vue';
+import InformationDetailFrame from '@/components/common/InformationDetailFrame.vue';
+import InformationInput from '@/components/common/InformationInput.vue';
+import ModalWindow from '@/components/common/ModalWindow.vue';
+import NotificationBar from '@/components/common/NotificationBar.vue';
+import CommonButton from '@/components/common/commonButton/CommonButton.vue';
 
 import common from '@/methods/common';
 import { useHome } from './composable';

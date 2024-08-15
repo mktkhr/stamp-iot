@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import dayjs from 'dayjs';
 import DefaultFrame from '@/components/DefaultFrame.vue';
 import DisplayInformation from '@/components/common/DisplayInformation.vue';
-import CommonButton from '@/components/common/CommonButton.vue';
-import InformationSelect from '@/components/common/InformationSelect.vue';
-import { MicroControllerStore } from '@/store/microControllerStore';
 import InformationInput from '@/components/common/InformationInput.vue';
+import InformationSelect from '@/components/common/InformationSelect.vue';
 import ModalWindow from '@/components/common/ModalWindow.vue';
+import CommonButton from '@/components/common/commonButton/CommonButton.vue';
+import { i18n } from '@/main';
 import { MicroControllerDetailPatchParam } from '@/methods/microController';
 import validation from '@/methods/validation';
-import { i18n } from '@/main';
+import { MicroControllerStore } from '@/store/microControllerStore';
+import dayjs from 'dayjs';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{
   microControllerUuid: string;

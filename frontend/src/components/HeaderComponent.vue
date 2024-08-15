@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import ModalWindow from '@/components/common/ModalWindow.vue';
 import router from '@/router';
 import { AccountStore } from '@/store/accountStore';
-import CommonButton from './common/CommonButton.vue';
-import ModalWindow from '@/components/common/ModalWindow.vue';
+import { computed, ref } from 'vue';
+import CommonButton from './common/commonButton/CommonButton.vue';
 import NotificationBar from './common/NotificationBar.vue';
 
-import { StatusCode } from '@/constants/statusCode';
 import { NotificationType } from '@/constants/notificationType';
+import { StatusCode } from '@/constants/statusCode';
 import { i18n } from '@/main';
 
 interface Props {

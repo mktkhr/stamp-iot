@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CommonButton from '@/components/common/CommonButton.vue';
+import CommonButton from '@/components/common/commonButton/CommonButton.vue';
 import CommonCheckBox from '@/components/common/commonCheckBox/CommonCheckBox.vue';
 import CommonDialog from '@/components/common/commonDialog/CommonDialog.vue';
 import { ref } from 'vue';
