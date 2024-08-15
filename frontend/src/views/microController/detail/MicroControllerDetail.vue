@@ -43,7 +43,7 @@ const intervalList = [
 
 const onClickEdit = () => {
   intervalForEdit.value = microControllerDetail.value.interval.toString();
-  unitNameForEdit.value = microControllerDetail.value.name;
+  unitNameForEdit.value = microControllerDetail.value.name ?? '';
   addressForEdit.value = microControllerDetail.value.sdi12Address;
   isEditMode.value = true;
 };
