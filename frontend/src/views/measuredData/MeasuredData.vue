@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import NotificationBar from '@/components/common/NotificationBar.vue';
 import InformationSelect from '@/components/common/InformationSelect.vue';
 import { LineChart } from 'vue-chart-3';
 import { useMeasuredData } from './composable';
@@ -9,9 +8,6 @@ const props = defineProps<{
 }>();
 
 const {
-  showNotification,
-  notificationMessage,
-  notificationType,
   sdi12ChartConfig,
   environmentalChartConfig,
   sdi12OptionList,
@@ -24,7 +20,6 @@ const {
 </script>
 
 <template>
-  <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
   <div class="wrapper-content">
     <div class="wrapper-chart">
       <LineChart

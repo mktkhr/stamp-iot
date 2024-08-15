@@ -1,18 +1,21 @@
-import { computed, ref } from 'vue';
-import { MicroControllerStore } from '@/store/microControllerStore';
-import { MeasuredDataStore } from '@/store/measuredDataStore';
-import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
-import {
-  convertSdi12KeyWordToTitle,
-  convertSdi12KeyWordToScale,
-  convertEnvironmentalKeyWordToTitle,
-  convertEnvironmentalKeyWordToScale,
-} from '@/methods/measuredData';
-import { NotificationType } from '@/constants/notificationType';
 import { StatusCode } from '@/constants/statusCode';
 import { i18n } from '@/main';
+import {
+  convertEnvironmentalKeyWordToScale,
+  convertEnvironmentalKeyWordToTitle,
+  convertSdi12KeyWordToScale,
+  convertSdi12KeyWordToTitle,
+} from '@/methods/measuredData';
+import { AlertStore } from '@/store/alertStore';
+import { MeasuredDataStore } from '@/store/measuredDataStore';
+import { MicroControllerStore } from '@/store/microControllerStore';
+import { generateRandowmString } from '@/utils/stringUtil';
+import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
+import { computed, ref } from 'vue';
 
 export const useMeasuredData = (microControllerUuid: string) => {
+  const alertStore = AlertStore();
+
   const fetchMeasuredData = async (microControllerUuid: string) => {
     await measuredDataStore.fetchMeasuredData(microControllerUuid).catch((e) => {
       const statusCode = e.response.status.toString();
@@ -21,9 +24,13 @@ export const useMeasuredData = (microControllerUuid: string) => {
       } else {
         notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
       }
-      notificationType.value = NotificationType.ERROR;
-      showNotification.value = true;
-      setTimeout(() => (showNotification.value = false), 3000);
+
+      alertStore.addAlert({
+        id: generateRandowmString(),
+        type: 'alert',
+        content: notificationMessage.value,
+        timeInSec: 5,
+      });
     });
   };
 
@@ -34,9 +41,7 @@ export const useMeasuredData = (microControllerUuid: string) => {
   microControllerStore.fetchMicroControllerList();
 
   // 初期値
-  const showNotification = ref(false);
   const notificationMessage = ref('');
-  const notificationType = ref(NotificationType.INFO);
 
   const {
     sdi12ChartConfig,
@@ -50,9 +55,6 @@ export const useMeasuredData = (microControllerUuid: string) => {
   } = useChart();
 
   return {
-    showNotification,
-    notificationMessage,
-    notificationType,
     sdi12ChartConfig,
     environmentalChartConfig,
     sdi12OptionList,
