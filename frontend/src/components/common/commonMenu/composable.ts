@@ -104,10 +104,11 @@ export const useMenu = (
   const hideProcess = () => {
     hideInProgress.value = true;
 
+    // NOTE: transition終了より少し早めに実行しないとチラつく場合がある
     setTimeout(() => {
       showContent.value = false;
       hideInProgress.value = false;
-    }, TRANSITION_DELAY_IN_SEC * 1000);
+    }, TRANSITION_DELAY_IN_SEC * 1000 - 10);
   };
 
   onMounted(() => {
