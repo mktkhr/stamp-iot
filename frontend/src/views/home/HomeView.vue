@@ -5,7 +5,6 @@ import GridFrame from '@/components/common/GridFrame.vue';
 import InformationDetailFrame from '@/components/common/InformationDetailFrame.vue';
 import InformationInput from '@/components/common/InformationInput.vue';
 import ModalWindow from '@/components/common/ModalWindow.vue';
-import NotificationBar from '@/components/common/NotificationBar.vue';
 import CommonButton from '@/components/common/commonButton/CommonButton.vue';
 
 import common from '@/methods/common';
@@ -16,9 +15,6 @@ const {
   microControllerList,
   isShowModal,
   macAddressError,
-  showNotification,
-  notificationMessage,
-  notificationType,
   onClickPlusButton,
   onClickSubmit,
   getMacAddress,
@@ -29,7 +25,6 @@ const {
 </script>
 
 <template>
-  <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
   <DefaultFrame :show-action-bar="false">
     <template #content>
       <v-dialog v-model="isShowModal" width="80%" max-width="500px">

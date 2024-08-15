@@ -1,14 +1,18 @@
-import { computed, ref } from 'vue';
 import router from '@/router';
+import { computed, ref } from 'vue';
 
-import validation from '@/methods/validation';
-import { AccountStore } from '@/store/accountStore';
-import { MicroControllerStore } from '@/store/microControllerStore';
 import { NotificationType } from '@/constants/notificationType';
 import { StatusCode } from '@/constants/statusCode';
 import { i18n } from '@/main';
+import validation from '@/methods/validation';
+import { AccountStore } from '@/store/accountStore';
+import { AlertStore } from '@/store/alertStore';
+import { MicroControllerStore } from '@/store/microControllerStore';
+import { generateRandowmString } from '@/utils/stringUtil';
 
 export const useHome = () => {
+  const alertStore = AlertStore();
+
   /**
    * マイコン一覧取得リクエストとエラーハンドリング
    */
@@ -20,9 +24,13 @@ export const useHome = () => {
       } else {
         notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
       }
-      notificationType.value = NotificationType.ERROR;
-      showNotification.value = true;
-      setTimeout(() => (showNotification.value = false), 3000);
+
+      alertStore.addAlert({
+        id: generateRandowmString(),
+        type: 'alert',
+        content: notificationMessage.value,
+        timeInSec: 5,
+      });
     });
   };
 
@@ -52,9 +60,13 @@ export const useHome = () => {
         } else {
           notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
         }
-        notificationType.value = NotificationType.ERROR;
-        showNotification.value = true;
-        setTimeout(() => (showNotification.value = false), 3000);
+
+        alertStore.addAlert({
+          id: generateRandowmString(),
+          type: 'alert',
+          content: notificationMessage.value,
+          timeInSec: 5,
+        });
       });
   };
 
@@ -113,9 +125,6 @@ export const useHome = () => {
     microControllerList,
     isShowModal,
     macAddressError,
-    showNotification,
-    notificationMessage,
-    notificationType,
     onClickPlusButton,
     onClickSubmit,
     getMacAddress,

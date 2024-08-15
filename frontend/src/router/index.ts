@@ -1,5 +1,5 @@
 import { AccountStore } from '@/store/accountStore';
-import Home from '@/views/home/Home.vue';
+import HomeView from '@/views/home/HomeView.vue';
 import LoginView from '@/views/login/LoginView.vue';
 import MeasuredData from '@/views/measuredData/MeasuredData.vue';
 import MicroControllerDetail from '@/views/microController/detail/MicroControllerDetail.vue';
@@ -21,7 +21,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/home',
     name: 'home',
-    component: Home,
+    component: HomeView,
   },
   {
     path: '/microController/:microControllerUuid/result',
