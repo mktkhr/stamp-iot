@@ -1,71 +1,41 @@
 <script setup lang="ts">
-import router from '@/router';
 import { computed, ref } from 'vue';
 
-import CommonLoader from '@/components/common/commonLoader/CommonLoader.vue';
+import { HEADER_Z_INDEX, SIDEBAR_Z_INDEX } from '@/config/zindex';
 import { LOADER_TYPE } from './components/common/commonLoader/composable';
-import { NotificationType } from './constants/notificationType';
-import { StatusCode } from './constants/statusCode';
-import { i18n } from './main';
-import { AccountStore } from './store/accountStore';
+
 import { SidebarStore } from './store/sidebarStore';
 import { SpinnerStore } from './store/spinnerStore';
 
-import { HEADER_Z_INDEX, SIDEBAR_Z_INDEX } from '@/config/zindex';
+import CommonLoader from '@/components/common/commonLoader/CommonLoader.vue';
+import CommonAlertGroup from './components/common/commonAlertGroup/CommonAlertGroup.vue';
 import CommonHeader from './components/common/commonHeader/CommonHeader.vue';
 import CommonOverlay from './components/common/commonOverlay/CommonOverlay.vue';
 import CommonSidebar from './components/common/commonSidebar/CommonSidebar.vue';
 
 const sidebarStore = SidebarStore();
+const spinnerStore = SpinnerStore();
 
+// 画面サイズを計算する
 const svh = ref('0px');
 const calcInnerHeight = () => {
   svh.value = `${window.innerHeight}px`;
 };
-window.addEventListener('resize', () => calcInnerHeight);
+window.addEventListener('resize', () => calcInnerHeight); // resize時に再計算する
 calcInnerHeight();
 
+// サイドバーのサイズを計算する
 const sidebarRef = ref<HTMLDivElement>();
 const sideBarWidth = computed(() => {
   if (!sidebarRef.value) return '0px';
   return `${sidebarRef.value.clientWidth}px`;
 });
 
+// サイドバーの表示状態管理
 const isSidebarActive = computed(() => sidebarStore.isActive);
 
 // スピナー表示状態管理
-const spinnerStore = SpinnerStore();
 const showSpinner = computed(() => spinnerStore.getStatus);
-
-const accountStore = AccountStore();
-
-const showNotification = ref(false);
-const notificationMessage = ref('');
-const notificationType = ref(NotificationType.INFO);
-
-const menuStateRef = ref(false);
-const changeState = (param: boolean) => {
-  menuStateRef.value = param;
-};
-
-const onClickLogout = async () => {
-  await accountStore
-    .logout()
-    .then(() => {
-      router.replace('/login');
-    })
-    .catch((e) => {
-      const statusCode = e.response.status.toString();
-      if (statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
-        notificationMessage.value = i18n.global.t('ApiError.internalServerError');
-      } else {
-        notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
-      }
-      notificationType.value = NotificationType.ERROR;
-      showNotification.value = true;
-      setTimeout(() => (showNotification.value = false), 3000);
-    });
-};
 </script>
 
 <template>
@@ -74,6 +44,9 @@ const onClickLogout = async () => {
       <CommonHeader />
     </div>
     <div class="wrapper-content">
+      <div class="wrapper-alert-container">
+        <CommonAlertGroup />
+      </div>
       <div ref="sidebarRef" class="sidebar-container" :class="{ active: isSidebarActive }">
         <CommonSidebar />
       </div>
@@ -114,6 +87,14 @@ $common_left_margin: 16px;
     height: calc(100% - $header_height);
     width: 100%;
     position: relative;
+  }
+  &-alert-container {
+    width: 80%;
+    position: absolute;
+    margin: 0 auto;
+    top: 8px;
+    left: 0;
+    right: 0;
   }
 }
 
