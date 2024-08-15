@@ -2,23 +2,13 @@
 import CommonButton from '@/components/common/commonButton/CommonButton.vue';
 import FormWindow from '@/components/common/FormWindow.vue';
 import InformationInput from '@/components/common/InformationInput.vue';
-import NotificationBar from '@/components/common/NotificationBar.vue';
 import { useLogin } from './composable';
 
-const {
-  mailAddressError,
-  passwordError,
-  showNotification,
-  notificationMessage,
-  notificationType,
-  getMailAddress,
-  getPassword,
-  onClickLoginButton,
-} = useLogin();
+const { mailAddressError, passwordError, getMailAddress, getPassword, onClickLoginButton } =
+  useLogin();
 </script>
 
 <template>
-  <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
   <FormWindow :title="$t('Login.title')">
     <template #icon>
       <img src="@/assets/logo_blue.png" alt="logo" />

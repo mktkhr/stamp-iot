@@ -1,17 +1,17 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import Login from '@/views/login/Login.vue';
-import Register from '@/views/register/Register.vue';
-import Home from '@/views/home/Home.vue';
-import MeasuredData from '@/views/measuredData/MeasuredData.vue';
-import axios from 'axios';
 import { AccountStore } from '@/store/accountStore';
+import Home from '@/views/home/Home.vue';
+import LoginView from '@/views/login/LoginView.vue';
+import MeasuredData from '@/views/measuredData/MeasuredData.vue';
 import MicroControllerDetail from '@/views/microController/detail/MicroControllerDetail.vue';
+import Register from '@/views/register/Register.vue';
+import axios from 'axios';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
     name: 'login',
-    component: Login,
+    component: LoginView,
   },
   {
     path: '/register',
@@ -54,10 +54,7 @@ router.beforeEach(async (to, from, next) => {
   if (!sessionStatus && to.name != 'login' && to.name != 'register') {
     //セッションが無効かつログイン・登録画面以外に遷移する場合
     next({ name: 'login' });
-  } else if (
-    !sessionStatus &&
-    (to.name === 'login' || to.name === 'register')
-  ) {
+  } else if (!sessionStatus && (to.name === 'login' || to.name === 'register')) {
     //ログインか登録画面への遷移の場合，アカウント情報を取得せずに遷移
     next();
   } else if (sessionStatus && (to.name === 'login' || to.path === '/')) {
@@ -80,7 +77,7 @@ const checkSession = async (): Promise<boolean> => {
   await axios
     .post('/api/ems/session')
     .then((response) => {
-      if (response.data.toString() ===  'success') {
+      if (response.data.toString() === 'success') {
         sessionStatus = true;
       } else {
         sessionStatus = false;
