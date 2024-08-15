@@ -5,7 +5,7 @@ import { useMenu } from './composable';
 
 interface Props {
   teleportDestination?: string;
-  customBackgroundClickEvent?: () => void;
+  customBackgroundClickEvent?: (() => void) | null;
   persistent?: boolean;
 }
 
@@ -15,8 +15,8 @@ const props = withDefaults(defineProps<Props>(), {
   persistent: false,
 });
 
-const anchorRef = ref<HTMLDivElement>(null);
-const contentRef = ref<HTMLDivElement>(null);
+const anchorRef = ref<HTMLDivElement | null>(null);
+const contentRef = ref<HTMLDivElement | null>(null);
 
 const {
   showContent,

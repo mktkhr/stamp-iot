@@ -4,7 +4,7 @@ import { onMounted, ref, Ref, watch } from 'vue';
 export const useMenu = (
   props: {
     teleportDestination?: string;
-    customBackgroundClickEvent?: () => void;
+    customBackgroundClickEvent?: (() => void) | null;
     persistent?: boolean;
   },
   anchorRef: Ref<HTMLDivElement | null>,

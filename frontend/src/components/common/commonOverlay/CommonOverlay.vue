@@ -6,7 +6,7 @@ import { useOverlay } from './composable';
 interface Props {
   teleportDestination?: string;
   backgroudColor?: string;
-  customBackgroundClickEvent?: () => void;
+  customBackgroundClickEvent?: (() => void) | null;
   persistent?: boolean;
   hidePersistentAnimation?: boolean;
   maxWidth?: string;

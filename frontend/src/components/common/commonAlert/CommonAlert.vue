@@ -15,11 +15,11 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'onClickAlert');
+  (e: 'onClickAlert'): void;
 }>();
 
 // プログレスバーの要素
-const progressRef = ref<HTMLDivElement>(null);
+const progressRef = ref<HTMLDivElement | null>(null);
 
 // 固定値
 const TIME_IN_SEC = props.timeInSec ? props.timeInSec + 's' : '0s';
@@ -85,6 +85,7 @@ onMounted(() => {
 
   // 一度描画を待ってからclassを付与する
   nextTick(() => {
+    if (!progressRef.value) return;
     progressRef.value.classList.add('progress-bar-zero');
   });
 });
