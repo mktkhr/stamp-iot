@@ -3,7 +3,7 @@ import Home from '@/views/home/Home.vue';
 import LoginView from '@/views/login/LoginView.vue';
 import MeasuredData from '@/views/measuredData/MeasuredData.vue';
 import MicroControllerDetail from '@/views/microController/detail/MicroControllerDetail.vue';
-import Register from '@/views/register/Register.vue';
+import RegisterView from '@/views/register/RegisterView.vue';
 import axios from 'axios';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
@@ -16,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/register',
     name: 'register',
-    component: Register,
+    component: RegisterView,
   },
   {
     path: '/home',

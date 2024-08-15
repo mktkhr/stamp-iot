@@ -1,10 +1,12 @@
-import { ref } from 'vue';
+import { NotificationType } from '@/constants/notificationType';
+import { StatusCode } from '@/constants/statusCode';
 import { i18n } from '@/main';
 import validation from '@/methods/validation';
-import { AccountStore } from '@/store/accountStore';
-import { NotificationType } from '@/constants/notificationType';
 import router from '@/router';
-import { StatusCode } from '@/constants/statusCode';
+import { AccountStore } from '@/store/accountStore';
+import { AlertStore } from '@/store/alertStore';
+import { generateRandowmString } from '@/utils/stringUtil';
+import { ref } from 'vue';
 
 export const useRegister = () => {
   const mailAddressRef = ref('');
@@ -18,6 +20,7 @@ export const useRegister = () => {
   const notificationType = ref(NotificationType.INFO);
 
   const accountStore = AccountStore();
+  const alertStore = AlertStore();
 
   const getMailAddress = (value: string) => {
     mailAddressRef.value = value;
@@ -58,10 +61,12 @@ export const useRegister = () => {
 
   const onClickRegister = async () => {
     if (validate()) {
-      notificationMessage.value = i18n.global.t('Validation.Error.invalid');
-      notificationType.value = NotificationType.ERROR;
-      showNotification.value = true;
-      setTimeout(() => (showNotification.value = false), 3000);
+      alertStore.addAlert({
+        id: generateRandowmString(),
+        type: 'warning',
+        content: i18n.global.t('Validation.Error.invalid'),
+        timeInSec: 5,
+      });
       return;
     }
     await accountStore
@@ -86,9 +91,13 @@ export const useRegister = () => {
         } else {
           notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
         }
-        notificationType.value = NotificationType.ERROR;
-        showNotification.value = true;
-        setTimeout(() => (showNotification.value = false), 3000);
+
+        alertStore.addAlert({
+          id: generateRandowmString(),
+          type: 'alert',
+          content: notificationMessage.value,
+          timeInSec: 5,
+        });
       });
   };
 
@@ -96,9 +105,6 @@ export const useRegister = () => {
     mailAddressError,
     passwordError,
     passwordConfirmError,
-    showNotification,
-    notificationMessage,
-    notificationType,
     getMailAddress,
     getPassword,
     getPasswordConfirm,

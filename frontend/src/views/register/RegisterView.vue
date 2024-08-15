@@ -2,16 +2,12 @@
 import CommonButton from '@/components/common/commonButton/CommonButton.vue';
 import FormWindow from '@/components/common/FormWindow.vue';
 import InformationInput from '@/components/common/InformationInput.vue';
-import NotificationBar from '@/components/common/NotificationBar.vue';
 import { useRegister } from './composable';
 
 const {
   mailAddressError,
   passwordError,
   passwordConfirmError,
-  showNotification,
-  notificationMessage,
-  notificationType,
   getMailAddress,
   getPassword,
   getPasswordConfirm,
@@ -20,7 +16,6 @@ const {
 </script>
 
 <template>
-  <NotificationBar :text="notificationMessage" :type="notificationType" v-if="showNotification" />
   <FormWindow :title="$t('Register.signUp')">
     <template #icon>
       <img src="@/assets/logo_blue.png" alt="logo" />
