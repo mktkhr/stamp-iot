@@ -28,8 +28,11 @@ export const AlertStore = defineStore('AlertStore', {
     /**
      * アラートを追加する
      * @param alertContent アラート
+     * @param reset 追加前にリセットするか否か
      */
-    addAlert(alertContent: AlertContent) {
+    addAlert(alertContent: AlertContent, reset?: boolean) {
+      if (reset) this.resetAlert();
+
       this.alertMap.set(alertContent.id, alertContent);
 
       if (!alertContent.timeInSec) return;
@@ -42,8 +45,11 @@ export const AlertStore = defineStore('AlertStore', {
     /**
      * 複数のアラートを全て追加する
      * @param alertContentList アラートリスト
+     * @param reset 追加前にリセットするか否か
      */
-    addAlertAll(alertContentList: AlertContent[]) {
+    addAlertAll(alertContentList: AlertContent[], reset?: boolean) {
+      if (reset) this.resetAlert();
+
       alertContentList.forEach((alertContent: AlertContent) => {
         this.addAlert(alertContent);
       });
