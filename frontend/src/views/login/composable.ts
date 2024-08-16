@@ -19,14 +19,6 @@ export const useLogin = () => {
   const accountStore = AccountStore();
   const alertStore = AlertStore();
 
-  const getMailAddress = (value: string) => {
-    mailAddressRef.value = value;
-  };
-
-  const getPassword = (value: string) => {
-    passwordRef.value = value;
-  };
-
   /**
    * ログイン入力情報のバリデーション
    */
@@ -54,12 +46,15 @@ export const useLogin = () => {
     passwordError.value = '';
 
     if (validate()) {
-      alertStore.addAlert({
-        id: generateRandowmString(),
-        type: 'warning',
-        content: i18n.global.t('Validation.Error.invalid'),
-        timeInSec: 5,
-      });
+      alertStore.addAlert(
+        {
+          id: generateRandowmString(),
+          type: 'warning',
+          content: i18n.global.t('Validation.Error.invalid'),
+          timeInSec: 5,
+        },
+        true
+      );
       return;
     }
     await accountStore
@@ -86,12 +81,12 @@ export const useLogin = () => {
       });
   };
   return {
+    mailAddressRef,
+    passwordRef,
     mailAddressError,
     passwordError,
     showNotification,
     notificationMessage,
-    getMailAddress,
-    getPassword,
     onClickLoginButton,
   };
 };
