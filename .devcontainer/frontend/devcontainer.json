@@ -3,7 +3,7 @@
   "dockerComposeFile": "compose.yaml",
   "service": "node",
   "workspaceFolder": "/frontend",
-  "postCreateCommand": "npm install && npm run build:dev",
+  "postCreateCommand": "yarn && yarn build:dev",
   "customizations": {
     "vscode": {
       "settings": {
