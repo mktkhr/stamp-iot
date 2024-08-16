@@ -16,7 +16,7 @@
   &-frame {
     width: 80%;
     max-width: 800px;
-    height: 60%;
+    height: max-content;
     max-height: 800px;
     position: absolute;
     top: 0;
@@ -48,7 +48,6 @@
 @media screen and (max-width: 900px) {
   .wrapper {
     &-frame {
-      height: max-content;
       flex-direction: column;
 
       > .container {
