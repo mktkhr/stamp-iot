@@ -1,75 +1,70 @@
 <script setup lang="ts">
 import CommonButton from '@/components/common/commonButton/CommonButton.vue';
-import FormWindow from '@/components/common/FormWindow.vue';
-import InformationInput from '@/components/common/InformationInput.vue';
+import CommonFormWindow from '@/components/common/commonFormWindow/CommonFormWindow.vue';
+import CommonInput from '@/components/common/commonInput/CommonInput.vue';
 import { useRegister } from './composable';
 
 const {
+  mailAddressRef,
+  passwordRef,
+  passwordConfirmRef,
   mailAddressError,
   passwordError,
   passwordConfirmError,
-  getMailAddress,
-  getPassword,
-  getPasswordConfirm,
   onClickRegister,
 } = useRegister();
 </script>
 
 <template>
-  <FormWindow :title="$t('Register.signUp')">
-    <template #icon>
-      <img src="@/assets/logo_blue.png" alt="logo" />
+  <CommonFormWindow>
+    <template #title>
+      <img class="position-img" src="@/assets/logo_blue.png" alt="logo" />
+      <span class="title">{{ $t('Register.signUp') }}</span>
     </template>
-    <template #mailAddress>
-      <InformationInput
-        class="input-center"
-        mail-address
+    <template #content>
+      <CommonInput
+        class="position-input"
+        v-model="mailAddressRef"
+        type="email"
+        :placeholder="$t('Register.mailAddress')"
         :error-message="mailAddressError"
-        @input-value="getMailAddress"
       />
-    </template>
-    <template #password>
-      <InformationInput
-        class="input-center"
-        password
+      <CommonInput
+        class="position-input"
+        v-model="passwordRef"
+        type="password"
+        :placeholder="$t('Register.password')"
         :error-message="passwordError"
-        @input-value="getPassword"
       />
-    </template>
-    <template #passwordConfirm>
-      <InformationInput
-        class="input-center"
-        passwordConfirm
+      <CommonInput
+        class="position-input"
+        v-model="passwordConfirmRef"
+        type="password"
+        :placeholder="$t('Register.passwordConfirm')"
         :error-message="passwordConfirmError"
-        @input-value="getPasswordConfirm"
       />
-    </template>
-    <template #button>
-      <div class="wrapper-button">
+      <div class="wrapper-button-container">
+        <RouterLink to="/login">
+          <CommonButton :button-title="$t('Register.toLogin')" type="float" />
+        </RouterLink>
         <CommonButton
           :button-title="$t('Button.register')"
-          width="100px"
-          height="40px"
+          type="fill"
           @click-button="onClickRegister"
         />
       </div>
     </template>
-    <template #link>
-      <div class="wrapper-link">
-        <RouterLink to="/login" class="link">{{ $t('Register.toLogin') }}</RouterLink>
-      </div>
-    </template>
-  </FormWindow>
+  </CommonFormWindow>
 </template>
 
 <style lang="scss" scoped>
 .wrapper {
-  &-button {
+  &-button-container {
     width: 100%;
     height: 60px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
   }
   &-link {
     width: 100%;
@@ -79,22 +74,34 @@ const {
     justify-content: center;
   }
 }
-.input-center {
-  width: 75%;
-  margin: 0 auto 20px;
+
+.title {
+  font-size: 24px;
 }
+
+.position {
+  &-img {
+    margin: 0;
+  }
+}
+
 img {
-  margin-top: 20px;
   height: 50px;
-  width: auto;
+  width: max-content;
 }
-.link {
-  background: linear-gradient(transparent 50%, #2e6dba80 50%);
-}
-@media screen and (max-height: 600px) {
-  img {
-    margin-top: 5px;
-    height: 30px;
+
+@media screen and (max-width: 900px) {
+  .title {
+    margin: 0 auto;
+  }
+  .position {
+    &-img {
+      margin: 0 auto;
+    }
+    &-input {
+      width: 80%;
+      margin: 0 auto;
+    }
   }
 }
 </style>

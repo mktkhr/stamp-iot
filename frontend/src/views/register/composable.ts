@@ -1,4 +1,3 @@
-import { NotificationType } from '@/constants/notificationType';
 import { StatusCode } from '@/constants/statusCode';
 import { i18n } from '@/main';
 import validation from '@/methods/validation';
@@ -17,27 +16,19 @@ export const useRegister = () => {
   const passwordConfirmError = ref('');
   const showNotification = ref(false);
   const notificationMessage = ref('');
-  const notificationType = ref(NotificationType.INFO);
 
   const accountStore = AccountStore();
   const alertStore = AlertStore();
 
-  const getMailAddress = (value: string) => {
-    mailAddressRef.value = value;
-  };
-
-  const getPassword = (value: string) => {
-    passwordRef.value = value;
-  };
-
-  const getPasswordConfirm = (value: string) => {
-    passwordConfirmRef.value = value;
-  };
-
+  /**
+   * 登録時のバリデーション
+   * @returns true: エラー有, false: エラー無し
+   */
   const validate = () => {
     mailAddressError.value = '';
     passwordError.value = '';
     passwordConfirmError.value = '';
+
     const mailAddressValidateFlag = !validation.mailAddressValidate(mailAddressRef.value);
     const passwordValidateFlag = !validation.passwordValidate(passwordRef.value);
     const passwordConfirmValidateFlag = !validation.passwordValidate(passwordConfirmRef.value);
@@ -53,27 +44,31 @@ export const useRegister = () => {
     }
     if (passwordRef.value != passwordConfirmRef.value) {
       passwordConfirmError.value = i18n.global.t('Validation.Error.passwordNotMatch');
-      return false;
     }
 
     return mailAddressValidateFlag || passwordValidateFlag || passwordConfirmValidateFlag;
   };
 
+  /**
+   * 登録ボタン押下時の処理
+   */
   const onClickRegister = async () => {
     if (validate()) {
-      alertStore.addAlert({
-        id: generateRandowmString(),
-        type: 'warning',
-        content: i18n.global.t('Validation.Error.invalid'),
-        timeInSec: 5,
-      });
+      alertStore.addAlert(
+        {
+          id: generateRandowmString(),
+          type: 'warning',
+          content: i18n.global.t('Validation.Error.invalid'),
+          timeInSec: 5,
+        },
+        true
+      );
       return;
     }
     await accountStore
       .register(mailAddressRef.value, passwordRef.value)
       .then(() => {
         notificationMessage.value = i18n.global.t('Register.successfullyRegistered');
-        notificationType.value = NotificationType.SUCCESS;
         showNotification.value = true;
         setTimeout(() => {
           showNotification.value = false;
@@ -102,12 +97,12 @@ export const useRegister = () => {
   };
 
   return {
+    mailAddressRef,
+    passwordRef,
+    passwordConfirmRef,
     mailAddressError,
     passwordError,
     passwordConfirmError,
-    getMailAddress,
-    getPassword,
-    getPasswordConfirm,
     onClickRegister,
   };
 };
