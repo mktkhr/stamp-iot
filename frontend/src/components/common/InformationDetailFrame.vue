@@ -29,20 +29,20 @@ const emit = defineEmits<Emits>();
 </template>
 
 <style lang="scss" scoped>
-// wrapper-button > i にcssを当てるため，scopedをつけない
 .information-detail-frame {
   &-box {
     &-content {
       width: auto;
-      border-radius: 2px;
-      box-shadow: 0px 10px 10px -5px rgba(0, 0, 0, 0.6);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0px 8px 8px -4px rgba(0, 0, 0, 0.6);
     }
     &-title {
       width: 100%;
       text-align: left;
       height: auto;
       min-height: 40px;
-      background-color: #aaa;
+      background-color: #cccccc;
       border-radius: 2px 2px 0 0;
       display: table;
       position: relative;
@@ -54,14 +54,13 @@ const emit = defineEmits<Emits>();
         vertical-align: middle;
       }
       > .wrapper-button {
+        display: flex;
         height: 100%;
         width: 40px;
         position: absolute;
         right: 0;
-        > i {
-          height: 100%;
-          width: 100%;
-        }
+        justify-content: center;
+        align-items: center;
       }
     }
   }
