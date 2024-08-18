@@ -1,8 +1,8 @@
 import { AccountStore } from '@/store/accountStore';
 import HomeView from '@/views/home/HomeView.vue';
 import LoginView from '@/views/login/LoginView.vue';
-import MeasuredData from '@/views/measuredData/MeasuredData.vue';
-import MicroControllerDetail from '@/views/microController/detail/MicroControllerDetail.vue';
+import MeasuredDataView from '@/views/measuredData/MeasuredDataView.vue';
+import MicroControllerDetailView from '@/views/microController/detail/MicroControllerDetailView.vue';
 import RegisterView from '@/views/register/RegisterView.vue';
 import axios from 'axios';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
@@ -27,13 +27,13 @@ const routes: Array<RouteRecordRaw> = [
     path: '/microController/:microControllerUuid/result',
     name: 'result',
     props: true,
-    component: MeasuredData,
+    component: MeasuredDataView,
   },
   {
     path: '/microController/:microControllerUuid/detail',
     name: 'microControllerDetail',
     props: true,
-    component: MicroControllerDetail,
+    component: MicroControllerDetailView,
   },
 ];
 
