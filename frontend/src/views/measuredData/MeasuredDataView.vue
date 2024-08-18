@@ -20,7 +20,7 @@ const {
 </script>
 
 <template>
-  <div class="wrapper-content">
+  <div class="wrapper-chart-container">
     <div class="wrapper-chart">
       <LineChart
         ref="lineRef"
@@ -54,17 +54,18 @@ const {
 
 <style lang="scss" scoped>
 .wrapper {
-  &-content {
-    height: 100%;
-    width: 100%;
-    overflow-y: auto;
-  }
   &-chart {
     padding: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
+    &-container {
+      height: 100%;
+      width: 100%;
+      overflow-y: auto;
+    }
   }
 }
 .selector {
