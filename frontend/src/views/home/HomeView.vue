@@ -7,7 +7,7 @@ import InformationInput from '@/components/common/InformationInput.vue';
 import ModalWindow from '@/components/common/ModalWindow.vue';
 import CommonButton from '@/components/common/commonButton/CommonButton.vue';
 
-import common from '@/methods/common';
+import { convertLocalDateTime } from '@/utils/dayjsUtil';
 import { useHome } from './composable';
 
 const {
@@ -66,11 +66,11 @@ const {
               />
               <DisplayInformation
                 :title="$t('Home.registrationDate')"
-                :content="common.convertLocalDateTime(accountInfo.createdAt)"
+                :content="convertLocalDateTime(accountInfo.createdAt)"
               />
               <DisplayInformation
                 :title="$t('Home.lastUpdatedDate')"
-                :content="common.convertLocalDateTime(accountInfo.updatedAt)"
+                :content="convertLocalDateTime(accountInfo.updatedAt)"
               />
             </template>
           </InformationDetailFrame>
@@ -106,11 +106,11 @@ const {
                       />
                       <DisplayInformation
                         :title="$t('Home.registrationDateTime')"
-                        :content="common.convertLocalDateTime(microController.createdAt)"
+                        :content="convertLocalDateTime(microController.createdAt)"
                       />
                       <DisplayInformation
                         :title="$t('Home.lastUpdatedDateTime')"
-                        :content="common.convertLocalDateTime(microController.updatedAt)"
+                        :content="convertLocalDateTime(microController.updatedAt)"
                       />
                     </template>
                   </InformationDetailFrame>
