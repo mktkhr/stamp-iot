@@ -57,7 +57,7 @@ const {
             @clickButton="onClickPlusButton"
           >
             <template #button>
-              <v-icon class="icon" @click="onClickPlusButton"> ems-add_circle </v-icon>
+              <span class="ems-add_circle icon" @click="onClickPlusButton"></span>
             </template>
             <template #content>
               <DisplayInformation
@@ -90,9 +90,10 @@ const {
                     @click="onClickTile(microController.uuid)"
                   >
                     <template #button>
-                      <v-icon class="icon" @click.stop="onClickSetting(microController.uuid)">
-                        ems-settings
-                      </v-icon>
+                      <span
+                        class="ems-settings icon"
+                        @click.stop="onClickSetting(microController.uuid)"
+                      ></span>
                     </template>
                     <template #content>
                       <DisplayInformation
@@ -161,10 +162,22 @@ img {
   cursor: pointer;
 }
 .account-info {
-  max-width: 800px;
+  max-width: 400px;
 }
 .icon {
-  font-size: 30px;
-  color: white;
+  height: 32px;
+  width: 32px;
+  font-size: 28px;
+  color: var(--ems-theme);
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #00000020;
+  }
 }
 </style>
