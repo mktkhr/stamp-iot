@@ -60,6 +60,9 @@ const {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    border-radius: 16px;
+    background-color: white;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.6);
 
     &-container {
       height: 100%;
@@ -67,7 +70,9 @@ const {
       overflow-y: auto;
       display: flex;
       flex-direction: column;
+      padding: 16px;
       gap: 16px;
+      background-color: rgba(var(--ems-theme-rgb), 0.2);
     }
   }
 }
