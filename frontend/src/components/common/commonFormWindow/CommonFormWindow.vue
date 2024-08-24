@@ -14,7 +14,7 @@
 <style lang="scss" scoped>
 .wrapper {
   &-frame {
-    width: 80%;
+    width: 100%;
     max-width: 800px;
     height: max-content;
     max-height: 800px;

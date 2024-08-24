@@ -104,7 +104,7 @@ $animation_span: 0.1s;
     justify-content: center;
   }
   &-content {
-    width: 100%;
+    width: 80%;
     display: flex;
     position: relative;
     justify-content: center;
