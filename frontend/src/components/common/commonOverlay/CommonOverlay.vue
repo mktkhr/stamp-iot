@@ -106,6 +106,7 @@ $animation_span: 0.1s;
   &-content {
     width: 100%;
     display: flex;
+    position: relative;
     justify-content: center;
     z-index: $overlay_content_z_index;
     animation: zoomIn v-bind(TRANSITION_DELAY_IN_SEC) ease;
