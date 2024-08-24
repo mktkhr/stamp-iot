@@ -156,7 +156,7 @@ $animation_span: 0.1s;
   }
 }
 .persist {
-  animation: persist-movement $animation_span infinite;
+  animation: persistent-movement $animation_span infinite;
 }
 @keyframes persistent-movement {
   0% {
