@@ -89,14 +89,6 @@ export const useHome = () => {
     isShowModal.value = true;
   };
 
-  const onClickSubmit = () => {
-    isShowModal.value = false;
-  };
-
-  const getMacAddress = (value: string) => {
-    macAddressRef.value = value;
-  };
-
   const onClickRegister = async () => {
     macAddressError.value = '';
 
@@ -124,10 +116,9 @@ export const useHome = () => {
     accountInfo,
     microControllerList,
     isShowModal,
+    macAddressRef,
     macAddressError,
     onClickPlusButton,
-    onClickSubmit,
-    getMacAddress,
     onClickRegister,
     onClickTile,
     onClickSetting,

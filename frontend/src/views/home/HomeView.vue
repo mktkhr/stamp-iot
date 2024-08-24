@@ -3,10 +3,10 @@ import DefaultFrame from '@/components/DefaultFrame.vue';
 import DisplayInformation from '@/components/common/DisplayInformation.vue';
 import GridFrame from '@/components/common/GridFrame.vue';
 import InformationDetailFrame from '@/components/common/InformationDetailFrame.vue';
-import InformationInput from '@/components/common/InformationInput.vue';
-import ModalWindow from '@/components/common/ModalWindow.vue';
 import CommonButton from '@/components/common/commonButton/CommonButton.vue';
-
+import CommonFormWindow from '@/components/common/commonFormWindow/CommonFormWindow.vue';
+import CommonInput from '@/components/common/commonInput/CommonInput.vue';
+import CommonOverlay from '@/components/common/commonOverlay/CommonOverlay.vue';
 import { convertLocalDateTime } from '@/utils/dayjsUtil';
 import { useHome } from './composable';
 
@@ -14,10 +14,9 @@ const {
   accountInfo,
   microControllerList,
   isShowModal,
+  macAddressRef,
   macAddressError,
   onClickPlusButton,
-  onClickSubmit,
-  getMacAddress,
   onClickRegister,
   onClickTile,
   onClickSetting,
@@ -27,27 +26,34 @@ const {
 <template>
   <DefaultFrame :show-action-bar="false">
     <template #content>
-      <v-dialog v-model="isShowModal" width="80%" max-width="500px">
-        <ModalWindow
-          @click-button="onClickSubmit"
-          :title="$t('Home.registerNewDevice')"
-          :description="$t('Home.enterMacAddress')"
-        >
+      <CommonOverlay v-model="isShowModal" persistent>
+        <CommonFormWindow>
+          <template #title>
+            <span class="title">{{ $t('Home.registerNewDevice') }}</span>
+          </template>
           <template #content>
-            <div class="wrapper-input">
-              <InformationInput
-                class="input-content"
-                text
-                @input-value="getMacAddress"
-                :error-message="macAddressError"
+            <span>{{ $t('Home.enterMacAddress') }}</span>
+            <CommonInput
+              class="position-input"
+              v-model="macAddressRef"
+              type="text"
+              :placeholder="$t('Home.macAddress')"
+              :error-message="macAddressError"
+            />
+            <div class="wrapper-button">
+              <CommonButton
+                :button-title="$t('Button.cancel')"
+                @click-button="() => (isShowModal = false)"
+              />
+              <CommonButton
+                :button-title="$t('Button.register')"
+                @click-button="onClickRegister"
+                type="fill"
               />
             </div>
           </template>
-          <template #button>
-            <CommonButton :button-title="$t('Button.register')" @click-button="onClickRegister" />
-          </template>
-        </ModalWindow>
-      </v-dialog>
+        </CommonFormWindow>
+      </CommonOverlay>
 
       <div class="wrapper-main-content">
         <div class="wrapper-account-info" v-if="accountInfo">
@@ -152,6 +158,10 @@ $account_info_height: 170px;
       width: 80%;
     }
   }
+  &-button {
+    display: flex;
+    justify-content: space-evenly;
+  }
 }
 img {
   margin-top: 30px;
@@ -179,5 +189,8 @@ img {
   &:hover {
     background-color: #00000020;
   }
+}
+.title {
+  font-size: 24px;
 }
 </style>
