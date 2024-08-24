@@ -63,7 +63,7 @@ const {
       <div
         class="wrapper-fullscreen"
         :class="{ persist: persistAnimationFlag }"
-        @click.stop="onClickBackground"
+        @click.self.stop="onClickBackground"
       >
         <div
           class="wrapper-content"
