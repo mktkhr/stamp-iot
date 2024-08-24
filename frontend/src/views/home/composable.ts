@@ -4,7 +4,6 @@ import { computed, ref } from 'vue';
 import { NotificationType } from '@/constants/notificationType';
 import { StatusCode } from '@/constants/statusCode';
 import { i18n } from '@/main';
-import validation from '@/methods/validation';
 import { AccountStore } from '@/store/accountStore';
 import { AlertStore } from '@/store/alertStore';
 import { MicroControllerStore } from '@/store/microControllerStore';
@@ -37,7 +36,7 @@ export const useHome = () => {
   /**
    * マイコン登録リクエストとエラーハンドリング
    */
-  const register = async () => {
+  const onClickRegister = async () => {
     await microControllerStore
       .register(accountInfo.value.id.toString(), macAddressRef.value)
       .then(() => {
@@ -79,7 +78,6 @@ export const useHome = () => {
   const microControllerList = computed(() => microControllerStore.getMicroControllerList);
 
   const isShowModal = ref(false);
-  const macAddressError = ref('');
   const macAddressRef = ref('');
   const showNotification = ref(false);
   const notificationMessage = ref('');
@@ -87,19 +85,6 @@ export const useHome = () => {
 
   const onClickPlusButton = () => {
     isShowModal.value = true;
-  };
-
-  const onClickRegister = async () => {
-    macAddressError.value = '';
-
-    const macAddressValidateFlag = !validation.macAddressValidate(macAddressRef.value);
-
-    if (macAddressValidateFlag) {
-      macAddressError.value = i18n.global.t('Validation.Error.invalidMacAddress');
-      return;
-    }
-
-    register();
   };
 
   // マイコンタイル押下時の処理
@@ -117,7 +102,6 @@ export const useHome = () => {
     microControllerList,
     isShowModal,
     macAddressRef,
-    macAddressError,
     onClickPlusButton,
     onClickRegister,
     onClickTile,

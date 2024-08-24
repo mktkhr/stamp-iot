@@ -3,11 +3,8 @@ import DefaultFrame from '@/components/DefaultFrame.vue';
 import DisplayInformation from '@/components/common/DisplayInformation.vue';
 import GridFrame from '@/components/common/GridFrame.vue';
 import InformationDetailFrame from '@/components/common/InformationDetailFrame.vue';
-import CommonButton from '@/components/common/commonButton/CommonButton.vue';
-import CommonFormWindow from '@/components/common/commonFormWindow/CommonFormWindow.vue';
-import CommonInput from '@/components/common/commonInput/CommonInput.vue';
-import CommonOverlay from '@/components/common/commonOverlay/CommonOverlay.vue';
 import { convertLocalDateTime } from '@/utils/dayjsUtil';
+import MacAddressRegisterDialog from './components/MacAddressRegisterDialog.vue';
 import { useHome } from './composable';
 
 const {
@@ -15,7 +12,6 @@ const {
   microControllerList,
   isShowModal,
   macAddressRef,
-  macAddressError,
   onClickPlusButton,
   onClickRegister,
   onClickTile,
@@ -26,34 +22,11 @@ const {
 <template>
   <DefaultFrame :show-action-bar="false">
     <template #content>
-      <CommonOverlay v-model="isShowModal" persistent>
-        <CommonFormWindow>
-          <template #title>
-            <span class="title">{{ $t('Home.registerNewDevice') }}</span>
-          </template>
-          <template #content>
-            <span>{{ $t('Home.enterMacAddress') }}</span>
-            <CommonInput
-              class="position-input"
-              v-model="macAddressRef"
-              type="text"
-              :placeholder="$t('Home.macAddress')"
-              :error-message="macAddressError"
-            />
-            <div class="wrapper-button">
-              <CommonButton
-                :button-title="$t('Button.cancel')"
-                @click-button="() => (isShowModal = false)"
-              />
-              <CommonButton
-                :button-title="$t('Button.register')"
-                @click-button="onClickRegister"
-                type="fill"
-              />
-            </div>
-          </template>
-        </CommonFormWindow>
-      </CommonOverlay>
+      <MacAddressRegisterDialog
+        v-model="isShowModal"
+        v-model:mac-address="macAddressRef"
+        @on-click-register="onClickRegister"
+      />
 
       <div class="wrapper-main-content">
         <div class="wrapper-account-info" v-if="accountInfo">
@@ -157,10 +130,6 @@ $account_info_height: 170px;
     > .input-content {
       width: 80%;
     }
-  }
-  &-button {
-    display: flex;
-    justify-content: space-evenly;
   }
 }
 img {
