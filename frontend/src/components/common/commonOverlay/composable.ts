@@ -49,7 +49,7 @@ export const useOverlay = (
       doTeleport.value = false;
       modelValue.value = false;
       hideInProgress.value = false;
-    }, TRANSITION_DELAY_IN_SEC * 1000 - 10);
+    }, TRANSITION_DELAY_IN_SEC * 1000 - 50);
   };
 
   /**
