@@ -11,9 +11,14 @@
         "i18n-ally.sourceLanguage": "en",
         "i18n-ally.displayLanguage": "ja",
         "i18n-ally.pathMatcher": "{locale}.{ext}",
-        "i18n-ally.enabledParsers": ["js", "ts"],
+        "i18n-ally.enabledParsers": [
+          "js",
+          "ts"
+        ],
         "i18n-ally.extract.keyMaxLength": 50,
-        "i18n-ally.enabledFrameworks": ["vue"],
+        "i18n-ally.enabledFrameworks": [
+          "vue"
+        ],
         "i18n-ally.fullReloadOnChanged": true,
         "i18n-ally.languageTagSystem": "legacy",
         "i18n-ally.keystyle": "nested",
@@ -36,7 +41,10 @@
         "files.associations": {
           ".env.*": "properties"
         },
-        "cSpell.words": ["pinia", "vuetify"],
+        "cSpell.words": [
+          "pinia",
+          "vuetify"
+        ],
         "jest.runMode": "on-demand",
         "vue.updateImportsOnFileMove.enabled": true,
         "volar.autoCompleteRefs": true
