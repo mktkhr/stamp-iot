@@ -27,6 +27,7 @@
     padding: 32px 16px;
     border-radius: 24px;
     box-shadow: 0px 8px 24px -2px rgba(0, 0, 0, 0.6);
+    background-color: white;
     display: flex;
 
     > .container {
