@@ -1,3 +1,4 @@
+import { SelectOptionType } from '@/components/common/commonSelect/composable';
 import { StatusCode } from '@/constants/statusCode';
 import { i18n } from '@/main';
 import {
@@ -48,9 +49,9 @@ export const useMeasuredData = (microControllerUuid: string) => {
     environmentalChartConfig,
     sdi12OptionList,
     environmentalOptionList,
-    onChangeSdi12Select,
+    selectedSdi12Option,
     sdi12ChartDataSet,
-    onChangeEnvironmentalSelect,
+    selectedEnvironmentalOption,
     environmentalChartDataSet,
   } = useChart();
 
@@ -59,9 +60,9 @@ export const useMeasuredData = (microControllerUuid: string) => {
     environmentalChartConfig,
     sdi12OptionList,
     environmentalOptionList,
-    onChangeSdi12Select,
+    selectedSdi12Option,
     sdi12ChartDataSet,
-    onChangeEnvironmentalSelect,
+    selectedEnvironmentalOption,
     environmentalChartDataSet,
   };
 };
@@ -176,7 +177,7 @@ export const useChart = () => {
   }));
 
   // SDI-12グラフ表示切替用選択肢
-  const sdi12OptionList = [
+  const sdi12OptionList: SelectOptionType[] = [
     { word: i18n.global.t('MeasuredData.volumetricWaterContent'), key: 'vwc' },
     { word: i18n.global.t('MeasuredData.bulkRelativePermittivity'), key: 'brp' },
     { word: i18n.global.t('MeasuredData.soilTemperature'), key: 'soilTemp' },
@@ -188,7 +189,7 @@ export const useChart = () => {
   ];
 
   // 環境データグラフ表示切替用選択肢
-  const environmentalOptionList = [
+  const environmentalOptionList: SelectOptionType[] = [
     { word: i18n.global.t('MeasuredData.airPressure'), key: 'airPress' },
     { word: i18n.global.t('MeasuredData.temperature'), key: 'temp' },
     { word: i18n.global.t('MeasuredData.relativeHumidity'), key: 'humi' },
@@ -197,14 +198,6 @@ export const useChart = () => {
     { word: i18n.global.t('MeasuredData.analogValue'), key: 'analogValue' },
   ];
 
-  /**
-   * SDI-12の表示項目セレクターが変化した際の処理
-   * @param value
-   */
-  const onChangeSdi12Select = (value: string) => {
-    selectedSdi12Option.value = value;
-  };
-
   // SDI-12グラフ用データ
   const sdi12ChartData = computed(() =>
     measuredDataStore.getSdi12DataList(selectedSdi12Option.value)
@@ -212,14 +205,6 @@ export const useChart = () => {
   const sdi12ChartDataSet = computed<ChartData<'line'>>(() => ({
     datasets: sdi12ChartData.value,
   }));
-
-  /**
-   * 環境データの表示項目セレクターが変化した際の処理
-   * @param value
-   */
-  const onChangeEnvironmentalSelect = (value: string) => {
-    selectedEnvironmentalOption.value = value;
-  };
 
   // 環境データグラフ用データ
   const environmentalChartData = computed(() =>
@@ -234,9 +219,9 @@ export const useChart = () => {
     environmentalChartConfig,
     sdi12OptionList,
     environmentalOptionList,
-    onChangeSdi12Select,
+    selectedSdi12Option,
     sdi12ChartDataSet,
-    onChangeEnvironmentalSelect,
+    selectedEnvironmentalOption,
     environmentalChartDataSet,
   };
 };

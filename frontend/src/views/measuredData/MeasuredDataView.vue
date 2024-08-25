@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import InformationSelect from '@/components/common/InformationSelect.vue';
+import CommonSelect from '@/components/common/commonSelect/CommonSelect.vue';
 import { LineChart } from 'vue-chart-3';
 import { useMeasuredData } from './composable';
 
@@ -12,9 +12,9 @@ const {
   environmentalChartConfig,
   sdi12OptionList,
   environmentalOptionList,
-  onChangeSdi12Select,
+  selectedSdi12Option,
   sdi12ChartDataSet,
-  onChangeEnvironmentalSelect,
+  selectedEnvironmentalOption,
   environmentalChartDataSet,
 } = useMeasuredData(props.microControllerUuid);
 </script>
@@ -28,11 +28,11 @@ const {
         :chartData="sdi12ChartDataSet"
         :options="sdi12ChartConfig"
       />
-      <InformationSelect
+      <CommonSelect
         class="selector"
-        :title="$t('MeasuredData.displayedItem')"
+        v-model="selectedSdi12Option"
+        :placeholder="$t('MeasuredData.displayedItem')"
         :option-list="sdi12OptionList"
-        @selectedValue="onChangeSdi12Select"
       />
     </div>
     <div class="wrapper-chart">
@@ -42,11 +42,11 @@ const {
         :chartData="environmentalChartDataSet"
         :options="environmentalChartConfig"
       />
-      <InformationSelect
+      <CommonSelect
         class="selector"
-        :title="$t('MeasuredData.displayedItem')"
+        v-model="selectedEnvironmentalOption"
+        :placeholder="$t('MeasuredData.displayedItem')"
         :option-list="environmentalOptionList"
-        @selectedValue="onChangeEnvironmentalSelect"
       />
     </div>
   </div>
