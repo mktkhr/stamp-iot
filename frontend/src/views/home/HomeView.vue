@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import DefaultFrame from '@/components/DefaultFrame.vue';
-import DisplayInformation from '@/components/common/DisplayInformation.vue';
-import GridFrame from '@/components/common/GridFrame.vue';
-import InformationDetailFrame from '@/components/common/InformationDetailFrame.vue';
+import CommonDisplayInformation from '@/components/common/commonDisplayInformation/CommonDisplayInformation.vue';
+import DefaultFrame from '@/components/frame/defaultFrame/DefaultFrame.vue';
+import GridFrame from '@/components/frame/gridFrame/GridFrame.vue';
+import InformationDetailFrame from '@/components/frame/informationDetailFrame/InformationDetailFrame.vue';
 import { convertLocalDateTime } from '@/utils/dayjsUtil';
 import MacAddressRegisterDialog from './components/MacAddressRegisterDialog.vue';
 import { useHome } from './composable';
@@ -39,15 +39,15 @@ const {
               <span class="ems-add_circle icon" @click="onClickPlusButton"></span>
             </template>
             <template #content>
-              <DisplayInformation
+              <CommonDisplayInformation
                 :title="$t('Home.accountName')"
                 :content="accountInfo.name ?? $t('Home.unnamed')"
               />
-              <DisplayInformation
+              <CommonDisplayInformation
                 :title="$t('Home.registrationDate')"
                 :content="convertLocalDateTime(accountInfo.createdAt)"
               />
-              <DisplayInformation
+              <CommonDisplayInformation
                 :title="$t('Home.lastUpdatedDate')"
                 :content="convertLocalDateTime(accountInfo.updatedAt)"
               />
@@ -75,19 +75,19 @@ const {
                       ></span>
                     </template>
                     <template #content>
-                      <DisplayInformation
+                      <CommonDisplayInformation
                         :title="$t('Home.macAddress')"
                         :content="microController.macAddress"
                       />
-                      <DisplayInformation
+                      <CommonDisplayInformation
                         :title="$t('Home.interval')"
                         :content="microController.interval.toString()"
                       />
-                      <DisplayInformation
+                      <CommonDisplayInformation
                         :title="$t('Home.registrationDateTime')"
                         :content="convertLocalDateTime(microController.createdAt)"
                       />
-                      <DisplayInformation
+                      <CommonDisplayInformation
                         :title="$t('Home.lastUpdatedDateTime')"
                         :content="convertLocalDateTime(microController.updatedAt)"
                       />

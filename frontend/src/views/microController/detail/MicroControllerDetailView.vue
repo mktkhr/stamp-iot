@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import DisplayInformation from '@/components/common/DisplayInformation.vue';
 import CommonButton from '@/components/common/commonButton/CommonButton.vue';
+import CommonDisplayInformation from '@/components/common/commonDisplayInformation/CommonDisplayInformation.vue';
 import CommonFormWindow from '@/components/common/commonFormWindow/CommonFormWindow.vue';
 import CommonInput from '@/components/common/commonInput/CommonInput.vue';
 import CommonSelect from '@/components/common/commonSelect/CommonSelect.vue';
@@ -75,7 +75,7 @@ const {
             </div>
           </div>
         </div>
-        <DisplayInformation
+        <CommonDisplayInformation
           :title="$t('MicroControllerDetail.interval')"
           :content="`${microControllerDetail.interval}分`"
           show-border-top
@@ -90,8 +90,8 @@ const {
               :placeholder="$t('MicroControllerDetail.interval')"
             />
           </template>
-        </DisplayInformation>
-        <DisplayInformation
+        </CommonDisplayInformation>
+        <CommonDisplayInformation
           :title="$t('MicroControllerDetail.measurementAddress')"
           :content="
             !microControllerDetail.sdi12Address
@@ -110,12 +110,12 @@ const {
               :error-message="sdiAddressErrorMessage"
             />
           </template>
-        </DisplayInformation>
-        <DisplayInformation
+        </CommonDisplayInformation>
+        <CommonDisplayInformation
           :title="$t('MicroControllerDetail.registrationDate')"
           :content="`${dayjs(microControllerDetail.createdAt).format('YYYY/MM/DD')}`"
         />
-        <DisplayInformation
+        <CommonDisplayInformation
           :title="$t('MicroControllerDetail.lastUpdatedDate')"
           :content="`${dayjs(microControllerDetail.updatedAt).format('YYYY/MM/DD')}`"
         />
