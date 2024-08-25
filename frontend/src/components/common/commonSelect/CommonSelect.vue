@@ -77,7 +77,7 @@ $lable_height: 24px;
         & ~ label {
           font-size: 16px;
           top: calc(($select_height - $lable_height) / 2);
-          left: $select_padding;
+          left: 8px;
           color: #444;
         }
 
