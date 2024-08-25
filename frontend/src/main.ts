@@ -6,14 +6,10 @@ import '@/styles/style.scss';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 import { createI18n } from 'vue-i18n';
-import { createVuetify } from 'vuetify';
-import * as components from 'vuetify/components';
-import * as directives from 'vuetify/directives';
 
 const app = createApp(App);
 
 const pinia = createPinia();
-const vuetify = createVuetify({ components, directives });
 export const i18n = createI18n({
   legacy: false,
   locale: 'ja',
@@ -31,7 +27,6 @@ export const i18n = createI18n({
 });
 
 app.use(pinia);
-app.use(vuetify);
 app.use(router);
 app.use(i18n);
 app.mount('#app');
