@@ -8,7 +8,7 @@ import { Dialog } from '@/locales/common/dialog/ja';
 import { Register } from '@/locales/views/register/ja';
 import { Login } from '@/locales/views/login/ja';
 import { Home } from '@/locales/views/home/ja';
-import { microControllerDetail } from '@/locales/views/microController/detail/ja';
+import { MicroControllerDetail } from '@/locales/views/microController/detail/ja';
 import { MeasuredData } from '@/locales/views/measuredDate/ja';
 
 // Components
@@ -23,7 +23,7 @@ export default {
   ApiError,
   Login,
   Home,
-  microControllerDetail,
+  MicroControllerDetail,
   Dialog,
   MeasuredData,
   Header,
