@@ -1,6 +1,5 @@
-export const microControllerDetail = {
-  title: 'ログイン',
-  toRegister: '新規登録はこちら',
+export const MicroControllerDetail = {
+  title: 'マイクロコントローラー詳細',
   unnamedDevice: '名称未設定',
   macAddress: 'MACアドレス',
   interval: '測定間隔',

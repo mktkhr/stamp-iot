@@ -1,55 +1,69 @@
 {
-	"name": "Frontend DevContainer",
-	"dockerComposeFile": "compose.yaml",
-	"service": "node",
-	"workspaceFolder": "/frontend",
-	"postCreateCommand": "npm install && npm run build:dev",
-	"customizations": {
-		"vscode": {
-			"settings": {
-				"i18n-ally.localesPaths": "src/locales/**/*",
-				"i18n-ally.sourceLanguage": "en",
-				"i18n-ally.displayLanguage": "ja",
-				"i18n-ally.pathMatcher": "{locale}.{ext}",
-				"i18n-ally.enabledParsers": [
-					"js",
-					"ts"
-				],
-				"i18n-ally.extract.keyMaxLength": 50,
-				"i18n-ally.enabledFrameworks": [
-					"vue"
-				],
-				"i18n-ally.fullReloadOnChanged": true,
-				"i18n-ally.languageTagSystem": "legacy",
-				"i18n-ally.keystyle": "nested",
-				"[vue]": {
-					"editor.defaultFormatter": "esbenp.prettier-vscode",
-					"editor.formatOnSave": false
-				},
-				"[javascript]": {
-					"editor.defaultFormatter": "esbenp.prettier-vscode",
-					"editor.formatOnSave": false
-				},
-				"[typescript]": {
-					"editor.defaultFormatter": "esbenp.prettier-vscode",
-					"editor.formatOnSave": false
-				},
-				"editor.codeActionsOnSave": {
-					"source.organizeImports": "explicit"
-				},
-				"typescript.updateImportsOnFileMove.enabled": "always",
-				"files.associations": {
-					".env.*": "properties"
-				},
-				"cSpell.words": [
-					"pinia",
-					"vuetify"
-				],
-				"jest.runMode": "on-demand",
-				"vue.updateImportsOnFileMove.enabled": true,
-				"volar.autoCompleteRefs": true
-			}
-		}
-	},
-	"remoteUser": "node"
+  "name": "Frontend DevContainer",
+  "dockerComposeFile": "compose.yaml",
+  "service": "node",
+  "workspaceFolder": "/frontend",
+  "postCreateCommand": "yarn && yarn build:dev",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "i18n-ally.localesPaths": "src/locales/**/*",
+        "i18n-ally.sourceLanguage": "en",
+        "i18n-ally.displayLanguage": "ja",
+        "i18n-ally.pathMatcher": "{locale}.{ext}",
+        "i18n-ally.enabledParsers": [
+          "js",
+          "ts"
+        ],
+        "i18n-ally.extract.keyMaxLength": 50,
+        "i18n-ally.enabledFrameworks": [
+          "vue"
+        ],
+        "i18n-ally.fullReloadOnChanged": true,
+        "i18n-ally.languageTagSystem": "legacy",
+        "i18n-ally.keystyle": "nested",
+        "[vue]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        },
+        "typescript.updateImportsOnFileMove.enabled": "always",
+        "files.associations": {
+          ".env.*": "properties"
+        },
+        "cSpell.words": [
+          "pinia",
+          "vuetify"
+        ],
+        "jest.runMode": "on-demand",
+        "vue.updateImportsOnFileMove.enabled": true,
+        "volar.autoCompleteRefs": true
+      },
+      "extensions": [
+        "vue.volar",
+        "ms-ceintl.vscode-language-pack-ja",
+        "visualstudioexptteam.vscodeinte",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "editorconfig.editorconfig",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "lokalise.i18n-ally",
+        "pranaygp.vscode-css-peek",
+        "leodevbro.blockman",
+        "naumovs.color-highlight"
+      ]
+    }
+  },
+  "remoteUser": "node"
 }

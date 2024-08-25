@@ -1,5 +1,11 @@
-import { deleteAccount, login, logout, register } from '@/methods/account';
-import { AccountInfoState, getAccountInfo } from '@/methods/account';
+import {
+  AccountInfoState,
+  deleteAccount,
+  getAccountInfo,
+  login,
+  logout,
+  register,
+} from '@/methods/account';
 import { defineStore } from 'pinia';
 import { SpinnerStore } from './spinnerStore';
 
@@ -30,8 +36,6 @@ export const AccountStore = defineStore('AccountStore', {
 
       try {
         await login(mailAddress, password);
-      } catch (e) {
-        throw e;
       } finally {
         spinnerStore.hideSpinner();
       }
@@ -39,11 +43,8 @@ export const AccountStore = defineStore('AccountStore', {
     async logout() {
       const spinnerStore = SpinnerStore();
       spinnerStore.showSpinner();
-
       try {
         await logout();
-      } catch (e) {
-        throw e;
       } finally {
         spinnerStore.hideSpinner();
       }
@@ -54,8 +55,6 @@ export const AccountStore = defineStore('AccountStore', {
 
       try {
         await register(mailAddress, password);
-      } catch (e) {
-        throw e;
       } finally {
         spinnerStore.hideSpinner();
       }
@@ -64,13 +63,11 @@ export const AccountStore = defineStore('AccountStore', {
       const spinnerStore = SpinnerStore();
       spinnerStore.showSpinner();
 
-      try{
+      try {
         await deleteAccount();
-      }catch(e){
-        throw e;
-      }finally{
+      } finally {
         spinnerStore.hideSpinner();
       }
-    }
+    },
   },
 });

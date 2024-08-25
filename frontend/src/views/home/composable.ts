@@ -1,14 +1,17 @@
-import { computed, ref } from 'vue';
 import router from '@/router';
+import { computed, ref } from 'vue';
 
-import validation from '@/methods/validation';
-import { AccountStore } from '@/store/accountStore';
-import { MicroControllerStore } from '@/store/microControllerStore';
 import { NotificationType } from '@/constants/notificationType';
 import { StatusCode } from '@/constants/statusCode';
 import { i18n } from '@/main';
+import { AccountStore } from '@/store/accountStore';
+import { AlertStore } from '@/store/alertStore';
+import { MicroControllerStore } from '@/store/microControllerStore';
+import { generateRandowmString } from '@/utils/stringUtil';
 
 export const useHome = () => {
+  const alertStore = AlertStore();
+
   /**
    * マイコン一覧取得リクエストとエラーハンドリング
    */
@@ -20,16 +23,20 @@ export const useHome = () => {
       } else {
         notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
       }
-      notificationType.value = NotificationType.ERROR;
-      showNotification.value = true;
-      setTimeout(() => (showNotification.value = false), 3000);
+
+      alertStore.addAlert({
+        id: generateRandowmString(),
+        type: 'alert',
+        content: notificationMessage.value,
+        timeInSec: 5,
+      });
     });
   };
 
   /**
    * マイコン登録リクエストとエラーハンドリング
    */
-  const register = async () => {
+  const onClickRegister = async () => {
     await microControllerStore
       .register(accountInfo.value.id.toString(), macAddressRef.value)
       .then(() => {
@@ -52,9 +59,13 @@ export const useHome = () => {
         } else {
           notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
         }
-        notificationType.value = NotificationType.ERROR;
-        showNotification.value = true;
-        setTimeout(() => (showNotification.value = false), 3000);
+
+        alertStore.addAlert({
+          id: generateRandowmString(),
+          type: 'alert',
+          content: notificationMessage.value,
+          timeInSec: 5,
+        });
       });
   };
 
@@ -67,7 +78,6 @@ export const useHome = () => {
   const microControllerList = computed(() => microControllerStore.getMicroControllerList);
 
   const isShowModal = ref(false);
-  const macAddressError = ref('');
   const macAddressRef = ref('');
   const showNotification = ref(false);
   const notificationMessage = ref('');
@@ -75,27 +85,6 @@ export const useHome = () => {
 
   const onClickPlusButton = () => {
     isShowModal.value = true;
-  };
-
-  const onClickSubmit = () => {
-    isShowModal.value = false;
-  };
-
-  const getMacAddress = (value: string) => {
-    macAddressRef.value = value;
-  };
-
-  const onClickRegister = async () => {
-    macAddressError.value = '';
-
-    const macAddressValidateFlag = !validation.macAddressValidate(macAddressRef.value);
-
-    if (macAddressValidateFlag) {
-      macAddressError.value = i18n.global.t('Validation.Error.invalidMacAddress');
-      return;
-    }
-
-    register();
   };
 
   // マイコンタイル押下時の処理
@@ -112,13 +101,8 @@ export const useHome = () => {
     accountInfo,
     microControllerList,
     isShowModal,
-    macAddressError,
-    showNotification,
-    notificationMessage,
-    notificationType,
+    macAddressRef,
     onClickPlusButton,
-    onClickSubmit,
-    getMacAddress,
     onClickRegister,
     onClickTile,
     onClickSetting,

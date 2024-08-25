@@ -33,8 +33,6 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
       try {
         measuredDataList = await fetchMeasuredData(microControllerUuid);
         this.measuredDataList = measuredDataList;
-      } catch (e) {
-        throw e;
       } finally {
         spinnerStore.hideSpinner();
       }

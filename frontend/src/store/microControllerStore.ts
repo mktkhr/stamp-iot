@@ -35,8 +35,6 @@ export const MicroControllerStore = defineStore('MicroControllerStore', {
         const responseList = await microControllerGet();
         const convertedResponseList = responseList.map((response) => convertToState(response));
         this.$state.microControllerList = convertedResponseList;
-      } catch (e) {
-        throw e;
       } finally {
         spinnerStore.hideSpinner();
       }
@@ -48,8 +46,6 @@ export const MicroControllerStore = defineStore('MicroControllerStore', {
 
       try {
         await microControllerRegister(userId, macAddress);
-      } catch (e) {
-        throw e;
       } finally {
         spinnerStore.hideSpinner();
       }
@@ -66,8 +62,6 @@ export const MicroControllerStore = defineStore('MicroControllerStore', {
       try {
         const response = await microControllerDetailGet(microControllerUuid);
         this.$state.microControllerDetail = convertToState(response);
-      } catch (e) {
-        throw e;
       } finally {
         spinnerStore.hideSpinner();
       }
@@ -83,8 +77,6 @@ export const MicroControllerStore = defineStore('MicroControllerStore', {
       try {
         const response = await microControllerDetailPatch(param);
         this.$state.microControllerDetail = convertToState(response);
-      } catch (e) {
-        throw e;
       } finally {
         spinnerStore.hideSpinner();
       }

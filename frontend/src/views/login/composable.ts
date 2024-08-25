@@ -1,11 +1,12 @@
-import { ref } from 'vue';
 import router from '@/router';
+import { ref } from 'vue';
 
+import { StatusCode } from '@/constants/statusCode';
+import { i18n } from '@/main';
 import validation from '@/methods/validation';
 import { AccountStore } from '@/store/accountStore';
-import { StatusCode } from '@/constants/statusCode';
-import { NotificationType } from '@/constants/notificationType';
-import { i18n } from '@/main';
+import { AlertStore } from '@/store/alertStore';
+import { generateRandowmString } from '@/utils/stringUtil';
 
 export const useLogin = () => {
   const mailAddressRef = ref('');
@@ -14,17 +15,9 @@ export const useLogin = () => {
   const passwordError = ref('');
   const showNotification = ref(false);
   const notificationMessage = ref('');
-  const notificationType = ref(NotificationType.INFO);
 
   const accountStore = AccountStore();
-
-  const getMailAddress = (value: string) => {
-    mailAddressRef.value = value;
-  };
-
-  const getPassword = (value: string) => {
-    passwordRef.value = value;
-  };
+  const alertStore = AlertStore();
 
   /**
    * ログイン入力情報のバリデーション
@@ -53,10 +46,15 @@ export const useLogin = () => {
     passwordError.value = '';
 
     if (validate()) {
-      notificationMessage.value = i18n.global.t('Validation.Error.invalid');
-      notificationType.value = NotificationType.ERROR;
-      showNotification.value = true;
-      setTimeout(() => (showNotification.value = false), 3000);
+      alertStore.addAlert(
+        {
+          id: generateRandowmString(),
+          type: 'warning',
+          content: i18n.global.t('Validation.Error.invalid'),
+          timeInSec: 5,
+        },
+        true
+      );
       return;
     }
     await accountStore
@@ -73,19 +71,22 @@ export const useLogin = () => {
         } else {
           notificationMessage.value = i18n.global.t('ApiError.unexpectedError');
         }
-        notificationType.value = NotificationType.ERROR;
-        showNotification.value = true;
-        setTimeout(() => (showNotification.value = false), 3000);
+
+        alertStore.addAlert({
+          id: generateRandowmString(),
+          type: 'alert',
+          content: notificationMessage.value,
+          timeInSec: 5,
+        });
       });
   };
   return {
+    mailAddressRef,
+    passwordRef,
     mailAddressError,
     passwordError,
     showNotification,
     notificationMessage,
-    notificationType,
-    getMailAddress,
-    getPassword,
     onClickLoginButton,
   };
 };

@@ -18,33 +18,35 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.14.0]
+        node-version: [20.15.1]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: ./frontend/package-lock.json
+          cache: "yarn"
+          cache-dependency-path: ./frontend/yarn.lock
 
       - name: Install packages
-        run: npm install
+        run: |
+          npm install -g yarn
+          yarn
         working-directory: ./frontend
 
       - name: Run build
-        run: npm run build:prod --if-present
+        run: yarn build:prod
         working-directory: ./frontend
 
       - name: Run unit test
-        run: npm run test:unit
+        run: yarn test:unit
         working-directory: ./frontend
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: |
@@ -59,10 +61,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: dist
           path: ./frontend/dist
@@ -75,11 +77,11 @@ jobs:
           password: ${{secrets.GHCR_ACCESS_TOKEN}}
 
       - name: Set up docker buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: |
             ghcr.io/mktkhr/stamp-iot/nginx
@@ -88,7 +90,7 @@ jobs:
             type=sha,prefix=,suffix=,format=short
 
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
           context: ./frontend
           file: ./frontend/Dockerfile
