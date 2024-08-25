@@ -29,7 +29,7 @@ const modelValue = defineModel<string>({ required: true, default: '' });
 
 <style lang="scss" scoped>
 $input_height: 32px;
-$input_padding: 16px;
+$input_padding: 8px;
 $lable_height: 24px;
 
 .wrapper {
@@ -70,7 +70,7 @@ $lable_height: 24px;
         // inputに値があってfocus状態でない場合
         ~ .inputted {
           font-size: 12px;
-          top: calc(($input_padding + 2px) * -1);
+          top: -18px;
           left: 0;
         }
       }
