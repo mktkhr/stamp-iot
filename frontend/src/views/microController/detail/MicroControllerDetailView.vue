@@ -1,223 +1,139 @@
 <script setup lang="ts">
-import DefaultFrame from '@/components/DefaultFrame.vue';
 import DisplayInformation from '@/components/common/DisplayInformation.vue';
-import InformationInput from '@/components/common/InformationInput.vue';
-import InformationSelect from '@/components/common/InformationSelect.vue';
-import ModalWindow from '@/components/common/ModalWindow.vue';
 import CommonButton from '@/components/common/commonButton/CommonButton.vue';
-import { i18n } from '@/main';
-import { MicroControllerDetailPatchParam } from '@/methods/microController';
-import validation from '@/methods/validation';
-import { MicroControllerStore } from '@/store/microControllerStore';
+import CommonFormWindow from '@/components/common/commonFormWindow/CommonFormWindow.vue';
+import CommonInput from '@/components/common/commonInput/CommonInput.vue';
+import CommonSelect from '@/components/common/commonSelect/CommonSelect.vue';
 import dayjs from 'dayjs';
-import { computed, ref } from 'vue';
+import MicroControllerDetailEditCancelDialog from './components/MicroControllerDetailEditCancelDialog.vue';
+import { useMicroControllerDetail } from './composable';
 
 const props = defineProps<{
   microControllerUuid: string;
 }>();
 
-const isEditMode = ref(false);
-const intervalForEdit = ref('');
-const unitNameForEdit = ref('');
-const addressForEdit = ref('');
-const isShowModal = ref(false);
-const sdiAddressErrorMessage = ref('');
-
-const microControllerStore = MicroControllerStore();
-const microControllerDetail = computed(() => microControllerStore.getDetail);
-
-const fetchDetail = async () => {
-  await microControllerStore.fetchMicroControllerDetail(props.microControllerUuid);
-};
-fetchDetail();
-
-const intervalList = [
-  { key: '1', word: '1分' },
-  { key: '5', word: '5分' },
-  { key: '10', word: '10分' },
-  { key: '15', word: '15分' },
-  { key: '20', word: '20分' },
-  { key: '30', word: '30分' },
-  { key: '60', word: '60分' },
-];
-
-const onClickEdit = () => {
-  intervalForEdit.value = microControllerDetail.value.interval.toString();
-  unitNameForEdit.value = microControllerDetail.value.name ?? '';
-  addressForEdit.value = microControllerDetail.value.sdi12Address;
-  isEditMode.value = true;
-};
-const onClickCancel = () => {
-  if (checkDiff()) {
-    isShowModal.value = true;
-    return;
-  }
-  sdiAddressErrorMessage.value = '';
-  isEditMode.value = false;
-};
-const onClickSave = () => {
-  sdiAddressErrorMessage.value = '';
-  if (!validation.sdiAddressValidate(addressForEdit.value)) {
-    sdiAddressErrorMessage.value = i18n.global.t('Validation.invalidSdiAddress');
-    return;
-  }
-
-  const param: MicroControllerDetailPatchParam = {
-    microControllerUuid: props.microControllerUuid,
-    name: unitNameForEdit.value,
-    interval: intervalForEdit.value,
-    sdi12Address: addressForEdit.value,
-  };
-
-  microControllerStore.updateMicroControllerDetail(param);
-  isEditMode.value = false;
-};
-
-const checkDiff = () => {
-  return (
-    microControllerDetail.value.interval.toString() !== intervalForEdit.value ||
-    microControllerDetail.value.name !== unitNameForEdit.value
-  );
-};
-
-const onInputName = (value: string) => {
-  unitNameForEdit.value = value;
-};
-
-const onInputAddress = (value: string) => {
-  addressForEdit.value = value;
-};
-
-const onClickAccept = () => {
-  isEditMode.value = false;
-  isShowModal.value = false;
-};
-
-const onClickDeny = () => {
-  isShowModal.value = false;
-};
-
-const onChangeSelectedValue = (value: string) => {
-  intervalForEdit.value = value;
-};
+const {
+  isEditMode,
+  onClickEdit,
+  onClickCancel,
+  onClickSave,
+  microControllerDetail,
+  unitNameForEdit,
+  intervalForEdit,
+  intervalList,
+  addressForEdit,
+  sdiAddressErrorMessage,
+  isShowCancelModal,
+  onClickCancelDeny,
+  onClickCancelAccept,
+} = useMicroControllerDetail(props);
 </script>
 <template>
-  <DefaultFrame show-action-bar>
-    <template #actionBar>
-      <div class="action-bar">
-        <div class="wrapper-button">
-          <CommonButton
-            v-if="!isEditMode"
-            :button-title="$t('Button.edit')"
-            @clickButton="onClickEdit"
-          />
-          <CommonButton
-            v-if="isEditMode"
-            :button-title="$t('Button.cancel')"
-            width="120px"
-            @clickButton="onClickCancel"
-          />
-          <CommonButton
-            v-if="isEditMode"
-            :button-title="$t('Button.save')"
-            @clickButton="onClickSave"
-          />
-        </div>
-      </div>
+  <CommonFormWindow window-style="vertical">
+    <template #title>
+      <span class="title">{{ $t('MicroControllerDetail.title') }}</span>
     </template>
     <template #content>
+      <div class="action-bar">
+        <CommonButton
+          v-if="!isEditMode"
+          type="fill"
+          :button-title="$t('Button.edit')"
+          @clickButton="onClickEdit"
+        />
+        <CommonButton
+          v-if="isEditMode"
+          :button-title="$t('Button.cancel')"
+          width="120px"
+          @clickButton="onClickCancel"
+        />
+        <CommonButton
+          v-if="isEditMode"
+          type="fill"
+          :button-title="$t('Button.save')"
+          @clickButton="onClickSave"
+        />
+      </div>
       <div class="wrapper-content">
         <div class="wrapper-unit-info">
           <div class="wrapper-unit-photo">
-            <v-icon class="icon">ems-photo</v-icon>
+            <span class="icon ems-photo"></span>
           </div>
           <div class="wrapper-unit-name">
             <div class="span-name-box">
               <span v-if="!isEditMode" class="name">{{
-                `${microControllerDetail.name ?? $t('microControllerDetail.unnamedDevice')}`
+                `${
+                  !microControllerDetail.name
+                    ? $t('MicroControllerDetail.unnamedDevice')
+                    : microControllerDetail.name
+                }`
               }}</span>
-              <InformationInput
-                v-if="isEditMode"
-                text
-                align-left
-                :init-value="unitNameForEdit"
-                @inputValue="onInputName"
-              />
+              <CommonInput v-if="isEditMode" v-model="unitNameForEdit" type="text" />
               <span class="address">{{
-                `${$t('microControllerDetail.macAddress')}: ${microControllerDetail.macAddress}`
+                `${$t('MicroControllerDetail.macAddress')}: ${microControllerDetail.macAddress}`
               }}</span>
             </div>
           </div>
         </div>
         <DisplayInformation
-          :title="$t('microControllerDetail.interval')"
+          :title="$t('MicroControllerDetail.interval')"
           :content="`${microControllerDetail.interval}分`"
           show-border-top
           :is-edit-mode="isEditMode"
         >
           <template #content>
-            <InformationSelect
+            <CommonSelect
               v-if="isEditMode"
-              class="selector"
+              class="input-space"
+              v-model="intervalForEdit"
               :option-list="intervalList"
-              :title="$t('microControllerDetail.interval')"
-              :show-label="false"
-              :init-value="intervalForEdit"
-              outlined
-              @selected-value="onChangeSelectedValue"
+              :placeholder="$t('MicroControllerDetail.interval')"
             />
           </template>
         </DisplayInformation>
         <DisplayInformation
-          :title="$t('microControllerDetail.measurementAddress')"
+          :title="$t('MicroControllerDetail.measurementAddress')"
           :content="
-            microControllerDetail.sdi12Address ?? $t('microControllerDetail.unsetSdiAddress')
+            !microControllerDetail.sdi12Address
+              ? $t('MicroControllerDetail.unsetSdiAddress')
+              : microControllerDetail.sdi12Address
           "
           :is-edit-mode="isEditMode"
         >
           <template #content>
-            <InformationInput
-              class="address-input"
+            <CommonInput
               v-if="isEditMode"
-              text
-              align-left
-              :init-value="addressForEdit"
+              class="input-space"
+              v-model="addressForEdit"
+              type="text"
+              :placeholder="$t('MicroControllerDetail.interval')"
               :error-message="sdiAddressErrorMessage"
-              @inputValue="onInputAddress"
             />
           </template>
         </DisplayInformation>
         <DisplayInformation
-          :title="$t('microControllerDetail.registrationDate')"
+          :title="$t('MicroControllerDetail.registrationDate')"
           :content="`${dayjs(microControllerDetail.createdAt).format('YYYY/MM/DD')}`"
         />
         <DisplayInformation
-          :title="$t('microControllerDetail.lastUpdatedDate')"
+          :title="$t('MicroControllerDetail.lastUpdatedDate')"
           :content="`${dayjs(microControllerDetail.updatedAt).format('YYYY/MM/DD')}`"
         />
 
-        <v-dialog v-model="isShowModal" width="80%" max-width="500px" height="200px">
-          <ModalWindow
-            :title="$t('Dialog.cancelConfirm')"
-            :description="$t('Dialog.cancelConfirmDescription')"
-          >
-            <template #button>
-              <CommonButton
-                :button-title="$t('Button.no')"
-                width="80"
-                @click-button="onClickDeny"
-              />
-              <CommonButton :button-title="$t('Button.yes')" @click-button="onClickAccept" />
-            </template>
-          </ModalWindow>
-        </v-dialog>
+        <MicroControllerDetailEditCancelDialog
+          v-model="isShowCancelModal"
+          @on-click-deny="onClickCancelDeny"
+          @on-click-accept="onClickCancelAccept"
+        />
       </div>
     </template>
-  </DefaultFrame>
+  </CommonFormWindow>
 </template>
 
 <style lang="scss" scoped>
 $unit_info_height: 100px;
+$action_bar_height: 50px;
+
 .wrapper {
   &-content {
     height: 100%;
@@ -241,6 +157,9 @@ $unit_info_height: 100px;
       height: 80px;
       width: 80px;
       font-size: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
   &-unit-name {
@@ -269,25 +188,20 @@ $unit_info_height: 100px;
 }
 .action-bar {
   width: 100%;
-  height: 100%;
+  height: $action_bar_height;
   border-bottom: 1px solid #00000022;
-  > .wrapper-button {
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding: 10px;
-    display: flex;
-    gap: 20px;
-  }
+  display: flex;
+  position: sticky;
+  justify-content: flex-end;
+  gap: 16px;
+  top: 0;
 }
-
-.selector {
-  width: calc(100% - 20px);
-  height: calc(100% - 20px);
+.title {
+  font-size: 24px;
 }
-.address-input {
-  width: calc(100% - 20px);
-  height: calc(100% - 20px);
-  padding: 10px;
+.input-space {
+  padding: 0 16px;
+  display: grid;
+  align-items: center;
 }
 </style>
