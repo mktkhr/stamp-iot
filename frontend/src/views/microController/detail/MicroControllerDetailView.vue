@@ -87,7 +87,6 @@ const {
               class="input-space"
               v-model="intervalForEdit"
               :option-list="intervalList"
-              :placeholder="$t('MicroControllerDetail.interval')"
             />
           </template>
         </CommonDisplayInformation>
@@ -106,7 +105,6 @@ const {
               class="input-space"
               v-model="addressForEdit"
               type="text"
-              :placeholder="$t('MicroControllerDetail.interval')"
               :error-message="sdiAddressErrorMessage"
             />
           </template>
