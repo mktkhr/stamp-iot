@@ -1,6 +1,9 @@
 spring:
   profiles:
     active: ${SPRING_PROFILE_ACTIVE:dev}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
 
 # actuator
 management:
