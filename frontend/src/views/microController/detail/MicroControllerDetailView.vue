@@ -4,7 +4,7 @@ import CommonDisplayInformation from '@/components/common/commonDisplayInformati
 import CommonFormWindow from '@/components/common/commonFormWindow/CommonFormWindow.vue';
 import CommonInput from '@/components/common/commonInput/CommonInput.vue';
 import CommonSelect from '@/components/common/commonSelect/CommonSelect.vue';
-import dayjs from 'dayjs';
+import { convertLocalDate } from '@/utils/dayjsUtil';
 import MicroControllerDetailEditCancelDialog from './components/MicroControllerDetailEditCancelDialog.vue';
 import { useMicroControllerDetail } from './composable';
 
@@ -111,11 +111,11 @@ const {
         </CommonDisplayInformation>
         <CommonDisplayInformation
           :title="$t('MicroControllerDetail.registrationDate')"
-          :content="`${dayjs(microControllerDetail.createdAt).format('YYYY/MM/DD')}`"
+          :content="convertLocalDate(microControllerDetail.createdAt)"
         />
         <CommonDisplayInformation
           :title="$t('MicroControllerDetail.lastUpdatedDate')"
-          :content="`${dayjs(microControllerDetail.updatedAt).format('YYYY/MM/DD')}`"
+          :content="convertLocalDate(microControllerDetail.updatedAt)"
         />
 
         <MicroControllerDetailEditCancelDialog
