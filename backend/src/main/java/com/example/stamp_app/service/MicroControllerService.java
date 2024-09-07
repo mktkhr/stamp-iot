@@ -165,7 +165,6 @@ public class MicroControllerService {
         if (param.getSdi12Address() != null) {
             microController.setSdi12Address(param.getSdi12Address());
         }
-        microController.setUpdatedAt(LocalDateTime.now());
 
         microControllerRepository.save(microController);
 
