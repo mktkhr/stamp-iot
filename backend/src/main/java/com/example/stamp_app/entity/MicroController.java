@@ -11,7 +11,7 @@ import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+import java.util.UUID;
 
 @Entity
 @Data
@@ -27,7 +27,7 @@ public class MicroController {
     @Column
     @Comment(value = "端末UUID")
     @Pattern(regexp = "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$")
-    private String uuid;
+    private UUID uuid;
 
     @Column
     @Comment(value = "端末名")

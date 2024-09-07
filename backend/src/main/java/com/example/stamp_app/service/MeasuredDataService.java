@@ -113,7 +113,7 @@ public class MeasuredDataService {
      */
     public MeasuredDataGetResponse getMeasuredData(String userUuid, String microControllerUuid) {
 
-        var microController = microControllerRepository.findByUuid(microControllerUuid);
+        var microController = microControllerRepository.findByUuid(UUID.fromString(microControllerUuid));
 
         // マイコンが存在しない場合，400を返す
         if (microController == null) {
