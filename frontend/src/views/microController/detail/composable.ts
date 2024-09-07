@@ -64,7 +64,9 @@ export const useMicroControllerDetail = (props: { microControllerUuid: string })
    */
   const onClickSave = () => {
     sdiAddressErrorMessage.value = '';
-    if (!validation.sdiAddressValidate(addressForEdit.value)) {
+
+    // NOTE: 未入力の場合はバリデーションチェックを行わない
+    if (addressForEdit.value && !validation.sdiAddressValidate(addressForEdit.value)) {
       sdiAddressErrorMessage.value = i18n.global.t('Validation.Error.invalidSdiAddress');
       return;
     }
