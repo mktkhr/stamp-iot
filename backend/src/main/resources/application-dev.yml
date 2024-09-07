@@ -3,8 +3,9 @@ server:
 domain: localhost
 spring:
   jpa:
+    generate-ddl: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     # Show JPA query
     show-sql: false
   properties:
