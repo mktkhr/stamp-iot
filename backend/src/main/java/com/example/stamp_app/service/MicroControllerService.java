@@ -141,7 +141,7 @@ public class MicroControllerService {
     @Transactional(rollbackFor = Exception.class)
     public MicroController updateMicroControllerDetail(String userUuid, MicroControllerPatchParam param) {
 
-        var microController = microControllerRepository.findByUuid(UUID.fromString(param.getMicroControllerUuid()));
+        var microController = microControllerRepository.findByUuid(param.getMicroControllerUuid());
 
         // マイコンが存在しなかった場合，404を返す
         if (microController == null) {
@@ -169,6 +169,6 @@ public class MicroControllerService {
 
         microControllerRepository.save(microController);
 
-        return microControllerRepository.findByUuid(UUID.fromString(param.getMicroControllerUuid()));
+        return microControllerRepository.findByUuid(param.getMicroControllerUuid());
     }
 }
