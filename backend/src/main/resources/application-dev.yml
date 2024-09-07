@@ -1,0 +1,40 @@
+server:
+  port: 8082
+domain: localhost
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    # Show JPA query
+    show-sql: false
+  properties:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgres:5432/ems_db?useUnicode=true&characterEncoding=UTF-8&serverTimeZone=JST
+  data:
+    redis:
+      host: redis
+      port: 6379
+      database: 0
+  session:
+    # Disable spring.session
+    store-type: none
+
+hibernate:
+  jdbc:
+    lob:
+      non_contextual_creation: true
+
+
+springdoc:
+  api-docs:
+    # springdoc(Access localhost:8082/api-docs.yaml to download generated yaml file)
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    # springdoc(Access localhost:8082/swagger-ui/index/html to show swagger view)
+    enabled: true

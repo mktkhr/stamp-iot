@@ -1,0 +1,40 @@
+server:
+  port: 8082
+
+domain: ${APP_DOMAIN}
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    # Show JPA query
+    show-sql: false
+  properties:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    username: ${POSTGRES_DB_USER}
+    password: ${POSTGRES_DB_PASS}
+    driver-class-name: org.postgresql.Driver
+    initialization-mode: always
+    url: jdbc:postgresql://${POSTGRES_DB_HOST}:${POSTGRES_DB_PORT}/ems_db?useUnicode=true&characterEncoding=UTF-8&serverTimeZone=JST
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      database: 0
+  session:
+    # Disable spring.session
+    store-type: none
+
+hibernate:
+  jdbc:
+    lob:
+      non_contextual_creation: true
+
+# springdoc
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

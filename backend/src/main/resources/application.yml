@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: ${SPRING_PROFILE_ACTIVE:dev}
+
+# actuator
+management:
+  server:
+    port: 7082
+  endpoint:
+    health:
+      probes:
+        enabled: true
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
