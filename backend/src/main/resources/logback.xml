@@ -54,13 +54,10 @@
         </encoder>
     </appender>
 
-    <root level="INFO">
-        <appender-ref ref="FILE"/>
-    </root>
-
     <!-- dev では INFO 以上を出力 -->
     <springProfile name="dev">
         <root level="INFO">
+            <appender-ref ref="FILE"/>
             <appender-ref ref="STDOUT"/>
             <appender-ref ref="STDERR"/>
         </root>
