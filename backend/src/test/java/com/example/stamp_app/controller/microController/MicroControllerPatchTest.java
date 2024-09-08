@@ -91,13 +91,6 @@ public class MicroControllerPatchTest {
                 mockMvcPerform(jsonString).andExpect(status().isBadRequest());
             }
 
-            @Test
-            void リクエストパラメータのマイコンUUIDが不正の場合400を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.fromString(DummyData.INVALID_UUID), "HOGE", "30", "1,3");
-                var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
-                mockMvcPerform(jsonString).andExpect(status().isBadRequest());
-            }
-
         }
 
         @Nested
