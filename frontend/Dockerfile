@@ -1,13 +1,8 @@
+# 開発環境用
 FROM --platform=$BUILDPLATFORM nginx:1.27.0
 
-COPY ./nginx-eks.conf /etc/nginx/nginx.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
 COPY ./dist /usr/share/nginx/dist
 
-RUN chown -R nginx /var/cache/nginx \
-  && chmod -R g+w /var/cache/nginx
-
-# uid=100(nginx) gid=101(nginx) groups=101(nginx)
-USER nginx
-
-EXPOSE 8080
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
