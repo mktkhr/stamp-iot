@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -50,7 +51,7 @@ public class MicroControllerPatchTest {
     RedisService redisService;
 
     private MicroController generateMicroController() {
-        return new MicroController(1L, DummyData.VALID_UUID, "モック", "AA:AA:AA:AA:AA:AA", "30", "1,3", LocalDateTime.now(), LocalDateTime.now(), null, null, null);
+        return new MicroController(1L, UUID.randomUUID(), "モック", "AA:AA:AA:AA:AA:AA", "30", "1,3", LocalDateTime.now(), LocalDateTime.now(), null, null, null);
     }
 
     @BeforeEach
@@ -73,7 +74,7 @@ public class MicroControllerPatchTest {
 
         @Test
         void リクエストパラメータが足りている場合200を返すこと() throws Exception {
-            MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, "HOGE", "1", "1,3");
+            MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), "HOGE", "1", "1,3");
             var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
             mockMvcPerform(jsonString).andExpect(status().isOk());
         }
@@ -90,13 +91,6 @@ public class MicroControllerPatchTest {
                 mockMvcPerform(jsonString).andExpect(status().isBadRequest());
             }
 
-            @Test
-            void リクエストパラメータのマイコンUUIDが不正の場合400を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.INVALID_UUID, "HOGE", "30", "1,3");
-                var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
-                mockMvcPerform(jsonString).andExpect(status().isBadRequest());
-            }
-
         }
 
         @Nested
@@ -105,7 +99,7 @@ public class MicroControllerPatchTest {
 
             @Test
             void リクエストパラメータのマイコン名が空の場合200を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, null, "1", "1,3");
+                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), null, "1", "1,3");
                 var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
                 mockMvcPerform(jsonString).andExpect(status().isOk());
             }
@@ -118,63 +112,63 @@ public class MicroControllerPatchTest {
 
             @Test
             void リクエストパラメータの測定間隔が空の場合400を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, "HOGE", null, "1,3");
+                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), "HOGE", null, "1,3");
                 var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
                 mockMvcPerform(jsonString).andExpect(status().isBadRequest());
             }
 
             @Test
             void リクエストパラメータの測定間隔が不正の場合400を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, "HOGE", DummyData.INVALID_INTERVAL, "1,3");
+                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), "HOGE", DummyData.INVALID_INTERVAL, "1,3");
                 var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
                 mockMvcPerform(jsonString).andExpect(status().isBadRequest());
             }
 
             @Test
             void リクエストパラメータの測定間隔が1の場合200を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, "HOGE", "1", "1,3");
+                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), "HOGE", "1", "1,3");
                 var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
                 mockMvcPerform(jsonString).andExpect(status().isOk());
             }
 
             @Test
             void リクエストパラメータの測定間隔が5の場合200を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, "HOGE", "5", "1,3");
+                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), "HOGE", "5", "1,3");
                 var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
                 mockMvcPerform(jsonString).andExpect(status().isOk());
             }
 
             @Test
             void リクエストパラメータの測定間隔が10の場合200を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, "HOGE", "10", "1,3");
+                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), "HOGE", "10", "1,3");
                 var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
                 mockMvcPerform(jsonString).andExpect(status().isOk());
             }
 
             @Test
             void リクエストパラメータの測定間隔が15の場合200を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, "HOGE", "15", "1,3");
+                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), "HOGE", "15", "1,3");
                 var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
                 mockMvcPerform(jsonString).andExpect(status().isOk());
             }
 
             @Test
             void リクエストパラメータの測定間隔が20の場合200を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, "HOGE", "20", "1,3");
+                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), "HOGE", "20", "1,3");
                 var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
                 mockMvcPerform(jsonString).andExpect(status().isOk());
             }
 
             @Test
             void リクエストパラメータの測定間隔が30の場合200を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, "HOGE", "30", "1,3");
+                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), "HOGE", "30", "1,3");
                 var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
                 mockMvcPerform(jsonString).andExpect(status().isOk());
             }
 
             @Test
             void リクエストパラメータの測定間隔が60の場合200を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, "HOGE", "60", "1,3");
+                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), "HOGE", "60", "1,3");
                 var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
                 mockMvcPerform(jsonString).andExpect(status().isOk());
             }
@@ -187,14 +181,14 @@ public class MicroControllerPatchTest {
 
             @Test
             void リクエストパラメータのSDI12アドレスが空の場合200を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, "HOGE", "1", null);
+                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), "HOGE", "1", null);
                 var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
                 mockMvcPerform(jsonString).andExpect(status().isOk());
             }
 
             @Test
             void リクエストパラメータのSDi12アドレスが不正の場合200を返すこと() throws Exception {
-                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(DummyData.VALID_UUID, "HOGE", "1", DummyData.INVALID_SDI_ADDRESS);
+                MicroControllerPatchParam microControllerPatchParam = new MicroControllerPatchParam(UUID.randomUUID(), "HOGE", "1", DummyData.INVALID_SDI_ADDRESS);
                 var jsonString = objectMapper.writeValueAsString(microControllerPatchParam);
                 mockMvcPerform(jsonString).andExpect(status().isBadRequest());
             }

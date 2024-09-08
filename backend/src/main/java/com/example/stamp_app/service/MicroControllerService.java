@@ -60,7 +60,10 @@ public class MicroControllerService {
         // マイクロコントローラー情報を更新する
         microControllerRepository.save(microController);
 
-        return new MicroControllerPostResponse(microController.getId(), microController.getUuid(), microController.getName(), microController.getMacAddress(), microController.getInterval(), microController.getSdi12Address(), microController.getCreatedAt(), microController.getUpdatedAt(), microController.getDeletedAt());
+        return new MicroControllerPostResponse(microController.getId(), microController.getUuid().toString(),
+                microController.getName(), microController.getMacAddress(), microController.getInterval(),
+                microController.getSdi12Address(), microController.getCreatedAt(), microController.getUpdatedAt(),
+                microController.getDeletedAt());
 
     }
 
@@ -93,7 +96,7 @@ public class MicroControllerService {
      */
     public MicroController getMicroControllerDetail(String microControllerUuid) {
 
-        final var microController = microControllerRepository.findByUuid(microControllerUuid);
+        final var microController = microControllerRepository.findByUuid(UUID.fromString(microControllerUuid));
 
         // マイコンが存在しなかった場合，400を返す
         if (microController == null) {
@@ -162,7 +165,6 @@ public class MicroControllerService {
         if (param.getSdi12Address() != null) {
             microController.setSdi12Address(param.getSdi12Address());
         }
-        microController.setUpdatedAt(LocalDateTime.now());
 
         microControllerRepository.save(microController);
 

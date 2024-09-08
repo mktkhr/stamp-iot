@@ -38,21 +38,20 @@ public class MicroControllerGetResponse {
     @Schema(description = "更新日時", example = "2023-01-01T01:01:01.111111")
     private LocalDateTime updatedAt;
 
-
-    public static List<MicroControllerGetResponse> convertMicroControllerToListResponse(List<MicroController> microControllerList) {
+    public static List<MicroControllerGetResponse> convertMicroControllerToListResponse(
+            List<MicroController> microControllerList) {
         List<MicroControllerGetResponse> microControllerGetResponseList = new ArrayList<>();
 
         microControllerList.forEach((microController) -> {
             var microControllerGetResponse = new MicroControllerGetResponse(
                     microController.getId(),
-                    microController.getUuid(),
+                    microController.getUuid().toString(),
                     microController.getName(),
                     microController.getMacAddress(),
                     microController.getInterval(),
                     microController.getSdi12Address(),
                     microController.getCreatedAt(),
-                    microController.getUpdatedAt()
-            );
+                    microController.getUpdatedAt());
             microControllerGetResponseList.add(microControllerGetResponse);
         });
 
@@ -63,14 +62,13 @@ public class MicroControllerGetResponse {
 
         return new MicroControllerGetResponse(
                 microController.getId(),
-                microController.getUuid(),
+                microController.getUuid().toString(),
                 microController.getName(),
                 microController.getMacAddress(),
                 microController.getInterval(),
                 microController.getSdi12Address(),
                 microController.getCreatedAt(),
-                microController.getUpdatedAt()
-        );
+                microController.getUpdatedAt());
     }
 
 }

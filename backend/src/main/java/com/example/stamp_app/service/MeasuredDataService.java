@@ -85,8 +85,6 @@ public class MeasuredDataService {
         // 測定データマスターを作成
         var measuredDataMaster = new MeasuredDataMaster();
         measuredDataMaster.setDayOfYear(doyForData);
-        measuredDataMaster.setCreatedAt(measuredTime);
-        measuredDataMaster.setUpdatedAt(measuredTime);
         measuredDataMaster.setVoltage(measuredDataPostParam.getVoltage());
         measuredDataMaster.setMicroController(microController);
 
@@ -113,7 +111,7 @@ public class MeasuredDataService {
      */
     public MeasuredDataGetResponse getMeasuredData(String userUuid, String microControllerUuid) {
 
-        var microController = microControllerRepository.findByUuid(microControllerUuid);
+        var microController = microControllerRepository.findByUuid(UUID.fromString(microControllerUuid));
 
         // マイコンが存在しない場合，400を返す
         if (microController == null) {

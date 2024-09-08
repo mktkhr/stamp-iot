@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.validation.annotation.Validated;
-
+import java.util.UUID;
 
 @Getter
 @Schema(description = "マイコン更新データ")
@@ -17,8 +17,7 @@ public class MicroControllerPatchParam {
 
     @NotNull
     @Schema(description = "マイコンUUID", example = "61d5f7a7-7629-496e-be68-cfe022264578")
-    @Pattern(regexp = "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$")
-    private String microControllerUuid;
+    private UUID microControllerUuid;
 
     @Schema(description = "マイコン名", example = "サンプル端末")
     private String name;

@@ -48,8 +48,6 @@ public class AccountService {
         newUser.setUuid(UUID.randomUUID());
         newUser.setEmail(registerPostParam.getEmail());
         newUser.setPassword(hashedPassword);
-        newUser.setCreatedAt(localDateTime);
-        newUser.setUpdatedAt(localDateTime);
 
         accountRepository.save(newUser);
 

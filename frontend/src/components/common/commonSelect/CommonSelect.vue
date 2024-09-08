@@ -9,7 +9,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  placeholder: 'aaa',
+  placeholder: '',
   errorMessage: '',
   type: 'text',
   useDummyOption: false,
