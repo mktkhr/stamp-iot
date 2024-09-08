@@ -2,7 +2,7 @@ name: ems
 
 services:
   nginx:
-    image: ghcr.io/mktkhr/stamp-iot/nginx:latest
+    image: ghcr.io/mktkhr/stamp-iot/nginx-dev:latest
     container_name: nginx
     tty: true
     restart: always
