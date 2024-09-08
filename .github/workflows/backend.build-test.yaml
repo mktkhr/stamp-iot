@@ -28,7 +28,7 @@ jobs:
           cache: "gradle"
 
       - name: Run build
-        run: ./gradlew build
+        run: ./gradlew build -x test
         working-directory: ./backend
 
       - name: Run unit test
