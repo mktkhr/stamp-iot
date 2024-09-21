@@ -1,6 +1,14 @@
-import type { Preview } from '@storybook/vue3';
+import { Preview, setup } from '@storybook/vue3';
+import { createPinia } from 'pinia';
+import { App } from 'vue';
 import '../src/assets/icomoon/style.css';
 import '../src/styles/style.scss';
+
+const pinia = createPinia();
+
+setup((app: App) => {
+  app.use(pinia);
+});
 
 const preview: Preview = {
   parameters: {
