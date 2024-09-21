@@ -9395,6 +9395,7 @@ __metadata:
     sass: "npm:1.77.8"
     storybook: "npm:^8.3.2"
     storybook-addon-sass-postcss: "npm:^0.3.2"
+    storybook-addon-vue-slots: "npm:^0.9.29"
     ts-jest: "npm:29.2.3"
     typescript: "npm:5.5.4"
     vite: "npm:5.3.5"
@@ -9427,6 +9428,29 @@ __metadata:
     sass: ^1
     webpack: ^5
   checksum: 10c0/758e6cd1799ad0f235e2d81847bad6bf6e03f4fde22e3eed6f8f05655f5e0a593956319719973802c3123faac06e97204f68c9d38dc172ad2b73c486f5c360f2
+  languageName: node
+  linkType: hard
+
+"storybook-addon-vue-slots@npm:^0.9.29":
+  version: 0.9.29
+  resolution: "storybook-addon-vue-slots@npm:0.9.29"
+  peerDependencies:
+    "@storybook/blocks": ^7.0.27
+    "@storybook/components": ^7.0.27
+    "@storybook/core-events": ^7.0.27
+    "@storybook/preview-api": ^7.0.27
+    "@storybook/theming": ^7.0.27
+    "@storybook/types": ^7.0.27
+    "@storybook/vue3": ^7.0.27
+    react: ^16.8.0 || ^17.0.27 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.27 || ^18.0.0
+    vue: ^3.3.4
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: 10c0/c050ec3cc3a7263b40578d3f4a4481610ef3e467fbf005575f9ef464e170a22c89f903521ebe611d706d45a1c2ab681e069a3ad5cd86ceeb68bdbe3e14280c2c
   languageName: node
   linkType: hard
 
