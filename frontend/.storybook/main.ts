@@ -8,6 +8,14 @@ const config: StorybookConfig = {
     '@storybook/addon-essentials',
     '@chromatic-com/storybook',
     '@storybook/addon-interactions',
+    {
+      name: 'storybook-addon-sass-postcss',
+      options: {
+        rule: {
+          test: /\.(scss|sass)$/i,
+        },
+      },
+    },
   ],
   framework: {
     name: '@storybook/vue3-vite',
