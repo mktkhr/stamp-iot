@@ -1,4 +1,5 @@
 import type { Preview } from '@storybook/vue3';
+import '../src/assets/icomoon/style.css';
 import '../src/styles/style.scss';
 
 const preview: Preview = {
