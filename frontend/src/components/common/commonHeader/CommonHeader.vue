@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import router from '@/router';
 import { SidebarStore } from '@/store/sidebarStore';
 import { computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import CommonMenu from '../commonMenu/CommonMenu.vue';
 import AccountMenu from './components/accountMenu/AccountMenu.vue';
 
@@ -11,6 +11,8 @@ const isActive = computed(() => sidebarStore.isActive);
 const onClickHamburger = () => {
   sidebarStore.toggleSidebarStatus();
 };
+
+const router = useRouter();
 
 // ハンバーガーメニューの非表示設定
 const showHamburgerMenu = ref(false);
