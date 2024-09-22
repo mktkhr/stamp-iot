@@ -18,6 +18,7 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    disableSaveFromUI: true,
   },
 };
 
