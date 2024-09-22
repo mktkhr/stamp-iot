@@ -53,6 +53,7 @@
     "jest-environment-jsdom": "29.7.0",
     "storybook-addon-sass-postcss": "^0.3.2",
     "storybook-addon-vue-slots": "^0.9.29",
+    "storybook-vue3-router": "^5.0.0",
     "ts-jest": "29.2.3",
     "typescript": "5.5.4"
   },

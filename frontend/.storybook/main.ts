@@ -9,6 +9,7 @@ const config: StorybookConfig = {
     '@chromatic-com/storybook',
     '@storybook/addon-interactions',
     'storybook-addon-vue-slots',
+    'storybook-vue3-router',
     {
       name: 'storybook-addon-sass-postcss',
       options: {
