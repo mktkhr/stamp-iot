@@ -44,6 +44,7 @@ const modelValue = defineModel<string>({ required: true });
 $select_height: 32px;
 $select_padding: 4px; // CommonInputとpaddingを合わせている
 $lable_height: 24px;
+$error_height: 8px;
 
 .wrapper {
   &-select {
@@ -111,13 +112,13 @@ $lable_height: 24px;
 
 .error {
   &-wrap {
-    height: $select_padding;
+    height: $error_height;
     display: flex;
     text-align: left;
     align-items: center;
 
     > span {
-      font-size: $select_padding;
+      font-size: $error_height;
       color: var(--ems-error-theme);
     }
   }
