@@ -11,7 +11,6 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   placeholder: '',
   errorMessage: '',
-  type: 'text',
   useDummyOption: false,
 });
 
