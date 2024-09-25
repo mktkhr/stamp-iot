@@ -9,7 +9,8 @@
     "test:unit": "jest",
     "lint": "eslint lint",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "storycap": "storycap --serverCmd \"yarn storybook\" http://localhost:6006 --serverTimeout 600000"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "5.1.1",
