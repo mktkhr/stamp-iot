@@ -34,3 +34,6 @@ pnpm-debug.log*
 
 # Storybook
 storybook-static
+
+# Storycap
+__screenshots__
