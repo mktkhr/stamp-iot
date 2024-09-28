@@ -10,7 +10,8 @@
     "lint": "eslint lint",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "storycap": "storycap --serverCmd \"yarn storybook\" http://localhost:6006 --serverTimeout 600000"
+    "storycap:before": "storycap -o ./__screenshots__/before --serverCmd \"yarn storybook\" http://localhost:6006",
+    "storycap:after": "storycap -o ./__screenshots__/after --serverCmd \"yarn storybook\" http://localhost:6006"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "5.1.1",
