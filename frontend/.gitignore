@@ -37,3 +37,6 @@ storybook-static
 
 # Storycap
 __screenshots__
+
+# reg-cli
+reg.json
