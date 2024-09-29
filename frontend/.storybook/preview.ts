@@ -1,5 +1,5 @@
 import { Preview, setup } from '@storybook/vue3';
-import { initialize, mswLoader } from 'msw-storybook-addon';
+import { initialize, mswDecorator, mswLoader } from 'msw-storybook-addon';
 import { createPinia } from 'pinia';
 import { ScreenshotOptions, withScreenshot } from 'storycap';
 import { App } from 'vue';
@@ -34,6 +34,6 @@ const preview: Preview = {
   loaders: [mswLoader],
 };
 
-export const decorators = [withScreenshot(options)];
+export const decorators = [withScreenshot(options), mswDecorator];
 
 export default preview;
