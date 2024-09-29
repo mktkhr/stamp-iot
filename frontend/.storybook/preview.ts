@@ -1,4 +1,5 @@
 import { Preview, setup } from '@storybook/vue3';
+import { initialize, mswLoader } from 'msw-storybook-addon';
 import { createPinia } from 'pinia';
 import { ScreenshotOptions, withScreenshot } from 'storycap';
 import { App } from 'vue';
@@ -12,6 +13,9 @@ setup((app: App) => {
   app.use(pinia);
   app.use(i18n);
 });
+
+// Mock API
+initialize();
 
 const options: ScreenshotOptions = {
   fullPage: false,
@@ -27,6 +31,7 @@ const preview: Preview = {
     },
     disableSaveFromUI: true,
   },
+  loaders: [mswLoader],
 };
 
 export const decorators = [withScreenshot(options)];
