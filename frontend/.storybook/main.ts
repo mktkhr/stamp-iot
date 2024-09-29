@@ -11,6 +11,7 @@ const config: StorybookConfig = {
     'storybook-addon-vue-slots',
     'storybook-vue3-router',
     'storycap',
+    'storybook-msw-addon',
     {
       name: 'storybook-addon-sass-postcss',
       options: {
