@@ -1,4 +1,5 @@
 import { Preview, setup } from '@storybook/vue3';
+import { http, HttpResponse } from 'msw';
 import { initialize, mswDecorator, mswLoader } from 'msw-storybook-addon';
 import { createPinia } from 'pinia';
 import { ScreenshotOptions, withScreenshot } from 'storycap';
@@ -30,6 +31,16 @@ const preview: Preview = {
       },
     },
     disableSaveFromUI: true,
+    // TODO: mockが動作していないので修正する
+    msw: {
+      // Storybook共通のAPIハンドラを記載
+      handlers: [
+        // セッションAPI
+        http.post('/api/ems/session', async ({ request }) => {
+          return HttpResponse.text('success');
+        }),
+      ],
+    },
   },
   loaders: [mswLoader],
 };
