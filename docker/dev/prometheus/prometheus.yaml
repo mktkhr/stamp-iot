@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 5m
+  external_labels:
+    monitor: 'ems-monitor'
+
+scrape_configs:
+  - job_name: prometheus
+    scheme: http
+    honor_labels: false
+    honor_timestamps: true
+    follow_redirects: true
+    static_configs:
+      - targets:
+          - prometheus:9090
+
+  - job_name: node-exporter
+    scheme: http
+    honor_labels: false
+    honor_timestamps: true
+    follow_redirects: true
+    static_configs:
+      - targets:
+          - node-exporter:9100
