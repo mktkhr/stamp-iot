@@ -1,0 +1,51 @@
+name: ems
+
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: ems-prometheus
+    restart: always
+    volumes:
+      - type: bind
+        source: ./prometheus
+        target: /etc/prometheus
+      - type: volume
+        source: prometheus-data
+        target: /prometheus
+    command: "--config.file=/etc/prometheus/prometheus.yaml"
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: ems-node-exporter
+    restart: always
+    ports:
+      - 8091:9100
+
+  grafana:
+    image: grafana/grafana
+    container_name: ems-grafana
+    restart: always
+    volumes:
+      - type: volume
+        source: grafana-data
+        target: /var/lib/grafana
+      - type: bind
+        source: ./grafana/dashboards
+        target: /etc/grafana/provisioning/dashboards
+      - type: bind
+        source: ./grafana/datasources
+        target: /etc/grafana/provisioning/datasources
+    env_file:
+      - ./grafana/config/config.env
+    ports:
+      - 8092:8092
+
+networks:
+  ems-network:
+    name: ems-network
+    driver: bridge
+    external: true
+
+volumes:
+  prometheus-data:
+  grafana-data:
