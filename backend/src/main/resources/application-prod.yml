@@ -38,3 +38,19 @@ springdoc:
     enabled: false
   swagger-ui:
     enabled: false
+
+# actuator
+management:
+  server:
+    port: 7082
+  endpoints:
+    health:
+      probes:
+        enabled: true
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - prometheus
+          - metrics
