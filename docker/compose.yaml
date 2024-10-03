@@ -62,6 +62,7 @@ services:
     container_name: java
     tty: true
     ports:
+      - 7082:7082
       - 8082:8082
       - 5005:5005
     depends_on:
