@@ -17,8 +17,14 @@ services:
     command: /bin/bash -c "APP_DOMAIN=${APP_DOMAIN} POSTGRES_DB_HOST=${POSTGRES_DB_HOST} POSTGRES_DB_PORT=${POSTGRES_DB_PORT} POSTGRES_DB_USER=${POSTGRES_DB_USER} POSTGRES_DB_PASS=${POSTGRES_DB_PASS} REDIS_HOST=${REDIS_HOST} REDIS_PORT=${REDIS_PORT} java -jar /app/server.jar --spring.profiles.active=prod"
     ports:
       - 8082:8082
+    expose:
+      - 7082
     networks:
       - ems-network
+    logging:
+      driver: loki
+      options:
+        loki-url: http://127.0.0.1:3100/loki/api/v1/push
 
 networks:
   ems-network:

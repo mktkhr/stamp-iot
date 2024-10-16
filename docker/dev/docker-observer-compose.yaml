@@ -13,6 +13,10 @@ services:
         source: prometheus-data
         target: /prometheus
     command: "--config.file=/etc/prometheus/prometheus.yaml"
+    ports:
+      - 9090:9090
+    networks:
+      - ems-network
 
   node-exporter:
     image: prom/node-exporter:latest
@@ -20,6 +24,8 @@ services:
     restart: always
     ports:
       - 8091:9100
+    networks:
+      - ems-network
 
   grafana:
     image: grafana/grafana
@@ -39,6 +45,19 @@ services:
       - ./grafana/config/config.env
     ports:
       - 8092:8092
+    networks:
+      - ems-network
+
+  loki:
+    image: grafana/loki:3.2.0
+    container_name: ems-loki
+    ports:
+      - 3100:3100
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki-data:/data/loki
+    networks:
+      - ems-network
 
 networks:
   ems-network:
@@ -49,3 +68,4 @@ networks:
 volumes:
   prometheus-data:
   grafana-data:
+  loki-data:
