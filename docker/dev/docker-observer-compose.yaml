@@ -40,6 +40,17 @@ services:
     ports:
       - 8092:8092
 
+  loki:
+    image: grafana/loki:3.2.0
+    container_name: ems-loki
+    ports:
+      - 3100:3100
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki-data:/data/loki
+    networks:
+      - ems-network
+
 networks:
   ems-network:
     name: ems-network
@@ -49,3 +60,4 @@ networks:
 volumes:
   prometheus-data:
   grafana-data:
+  loki-data:
