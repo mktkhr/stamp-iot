@@ -9,6 +9,7 @@ import com.example.stamp_app.domain.exception.EMSResourceDuplicationException;
 import com.example.stamp_app.domain.exception.EMSResourceNotFoundException;
 import com.example.stamp_app.entity.Account;
 import com.example.stamp_app.repository.AccountRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,9 +34,9 @@ public class AccountService {
      *
      * @param registerPostParam 登録情報
      */
-    public void addAccount(RegisterPostParam registerPostParam) {
+    public void addAccount(@NotNull final RegisterPostParam registerPostParam) {
 
-        var isNewUser = accountRepository.findByEmail(registerPostParam.getEmail()) == null;
+        final var isNewUser = accountRepository.findByEmail(registerPostParam.getEmail()) == null;
 
         if (!isNewUser) {
             log.error(" The email address has already been used.");
@@ -66,9 +67,9 @@ public class AccountService {
      * @param loginPostParam ログイン情報
      * @return HttpStatus
      */
-    public AccountLoginResponse login(LoginPostParam loginPostParam) throws IllegalAccessException {
+    public AccountLoginResponse login(@NotNull final LoginPostParam loginPostParam) throws IllegalAccessException {
 
-        var loginUser = accountRepository.findByEmailAndDeletedAtIsNull(loginPostParam.getEmail());
+        final var loginUser = accountRepository.findByEmailAndDeletedAtIsNull(loginPostParam.getEmail());
 
         // 対象のアカウントが存在しない場合，404を返す
         if (loginUser == null) {
@@ -76,7 +77,7 @@ public class AccountService {
             throw new EMSResourceNotFoundException();
         }
 
-        boolean isCorrectPassword = loginUser.getPassword().matches(md5DigestAsHex(loginPostParam.getPassword().getBytes()));
+        final var isCorrectPassword = loginUser.getPassword().matches(md5DigestAsHex(loginPostParam.getPassword().getBytes()));
 
         // パスワードが合致しない場合，401を返す
         if (!isCorrectPassword) {
@@ -95,9 +96,9 @@ public class AccountService {
      * @param userUuid ユーザーUUID
      * @return Account アカウント情報
      */
-    public AccountGetResponse getAccountInfo(String userUuid) {
+    public AccountGetResponse getAccountInfo(@NotNull final String userUuid) {
 
-        var account = accountRepository.findByUuid(UUID.fromString(userUuid));
+        final var account = accountRepository.findByUuid(UUID.fromString(userUuid));
 
         // アカウントが存在しない場合，400を返す
         if (account == null) {
@@ -114,9 +115,9 @@ public class AccountService {
      *
      * @param userUuid ユーザーUUID
      */
-    public void deleteAccount(String userUuid) {
+    public void deleteAccount(@NotNull final String userUuid) {
 
-        var account = accountRepository.findByUuid(UUID.fromString(userUuid));
+        final var account = accountRepository.findByUuid(UUID.fromString(userUuid));
 
         // アカウントが存在しない場合，400を返す
         if (account == null) {
