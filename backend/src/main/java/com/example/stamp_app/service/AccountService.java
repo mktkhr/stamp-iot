@@ -21,8 +21,8 @@ import java.util.UUID;
 
 import static org.springframework.util.DigestUtils.md5DigestAsHex;
 
-@Service
 @Slf4j
+@Service
 @Transactional(rollbackFor = Exception.class)
 public class AccountService {
     @Autowired
@@ -42,12 +42,19 @@ public class AccountService {
             throw new EMSResourceDuplicationException();
         }
 
-        String hashedPassword = DigestUtils.md5DigestAsHex(registerPostParam.getPassword().getBytes());
-        LocalDateTime localDateTime = LocalDateTime.now();
-        Account newUser = new Account();
-        newUser.setUuid(UUID.randomUUID());
-        newUser.setEmail(registerPostParam.getEmail());
-        newUser.setPassword(hashedPassword);
+        final var hashedPassword = DigestUtils.md5DigestAsHex(registerPostParam.getPassword().getBytes());
+        final var localDateTime = LocalDateTime.now();
+        final var newUser = new Account(
+                null,
+                UUID.randomUUID(),
+                registerPostParam.getEmail(),
+                hashedPassword,
+                null,
+                localDateTime,
+                localDateTime,
+                null,
+                null
+        );
 
         accountRepository.save(newUser);
 
@@ -117,10 +124,19 @@ public class AccountService {
             throw new IllegalArgumentException();
         }
 
-        // 論理削除
-        account.setDeletedAt(LocalDateTime.now());
+        final var updatedAccount = new Account(
+                account.getId(),
+                account.getUuid(),
+                account.getEmail(),
+                account.getPassword(),
+                account.getName(),
+                account.getCreatedAt(),
+                account.getUpdatedAt(),
+                LocalDateTime.now(), // 論理削除フラグとして削除日時を追加
+                account.getMicroController()
+        );
 
         // 論理削除したデータで上書き
-        accountRepository.save(account);
+        accountRepository.save(updatedAccount);
     }
 }

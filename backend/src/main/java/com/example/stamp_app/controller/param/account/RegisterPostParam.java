@@ -3,9 +3,12 @@ package com.example.stamp_app.controller.param.account;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
+@AllArgsConstructor
 @Schema(description = "アカウント登録パラメータ")
 public class RegisterPostParam {
 
