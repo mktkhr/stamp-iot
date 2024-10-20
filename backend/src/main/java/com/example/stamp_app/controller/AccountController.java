@@ -84,14 +84,14 @@ public class AccountController {
             @RequestBody
             @Validated LoginPostParam loginPostParam, HttpServletResponse httpServletResponse) throws IllegalAccessException {
 
-        AccountLoginResponse accountLoginResponse = accountService.login(loginPostParam);
+        final var accountLoginResponse = accountService.login(loginPostParam);
 
         // redisにセッション情報を追加
-        String sessionId = UUID.randomUUID().toString();
+        final var sessionId = UUID.randomUUID().toString();
         redisService.set(sessionId, accountLoginResponse.getAccount().getUuid().toString(), SESSION_VALID_TIME_IN_SEC);
 
         // cookieを生成し，レスポンスにセット
-        Cookie cookie = sessionService.generateCookie(sessionId);
+        final var cookie = sessionService.generateCookie(sessionId);
         httpServletResponse.addCookie(cookie);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -133,9 +133,9 @@ public class AccountController {
     @GetMapping(value = "/info")
     public ResponseEntity<AccountGetResponse> accountInfo() {
 
-        var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
+        final var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
 
-        var accountGetResponse = accountService.getAccountInfo(userUuid);
+        final var accountGetResponse = accountService.getAccountInfo(userUuid);
 
         return new ResponseEntity<>(accountGetResponse, HttpStatus.OK);
     }
@@ -153,7 +153,7 @@ public class AccountController {
     @DeleteMapping(value = "/delete")
     public ResponseEntity<HttpStatus> logicalDeleteAccount(HttpServletResponse httpServletResponse) {
 
-        var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
+        final var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
 
         accountService.deleteAccount(userUuid);
 
