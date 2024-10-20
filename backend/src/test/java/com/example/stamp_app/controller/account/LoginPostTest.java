@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -60,8 +61,18 @@ public class LoginPostTest {
     void setup() throws IllegalAccessException {
         when(appInterceptor.preHandle(any(), any(), any())).thenReturn(true);
 
-        var account = new Account();
-        account.setUuid(UUID.randomUUID());
+        // 正常なユーザーを返す
+        final var account = new Account(
+                1L,
+                UUID.randomUUID(),
+                DummyData.VALID_EMAIL_ADDRESS,
+                DummyData.VALID_9_LENGTH_PASSWORD,
+                "test",
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null,
+                null
+        );
         when(accountService.login(any())).thenReturn(new AccountLoginResponse(HttpStatus.OK, account));
         when(sessionService.generateCookie(any())).thenReturn(new Cookie("test", "cookie"));
     }
@@ -76,9 +87,11 @@ public class LoginPostTest {
         class MailAddressTest {
             @Test
             void リクエストボディのアカウントのメールアドレスが不適切な場合400を返すこと() throws Exception {
-                LoginPostParam loginPostParam = new LoginPostParam();
-                loginPostParam.setPassword(DummyData.VALID_8_LENGTH_PASSWORD);
-                loginPostParam.setEmail(DummyData.INVALID_EMAIL_ADDRESS);
+                final var loginPostParam =
+                        new LoginPostParam(
+                            DummyData.INVALID_EMAIL_ADDRESS,
+                            DummyData.VALID_8_LENGTH_PASSWORD
+                        );
 
                 String requestBodyString = objectMapper.writeValueAsString(loginPostParam);
                 mockMvcPerform(requestBodyString).andExpect(status().isBadRequest());
@@ -91,70 +104,85 @@ public class LoginPostTest {
 
             @Test
             void リクエストボディのアカウントのパスワードがnullの場合400を返すこと() throws Exception {
-                LoginPostParam loginPostParam = new LoginPostParam();
-                loginPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+                final var loginPostParam =
+                        new LoginPostParam(
+                                DummyData.VALID_EMAIL_ADDRESS,
+                                null
+                        );
 
-                String requestBodyString = objectMapper.writeValueAsString(loginPostParam);
+                final var requestBodyString = objectMapper.writeValueAsString(loginPostParam);
                 mockMvcPerform(requestBodyString).andExpect(status().isBadRequest());
             }
 
             @Test
             void リクエストボディのアカウントのパスワードが7文字の場合200を返すこと() throws Exception {
-                LoginPostParam loginPostParam = new LoginPostParam();
-                loginPostParam.setPassword(DummyData.INVALID_7_LENGTH_PASSWORD);
-                loginPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+                final var loginPostParam =
+                        new LoginPostParam(
+                                DummyData.VALID_EMAIL_ADDRESS,
+                                DummyData.INVALID_7_LENGTH_PASSWORD
+                        );
 
-                String requestBodyString = objectMapper.writeValueAsString(loginPostParam);
+                final var requestBodyString = objectMapper.writeValueAsString(loginPostParam);
                 mockMvcPerform(requestBodyString).andExpect(status().isOk());
             }
 
             @Test
             void リクエストボディのアカウントのパスワードが8文字の場合200を返すこと() throws Exception {
-                LoginPostParam loginPostParam = new LoginPostParam();
-                loginPostParam.setPassword(DummyData.VALID_8_LENGTH_PASSWORD);
-                loginPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+                final var loginPostParam =
+                        new LoginPostParam(
+                                DummyData.VALID_EMAIL_ADDRESS,
+                                DummyData.VALID_8_LENGTH_PASSWORD
+                        );
 
-                String requestBodyString = objectMapper.writeValueAsString(loginPostParam);
+                final var requestBodyString = objectMapper.writeValueAsString(loginPostParam);
                 mockMvcPerform(requestBodyString).andExpect(status().isOk());
             }
 
             @Test
             void リクエストボディのアカウントのパスワードが9文字の場合200を返すこと() throws Exception {
-                LoginPostParam loginPostParam = new LoginPostParam();
-                loginPostParam.setPassword(DummyData.VALID_9_LENGTH_PASSWORD);
-                loginPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+                final var loginPostParam =
+                        new LoginPostParam(
+                                DummyData.VALID_EMAIL_ADDRESS,
+                                DummyData.VALID_9_LENGTH_PASSWORD
+                        );
 
-                String requestBodyString = objectMapper.writeValueAsString(loginPostParam);
+                final var requestBodyString = objectMapper.writeValueAsString(loginPostParam);
                 mockMvcPerform(requestBodyString).andExpect(status().isOk());
             }
 
             @Test
             void リクエストボディのアカウントのパスワードが23文字の場合200を返すこと() throws Exception {
-                LoginPostParam loginPostParam = new LoginPostParam();
-                loginPostParam.setPassword(DummyData.VALID_23_LENGTH_PASSWORD);
-                loginPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+                final var loginPostParam =
+                        new LoginPostParam(
+                                DummyData.VALID_EMAIL_ADDRESS,
+                                DummyData.VALID_23_LENGTH_PASSWORD
+                        );
 
-                String requestBodyString = objectMapper.writeValueAsString(loginPostParam);
+                final var requestBodyString = objectMapper.writeValueAsString(loginPostParam);
                 mockMvcPerform(requestBodyString).andExpect(status().isOk());
             }
 
             @Test
             void リクエストボディのアカウントのパスワードが24文字の場合200を返すこと() throws Exception {
-                LoginPostParam loginPostParam = new LoginPostParam();
-                loginPostParam.setPassword(DummyData.VALID_24_LENGTH_PASSWORD);
-                loginPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+                final var loginPostParam =
+                        new LoginPostParam(
+                                DummyData.VALID_EMAIL_ADDRESS,
+                                DummyData.VALID_24_LENGTH_PASSWORD
+                        );
 
-                String requestBodyString = objectMapper.writeValueAsString(loginPostParam);
+                final var requestBodyString = objectMapper.writeValueAsString(loginPostParam);
                 mockMvcPerform(requestBodyString).andExpect(status().isOk());
             }
 
             @Test
             void リクエストボディのアカウントのパスワードが25文字の場合200を返すこと() throws Exception {
-                LoginPostParam loginPostParam = new LoginPostParam();
-                loginPostParam.setPassword(DummyData.INVALID_25_LENGTH_PASSWORD);
-                loginPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+                final var loginPostParam =
+                        new LoginPostParam(
+                                DummyData.VALID_EMAIL_ADDRESS,
+                                DummyData.INVALID_25_LENGTH_PASSWORD
+                        );
 
-                String requestBodyString = objectMapper.writeValueAsString(loginPostParam);
+                final var requestBodyString = objectMapper.writeValueAsString(loginPostParam);
                 mockMvcPerform(requestBodyString).andExpect(status().isOk());
             }
         }
