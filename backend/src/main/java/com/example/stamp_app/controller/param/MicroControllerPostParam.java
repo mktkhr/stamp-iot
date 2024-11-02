@@ -5,20 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Data
 @Schema(description = "マイコン登録パラメータ")
-public class MicroControllerPostParam {
-
-    @NotNull
-    @Positive
-    @Schema(description = "ユーザーID")
-    private Long userId;
-
-    @NotBlank
-    @Schema(description = "MACアドレス")
-    @Pattern(regexp = "^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$")
-    private String macAddress;
-
+public record MicroControllerPostParam(
+        @Schema(description = "ユーザーID") @NotNull @Positive Long userId,
+       @Schema(description = "MACアドレス") @NotBlank @Pattern(regexp = "^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$") String macAddress)
+{
 }
