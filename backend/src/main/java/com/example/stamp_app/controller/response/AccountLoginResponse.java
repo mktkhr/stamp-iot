@@ -5,12 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
-@Data
-@AllArgsConstructor
-public class AccountLoginResponse {
-
-    private HttpStatus status;
-
-    private Account account;
-
+public record AccountLoginResponse(
+        HttpStatus status,
+        Account account
+) {
 }

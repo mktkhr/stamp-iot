@@ -3,7 +3,6 @@ package com.example.stamp_app.controller;
 import com.example.stamp_app.controller.param.account.LoginPostParam;
 import com.example.stamp_app.controller.param.account.RegisterPostParam;
 import com.example.stamp_app.controller.response.AccountGetResponse;
-import com.example.stamp_app.controller.response.AccountLoginResponse;
 import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.service.AccountService;
 import com.example.stamp_app.session.RedisService;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +86,7 @@ public class AccountController {
 
         // redisにセッション情報を追加
         final var sessionId = UUID.randomUUID().toString();
-        redisService.set(sessionId, accountLoginResponse.getAccount().getUuid().toString(), SESSION_VALID_TIME_IN_SEC);
+        redisService.set(sessionId, accountLoginResponse.account().getUuid().toString(), SESSION_VALID_TIME_IN_SEC);
 
         // cookieを生成し，レスポンスにセット
         final var cookie = sessionService.generateCookie(sessionId);
