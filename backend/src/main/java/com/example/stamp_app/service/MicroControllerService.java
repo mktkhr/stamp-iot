@@ -55,10 +55,22 @@ public class MicroControllerService {
             throw new EMSResourceDuplicationException();
         }
 
-        microController.setAccount(requestedAccount);
+        final var updatedMicroController = new MicroController(
+                microController.getId(),
+                microController.getUuid(),
+                microController.getName(),
+                microController.getMacAddress(),
+                microController.getInterval(),
+                microController.getSdi12Address(),
+                microController.getCreatedAt(),
+                microController.getUpdatedAt(),
+                microController.getDeletedAt(),
+                microController.getMeasuredDataMasters(),
+                requestedAccount // 紐付けを更新
+        );
 
         // マイクロコントローラー情報を更新する
-        microControllerRepository.save(microController);
+        microControllerRepository.save(updatedMicroController);
 
         return new MicroControllerPostResponse(microController.getId(), microController.getUuid().toString(),
                 microController.getName(), microController.getMacAddress(), microController.getInterval(),
@@ -155,18 +167,21 @@ public class MicroControllerService {
             throw new EMSResourceNotFoundException();
         }
 
-        // パラメータのセット
-        if (param.getName() != null) {
-            microController.setName(param.getName());
-        }
+        final var updatedMicroController = new MicroController(
+                microController.getId(),
+                microController.getUuid(),
+                Objects.nonNull(param.getName()) ? param.getName() : microController.getName(),
+                microController.getMacAddress(),
+                param.getInterval(),
+                Objects.nonNull(param.getSdi12Address()) ? param.getSdi12Address() : microController.getSdi12Address(),
+                microController.getCreatedAt(),
+                LocalDateTime.now(),
+                microController.getDeletedAt(),
+                microController.getMeasuredDataMasters(),
+                microController.getAccount()
+        );
 
-        microController.setInterval(param.getInterval());
-
-        if (param.getSdi12Address() != null) {
-            microController.setSdi12Address(param.getSdi12Address());
-        }
-
-        microControllerRepository.save(microController);
+        microControllerRepository.save(updatedMicroController);
 
         return microControllerRepository.findByUuid(param.getMicroControllerUuid());
     }
