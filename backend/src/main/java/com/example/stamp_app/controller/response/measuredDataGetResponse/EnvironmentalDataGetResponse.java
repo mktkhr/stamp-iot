@@ -2,11 +2,15 @@ package com.example.stamp_app.controller.response.measuredDataGetResponse;
 
 import com.example.stamp_app.entity.EnvironmentalData;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@AllArgsConstructor
 @Schema(description = "環境データ")
 public class EnvironmentalDataGetResponse {
 
@@ -43,20 +47,26 @@ public class EnvironmentalDataGetResponse {
     @Schema(description = "削除日時", example = "2023-01-01T01:01:01.111111")
     private LocalDateTime deletedAt;
 
-    public static EnvironmentalDataGetResponse convertFromEnvironmentalData(EnvironmentalData environmentalData, Long measuredDataMasterId, String dayOfYear) {
-        var environmentalDataGetResponse = new EnvironmentalDataGetResponse();
-        environmentalDataGetResponse.setMeasuredDataMasterId(measuredDataMasterId);
-        environmentalDataGetResponse.setDayOfYear(dayOfYear);
-        environmentalDataGetResponse.setAirPress(environmentalData.getAirPress());
-        environmentalDataGetResponse.setTemp(environmentalData.getTemp());
-        environmentalDataGetResponse.setHumi(environmentalData.getHumi());
-        environmentalDataGetResponse.setCo2Concent(environmentalData.getCo2Concent());
-        environmentalDataGetResponse.setTvoc(environmentalData.getTvoc());
-        environmentalDataGetResponse.setAnalogValue(environmentalData.getAnalogValue());
-        environmentalDataGetResponse.setCreatedAt(environmentalData.getMeasuredDataMaster().getCreatedAt());
-        environmentalDataGetResponse.setUpdatedAt(environmentalData.getMeasuredDataMaster().getUpdatedAt());
-        environmentalDataGetResponse.setDeletedAt(environmentalData.getMeasuredDataMaster().getDeletedAt());
-        return environmentalDataGetResponse;
+    public static EnvironmentalDataGetResponse convertFromEnvironmentalData(
+            @NotNull final EnvironmentalData environmentalData,
+            @NotNull final Long measuredDataMasterId,
+            @NotNull final String dayOfYear
+    ) {
+
+        return new EnvironmentalDataGetResponse(
+                measuredDataMasterId,
+                dayOfYear,
+                environmentalData.getAirPress(),
+                environmentalData.getTemp(),
+                environmentalData.getHumi(),
+                environmentalData.getCo2Concent(),
+                environmentalData.getTvoc(),
+                environmentalData.getAnalogValue(),
+                environmentalData.getMeasuredDataMaster().getCreatedAt(),
+                environmentalData.getMeasuredDataMaster().getUpdatedAt(),
+                environmentalData.getMeasuredDataMaster().getDeletedAt()
+        );
+
     }
 
 }

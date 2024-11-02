@@ -2,12 +2,16 @@ package com.example.stamp_app.controller.response.measuredDataGetResponse;
 
 import com.example.stamp_app.entity.Sdi12Data;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Getter
+@AllArgsConstructor
 @Schema(description = "SDI-12データ")
 public class Sdi12DataGetResponse {
 
@@ -17,25 +21,32 @@ public class Sdi12DataGetResponse {
     @Schema(description = "SDI-12測定データとDOYリスト")
     private List<Sdi12DataAndDoy> dataList;
 
-    public static Sdi12DataAndDoy convertFromSdi12Data(Sdi12Data sdi12Data, Long measuredDataMasterId, String dayOfYear) {
-        var sdi12DataAndDoy = new Sdi12DataAndDoy();
-        sdi12DataAndDoy.setMeasuredDataMasterId(measuredDataMasterId);
-        sdi12DataAndDoy.setDayOfYear(dayOfYear);
-        sdi12DataAndDoy.setVwc(sdi12Data.getVwc());
-        sdi12DataAndDoy.setSoilTemp(sdi12Data.getSoilTemp());
-        sdi12DataAndDoy.setBrp(sdi12Data.getBrp());
-        sdi12DataAndDoy.setSbec(sdi12Data.getSbec());
-        sdi12DataAndDoy.setSpwec(sdi12Data.getSpwec());
-        sdi12DataAndDoy.setGax(sdi12Data.getGax());
-        sdi12DataAndDoy.setGay(sdi12Data.getGay());
-        sdi12DataAndDoy.setGaz(sdi12Data.getGaz());
-        sdi12DataAndDoy.setCreatedAt(sdi12Data.getMeasuredDataMaster().getCreatedAt());
-        sdi12DataAndDoy.setUpdatedAt(sdi12Data.getMeasuredDataMaster().getUpdatedAt());
-        sdi12DataAndDoy.setDeletedAt(sdi12Data.getMeasuredDataMaster().getDeletedAt());
-        return sdi12DataAndDoy;
+    public static Sdi12DataAndDoy convertFromSdi12Data(
+            @NotNull final Sdi12Data sdi12Data,
+            @NotNull final Long measuredDataMasterId,
+            @NotNull final String dayOfYear
+    ) {
+
+        return  new Sdi12DataAndDoy(
+                measuredDataMasterId,
+                dayOfYear,
+                sdi12Data.getVwc(),
+                sdi12Data.getSoilTemp(),
+                sdi12Data.getBrp(),
+                sdi12Data.getSbec(),
+                sdi12Data.getSpwec(),
+                sdi12Data.getGax(),
+                sdi12Data.getGay(),
+                sdi12Data.getGaz(),
+                sdi12Data.getMeasuredDataMaster().getCreatedAt(),
+                sdi12Data.getMeasuredDataMaster().getUpdatedAt(),
+                sdi12Data.getMeasuredDataMaster().getDeletedAt()
+        );
+
     }
 
-    @Data
+    @Getter
+    @AllArgsConstructor
     @Schema(description = "SDI-12測定データとDOY")
     public static class Sdi12DataAndDoy {
 
