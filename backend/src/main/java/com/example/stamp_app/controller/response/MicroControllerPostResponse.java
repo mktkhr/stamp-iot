@@ -3,10 +3,11 @@ package com.example.stamp_app.controller.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
 @Schema(description = "マイコンデータ")
 @AllArgsConstructor
 public class MicroControllerPostResponse {
