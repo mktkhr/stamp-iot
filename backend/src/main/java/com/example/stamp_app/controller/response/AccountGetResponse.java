@@ -6,21 +6,11 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
 @Schema(description = "アカウント情報")
-public class AccountGetResponse {
-
-    @Schema(description = "アカウントID", example = "1")
-    private Long id;
-
-    @Schema(description = "登録名", example = "サンプル太郎")
-    private String name;
-
-    @Schema(description = "作成日時", example = "2023-01-01T01:01:01.111111")
-    private LocalDateTime createdAt;
-
-    @Schema(description = "更新日時", example = "2023-01-01T01:01:01.111111")
-    private LocalDateTime updatedAt;
+public record AccountGetResponse(
+        @Schema(description = "アカウントID", example = "1") Long id,
+        @Schema(description = "登録名", example = "サンプル太郎") String name,
+        @Schema(description = "作成日時", example = "2023-01-01T01:01:01.111111") LocalDateTime createdAt,
+        @Schema(description = "更新日時", example = "2023-01-01T01:01:01.111111") LocalDateTime updatedAt) {
 
 }

@@ -107,7 +107,12 @@ public class AccountService {
         }
 
         // IDと名前のみを返す
-        return new AccountGetResponse(account.getId(), account.getName(), account.getCreatedAt(), account.getUpdatedAt());
+        return new AccountGetResponse(
+                account.getId(),
+                account.getName(),
+                account.getCreatedAt(),
+                account.getUpdatedAt()
+        );
     }
 
     /**
