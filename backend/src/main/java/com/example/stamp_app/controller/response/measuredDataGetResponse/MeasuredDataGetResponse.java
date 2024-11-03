@@ -1,11 +1,14 @@
 package com.example.stamp_app.controller.response.measuredDataGetResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
+@Getter
+@AllArgsConstructor
 @Schema(description = "測定結果取得レスポンス")
 public class MeasuredDataGetResponse {
 

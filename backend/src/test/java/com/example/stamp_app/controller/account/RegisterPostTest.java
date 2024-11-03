@@ -70,71 +70,85 @@ public class RegisterPostTest {
 
         @Test
         void リクエストボディのアカウントのメールアドレスが不適切な場合400を返すこと() throws Exception {
-            RegisterPostParam registerPostParam = new RegisterPostParam();
-            registerPostParam.setPassword(DummyData.VALID_8_LENGTH_PASSWORD);
-            registerPostParam.setEmail(DummyData.INVALID_EMAIL_ADDRESS);
+            final var registerPostParam =
+                    new RegisterPostParam(
+                            DummyData.INVALID_EMAIL_ADDRESS,
+                            DummyData.VALID_8_LENGTH_PASSWORD
+                    );
 
-            String requestBodyString = objectMapper.writeValueAsString(registerPostParam);
+            final var requestBodyString = objectMapper.writeValueAsString(registerPostParam);
             mockMvcPerform(requestBodyString).andExpect(status().isBadRequest());
         }
 
         @Test
         void リクエストボディのアカウントのパスワード7文字の場合400を返すこと() throws Exception {
-            RegisterPostParam registerPostParam = new RegisterPostParam();
-            registerPostParam.setPassword(DummyData.INVALID_7_LENGTH_PASSWORD);
-            registerPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+            final var registerPostParam =
+                    new RegisterPostParam(
+                            DummyData.VALID_EMAIL_ADDRESS,
+                            DummyData.INVALID_7_LENGTH_PASSWORD
+                    );
 
-            String requestBodyString = objectMapper.writeValueAsString(registerPostParam);
+            final var requestBodyString = objectMapper.writeValueAsString(registerPostParam);
             mockMvcPerform(requestBodyString).andExpect(status().isBadRequest());
         }
 
         @Test
         void リクエストボディのアカウントのパスワード8文字の場合200を返すこと() throws Exception {
-            RegisterPostParam registerPostParam = new RegisterPostParam();
-            registerPostParam.setPassword(DummyData.VALID_8_LENGTH_PASSWORD);
-            registerPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+            final var registerPostParam =
+                    new RegisterPostParam(
+                            DummyData.VALID_EMAIL_ADDRESS,
+                            DummyData.VALID_8_LENGTH_PASSWORD
+                    );
 
-            String requestBodyString = objectMapper.writeValueAsString(registerPostParam);
+            final var requestBodyString = objectMapper.writeValueAsString(registerPostParam);
             mockMvcPerform(requestBodyString).andExpect(status().isOk());
         }
 
         @Test
         void リクエストボディのアカウントのパスワード9文字の場合200を返すこと() throws Exception {
-            RegisterPostParam registerPostParam = new RegisterPostParam();
-            registerPostParam.setPassword(DummyData.VALID_9_LENGTH_PASSWORD);
-            registerPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+            final var registerPostParam =
+                    new RegisterPostParam(
+                            DummyData.VALID_EMAIL_ADDRESS,
+                            DummyData.VALID_9_LENGTH_PASSWORD
+                    );
 
-            String requestBodyString = objectMapper.writeValueAsString(registerPostParam);
+            final var requestBodyString = objectMapper.writeValueAsString(registerPostParam);
             mockMvcPerform(requestBodyString).andExpect(status().isOk());
         }
 
         @Test
         void リクエストボディのアカウントのパスワード23文字の場合200を返すこと() throws Exception {
-            RegisterPostParam registerPostParam = new RegisterPostParam();
-            registerPostParam.setPassword(DummyData.VALID_23_LENGTH_PASSWORD);
-            registerPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+            final var registerPostParam =
+                    new RegisterPostParam(
+                            DummyData.VALID_EMAIL_ADDRESS,
+                            DummyData.VALID_23_LENGTH_PASSWORD
+                    );
 
-            String requestBodyString = objectMapper.writeValueAsString(registerPostParam);
+            final var requestBodyString = objectMapper.writeValueAsString(registerPostParam);
             mockMvcPerform(requestBodyString).andExpect(status().isOk());
         }
 
         @Test
         void リクエストボディのアカウントのパスワード24文字の場合200を返すこと() throws Exception {
-            RegisterPostParam registerPostParam = new RegisterPostParam();
-            registerPostParam.setPassword(DummyData.VALID_24_LENGTH_PASSWORD);
-            registerPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+            final var registerPostParam =
+                    new RegisterPostParam(
+                            DummyData.VALID_EMAIL_ADDRESS,
+                            DummyData.VALID_24_LENGTH_PASSWORD
+                    );
 
-            String requestBodyString = objectMapper.writeValueAsString(registerPostParam);
+            final var requestBodyString = objectMapper.writeValueAsString(registerPostParam);
             mockMvcPerform(requestBodyString).andExpect(status().isOk());
         }
 
         @Test
         void リクエストボディのアカウントのパスワード25文字の場合400を返すこと() throws Exception {
-            RegisterPostParam registerPostParam = new RegisterPostParam();
-            registerPostParam.setPassword(DummyData.INVALID_25_LENGTH_PASSWORD);
-            registerPostParam.setEmail(DummyData.VALID_EMAIL_ADDRESS);
+            final var registerPostParam =
+                    new RegisterPostParam(
+                            DummyData.VALID_EMAIL_ADDRESS,
+                            DummyData.INVALID_25_LENGTH_PASSWORD
+                    );
 
-            String requestBodyString = objectMapper.writeValueAsString(registerPostParam);
+            final var requestBodyString = objectMapper.writeValueAsString(registerPostParam);
             mockMvcPerform(requestBodyString).andExpect(status().isBadRequest());
         }
     }

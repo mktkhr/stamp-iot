@@ -3,9 +3,12 @@ package com.example.stamp_app.controller.param.account;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
+@AllArgsConstructor
 @Schema(description = "ログインパラメータ")
 public class LoginPostParam {
 

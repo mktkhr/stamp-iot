@@ -52,7 +52,8 @@ public class MeasuredDataController {
                     @Content(schema = @Schema(implementation = MeasuredDataPostParam.class))
             })
             @RequestBody
-            @Validated MeasuredDataPostParam measuredDataPostParam) {
+            @Validated final MeasuredDataPostParam measuredDataPostParam
+    ) {
 
         measuredDataService.addMeasuredData(measuredDataPostParam);
 
@@ -77,9 +78,9 @@ public class MeasuredDataController {
             @RequestParam
             @Pattern(regexp = "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$") String microControllerUuid) {
 
-        var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
+        final var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
 
-        var response = measuredDataService.getMeasuredData(userUuid, microControllerUuid);
+        final var response = measuredDataService.getMeasuredData(userUuid, microControllerUuid);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

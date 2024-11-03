@@ -2,13 +2,18 @@ package com.example.stamp_app.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MeasuredDataMaster {
 
     @Id

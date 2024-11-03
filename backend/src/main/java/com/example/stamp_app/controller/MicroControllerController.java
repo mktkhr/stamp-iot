@@ -53,8 +53,10 @@ public class MicroControllerController {
                         }) @RequestBody @Validated MicroControllerPostParam microControllerPostParam) {
 
                 MicroControllerPostResponse microControllerPostResponse = microControllerService
-                                .addMicroControllerRelation(microControllerPostParam.getUserId(),
-                                                microControllerPostParam.getMacAddress());
+                                .addMicroControllerRelation(
+                                        microControllerPostParam.userId(),
+                                        microControllerPostParam.macAddress()
+                                );
 
                 return new ResponseEntity<>(microControllerPostResponse, HttpStatus.OK);
         }

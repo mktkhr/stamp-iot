@@ -2,7 +2,9 @@ package com.example.stamp_app.controller.measuredData;
 
 import com.example.stamp_app.common.interceptor.AppInterceptor;
 import com.example.stamp_app.controller.MeasuredDataController;
+import com.example.stamp_app.controller.param.EnvironmentalDataParam;
 import com.example.stamp_app.controller.param.MeasuredDataPostParam;
+import com.example.stamp_app.controller.param.Sdi12Param;
 import com.example.stamp_app.entity.DummyData;
 import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.service.MeasuredDataService;
@@ -20,6 +22,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -59,9 +64,36 @@ public class MeasuredDataPostTest {
     @DisplayName("測定結果登録テスト")
     class MeasuredDataInsertTest {
 
+        private static final Sdi12Param VALID_SDI12_PARAM = new Sdi12Param(
+                1L,
+                "1",
+                "11.11",
+                "22.22",
+                "33.33",
+                "44.44",
+                "55.55",
+                "66.66",
+                "77.77",
+                "88.88"
+        );
+
+        private static final EnvironmentalDataParam VALID_ENVIRONMENTAL_PARAM = new EnvironmentalDataParam(
+                "1013.1",
+                "25.5",
+                "56.6",
+                "414",
+                "3002",
+                "787"
+        );
+
         @Test
         void リクエストボディのマイコンのMACアドレスがnullの場合400を返すこと() throws Exception {
-            MeasuredDataPostParam measuredDataPostParam = new MeasuredDataPostParam();
+            MeasuredDataPostParam measuredDataPostParam = new MeasuredDataPostParam(
+                    null,
+                    List.of(VALID_SDI12_PARAM),
+                    List.of(VALID_ENVIRONMENTAL_PARAM),
+                    "11.11"
+                    );
 
             String requestBodyString = objectMapper.writeValueAsString(measuredDataPostParam);
             mockMvcPerform(requestBodyString).andExpect(status().isBadRequest());
@@ -69,8 +101,12 @@ public class MeasuredDataPostTest {
 
         @Test
         void リクエストボディのマイコンのMACアドレスが空白の場合400を返すこと() throws Exception {
-            MeasuredDataPostParam measuredDataPostParam = new MeasuredDataPostParam();
-            measuredDataPostParam.setMacAddress("");
+            MeasuredDataPostParam measuredDataPostParam = new MeasuredDataPostParam(
+                    "",
+                    List.of(VALID_SDI12_PARAM),
+                    List.of(VALID_ENVIRONMENTAL_PARAM),
+                    "11.11"
+            );
 
             String requestBodyString = objectMapper.writeValueAsString(measuredDataPostParam);
             mockMvcPerform(requestBodyString).andExpect(status().isBadRequest());
@@ -78,8 +114,12 @@ public class MeasuredDataPostTest {
 
         @Test
         void リクエストボディのマイコンのMACアドレスが不適切なパターンの場合400を返すこと() throws Exception {
-            MeasuredDataPostParam measuredDataPostParam = new MeasuredDataPostParam();
-            measuredDataPostParam.setMacAddress(DummyData.INVALID_MAC_ADDRESS);
+            MeasuredDataPostParam measuredDataPostParam = new MeasuredDataPostParam(
+                    DummyData.INVALID_MAC_ADDRESS,
+                    List.of(VALID_SDI12_PARAM),
+                    List.of(VALID_ENVIRONMENTAL_PARAM),
+                    "11.11"
+            );
 
             String requestBodyString = objectMapper.writeValueAsString(measuredDataPostParam);
             mockMvcPerform(requestBodyString).andExpect(status().isBadRequest());
@@ -87,8 +127,12 @@ public class MeasuredDataPostTest {
 
         @Test
         void リクエストボディのマイコンのMACアドレスが適切な場合200を返すこと() throws Exception {
-            MeasuredDataPostParam measuredDataPostParam = new MeasuredDataPostParam();
-            measuredDataPostParam.setMacAddress(DummyData.VALID_MAC_ADDRESS);
+            MeasuredDataPostParam measuredDataPostParam = new MeasuredDataPostParam(
+                    DummyData.VALID_MAC_ADDRESS,
+                    List.of(VALID_SDI12_PARAM),
+                    List.of(VALID_ENVIRONMENTAL_PARAM),
+                    "11.11"
+            );
 
             String requestBodyString = objectMapper.writeValueAsString(measuredDataPostParam);
             mockMvcPerform(requestBodyString).andExpect(status().isOk());

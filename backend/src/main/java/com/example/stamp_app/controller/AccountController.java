@@ -3,7 +3,6 @@ package com.example.stamp_app.controller;
 import com.example.stamp_app.controller.param.account.LoginPostParam;
 import com.example.stamp_app.controller.param.account.RegisterPostParam;
 import com.example.stamp_app.controller.response.AccountGetResponse;
-import com.example.stamp_app.controller.response.AccountLoginResponse;
 import com.example.stamp_app.entity.RequestedUser;
 import com.example.stamp_app.service.AccountService;
 import com.example.stamp_app.session.RedisService;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,14 +82,14 @@ public class AccountController {
             @RequestBody
             @Validated LoginPostParam loginPostParam, HttpServletResponse httpServletResponse) throws IllegalAccessException {
 
-        AccountLoginResponse accountLoginResponse = accountService.login(loginPostParam);
+        final var accountLoginResponse = accountService.login(loginPostParam);
 
         // redisにセッション情報を追加
-        String sessionId = UUID.randomUUID().toString();
-        redisService.set(sessionId, accountLoginResponse.getAccount().getUuid().toString(), SESSION_VALID_TIME_IN_SEC);
+        final var sessionId = UUID.randomUUID().toString();
+        redisService.set(sessionId, accountLoginResponse.account().getUuid().toString(), SESSION_VALID_TIME_IN_SEC);
 
         // cookieを生成し，レスポンスにセット
-        Cookie cookie = sessionService.generateCookie(sessionId);
+        final var cookie = sessionService.generateCookie(sessionId);
         httpServletResponse.addCookie(cookie);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -133,9 +131,9 @@ public class AccountController {
     @GetMapping(value = "/info")
     public ResponseEntity<AccountGetResponse> accountInfo() {
 
-        var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
+        final var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
 
-        var accountGetResponse = accountService.getAccountInfo(userUuid);
+        final var accountGetResponse = accountService.getAccountInfo(userUuid);
 
         return new ResponseEntity<>(accountGetResponse, HttpStatus.OK);
     }
@@ -153,7 +151,7 @@ public class AccountController {
     @DeleteMapping(value = "/delete")
     public ResponseEntity<HttpStatus> logicalDeleteAccount(HttpServletResponse httpServletResponse) {
 
-        var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
+        final var userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.getSessionUuid());
 
         accountService.deleteAccount(userUuid);
 

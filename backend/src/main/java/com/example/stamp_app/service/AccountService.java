@@ -9,6 +9,7 @@ import com.example.stamp_app.domain.exception.EMSResourceDuplicationException;
 import com.example.stamp_app.domain.exception.EMSResourceNotFoundException;
 import com.example.stamp_app.entity.Account;
 import com.example.stamp_app.repository.AccountRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,8 @@ import java.util.UUID;
 
 import static org.springframework.util.DigestUtils.md5DigestAsHex;
 
-@Service
 @Slf4j
+@Service
 @Transactional(rollbackFor = Exception.class)
 public class AccountService {
     @Autowired
@@ -33,21 +34,28 @@ public class AccountService {
      *
      * @param registerPostParam 登録情報
      */
-    public void addAccount(RegisterPostParam registerPostParam) {
+    public void addAccount(@NotNull final RegisterPostParam registerPostParam) {
 
-        var isNewUser = accountRepository.findByEmail(registerPostParam.getEmail()) == null;
+        final var isNewUser = accountRepository.findByEmail(registerPostParam.getEmail()) == null;
 
         if (!isNewUser) {
             log.error(" The email address has already been used.");
             throw new EMSResourceDuplicationException();
         }
 
-        String hashedPassword = DigestUtils.md5DigestAsHex(registerPostParam.getPassword().getBytes());
-        LocalDateTime localDateTime = LocalDateTime.now();
-        Account newUser = new Account();
-        newUser.setUuid(UUID.randomUUID());
-        newUser.setEmail(registerPostParam.getEmail());
-        newUser.setPassword(hashedPassword);
+        final var hashedPassword = DigestUtils.md5DigestAsHex(registerPostParam.getPassword().getBytes());
+        final var localDateTime = LocalDateTime.now();
+        final var newUser = new Account(
+                null,
+                UUID.randomUUID(),
+                registerPostParam.getEmail(),
+                hashedPassword,
+                null,
+                localDateTime,
+                localDateTime,
+                null,
+                null
+        );
 
         accountRepository.save(newUser);
 
@@ -59,9 +67,9 @@ public class AccountService {
      * @param loginPostParam ログイン情報
      * @return HttpStatus
      */
-    public AccountLoginResponse login(LoginPostParam loginPostParam) throws IllegalAccessException {
+    public AccountLoginResponse login(@NotNull final LoginPostParam loginPostParam) throws IllegalAccessException {
 
-        var loginUser = accountRepository.findByEmailAndDeletedAtIsNull(loginPostParam.getEmail());
+        final var loginUser = accountRepository.findByEmailAndDeletedAtIsNull(loginPostParam.getEmail());
 
         // 対象のアカウントが存在しない場合，404を返す
         if (loginUser == null) {
@@ -69,7 +77,7 @@ public class AccountService {
             throw new EMSResourceNotFoundException();
         }
 
-        boolean isCorrectPassword = loginUser.getPassword().matches(md5DigestAsHex(loginPostParam.getPassword().getBytes()));
+        final var isCorrectPassword = loginUser.getPassword().matches(md5DigestAsHex(loginPostParam.getPassword().getBytes()));
 
         // パスワードが合致しない場合，401を返す
         if (!isCorrectPassword) {
@@ -88,9 +96,9 @@ public class AccountService {
      * @param userUuid ユーザーUUID
      * @return Account アカウント情報
      */
-    public AccountGetResponse getAccountInfo(String userUuid) {
+    public AccountGetResponse getAccountInfo(@NotNull final String userUuid) {
 
-        var account = accountRepository.findByUuid(UUID.fromString(userUuid));
+        final var account = accountRepository.findByUuid(UUID.fromString(userUuid));
 
         // アカウントが存在しない場合，400を返す
         if (account == null) {
@@ -99,7 +107,12 @@ public class AccountService {
         }
 
         // IDと名前のみを返す
-        return new AccountGetResponse(account.getId(), account.getName(), account.getCreatedAt(), account.getUpdatedAt());
+        return new AccountGetResponse(
+                account.getId(),
+                account.getName(),
+                account.getCreatedAt(),
+                account.getUpdatedAt()
+        );
     }
 
     /**
@@ -107,9 +120,9 @@ public class AccountService {
      *
      * @param userUuid ユーザーUUID
      */
-    public void deleteAccount(String userUuid) {
+    public void deleteAccount(@NotNull final String userUuid) {
 
-        var account = accountRepository.findByUuid(UUID.fromString(userUuid));
+        final var account = accountRepository.findByUuid(UUID.fromString(userUuid));
 
         // アカウントが存在しない場合，400を返す
         if (account == null) {
@@ -117,10 +130,19 @@ public class AccountService {
             throw new IllegalArgumentException();
         }
 
-        // 論理削除
-        account.setDeletedAt(LocalDateTime.now());
+        final var updatedAccount = new Account(
+                account.getId(),
+                account.getUuid(),
+                account.getEmail(),
+                account.getPassword(),
+                account.getName(),
+                account.getCreatedAt(),
+                account.getUpdatedAt(),
+                LocalDateTime.now(), // 論理削除フラグとして削除日時を追加
+                account.getMicroController()
+        );
 
         // 論理削除したデータで上書き
-        accountRepository.save(account);
+        accountRepository.save(updatedAccount);
     }
 }

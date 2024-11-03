@@ -2,11 +2,16 @@ package com.example.stamp_app.controller.response.measuredDataGetResponse;
 
 import com.example.stamp_app.entity.MeasuredDataMaster;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@AllArgsConstructor
+@Schema(description = "電圧データ")
 public class VoltageDataGetResponse {
 
     @Schema(description = "測定データマスターID", example = "1")
@@ -27,17 +32,17 @@ public class VoltageDataGetResponse {
     @Schema(description = "削除日時", example = "2023-01-01T01:01:01.111111")
     private LocalDateTime deletedAt;
 
-    public static VoltageDataGetResponse convertFromMeasuredDataMaster(MeasuredDataMaster measuredDataMaster) {
+    public static VoltageDataGetResponse convertFromMeasuredDataMaster(@NotNull final MeasuredDataMaster measuredDataMaster) {
 
-        var voltageDataGetResponse = new VoltageDataGetResponse();
-        voltageDataGetResponse.setMeasuredDataMasterId(measuredDataMaster.getId());
-        voltageDataGetResponse.setDayOfYear(measuredDataMaster.getDayOfYear());
-        voltageDataGetResponse.setVoltage(measuredDataMaster.getVoltage());
-        voltageDataGetResponse.setCreatedAt(measuredDataMaster.getCreatedAt());
-        voltageDataGetResponse.setUpdatedAt(measuredDataMaster.getUpdatedAt());
-        voltageDataGetResponse.setDeletedAt(measuredDataMaster.getDeletedAt());
+        return new VoltageDataGetResponse(
+                measuredDataMaster.getId(),
+                measuredDataMaster.getDayOfYear(),
+                measuredDataMaster.getVoltage(),
+                measuredDataMaster.getCreatedAt(),
+                measuredDataMaster.getUpdatedAt(),
+                measuredDataMaster.getDeletedAt()
+        );
 
-        return voltageDataGetResponse;
     }
 
 }
