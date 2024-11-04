@@ -31,9 +31,7 @@ const meta = {
     showBackButton: { control: 'boolean' },
   },
   tags: ['autodocs'],
-  decorators: [
-    () => ({ template: '<div id="app" style="height: 100%; width: 100%;"><story/></div>' }),
-  ],
+  decorators: [],
 } satisfies Meta<typeof DefaultFrame>;
 
 export default meta;

@@ -35,9 +35,7 @@ const meta: Meta<typeof CommonOverlay> = {
       </CommonOverlay>
     `,
   }),
-  decorators: [
-    () => ({ template: '<div id="app" style="height: 100vh; width: 100vw;"><story/></div>' }),
-  ],
+  decorators: [],
   args: {
     teleportDestination: '#app',
     customBackgroundClickEvent: null,

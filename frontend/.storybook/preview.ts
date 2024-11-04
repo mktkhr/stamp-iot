@@ -42,6 +42,13 @@ const preview: Preview = {
       ],
     },
   },
+  decorators: [
+    // 共通のdecoratorを指定
+    () => ({
+      template:
+        '<div id="app" style="position: absolute; inset: 0; margin: auto; padding: 16px;"><story/></div>',
+    }),
+  ],
   loaders: [mswLoader],
 };
 
