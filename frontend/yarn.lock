@@ -9094,7 +9094,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msw@npm:^2.4.9":
+"msw@npm:^2.6.0":
   version: 2.6.0
   resolution: "msw@npm:2.6.0"
   dependencies:
@@ -11126,7 +11126,7 @@ __metadata:
     eslint-plugin-vue: "npm:9.27.0"
     jest: "npm:29.7.0"
     jest-environment-jsdom: "npm:29.7.0"
-    msw: "npm:^2.4.9"
+    msw: "npm:^2.6.0"
     msw-storybook-addon: "npm:^2.0.3"
     pinia: "npm:2.2.0"
     puppeteer: "npm:^23.4.1"
