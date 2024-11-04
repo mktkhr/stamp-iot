@@ -28,6 +28,7 @@ const meta: Meta<typeof CommonFormWindow> = {
   args: {
     title: 'タイトル',
     content: 'コンテンツ',
+    windowStyle: 'auto',
   },
   parameters: {},
   tags: ['autodocs'],
