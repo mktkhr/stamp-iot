@@ -35,9 +35,7 @@ const meta: Meta<typeof CommonMenu> = {
       </CommonMenu>
     `,
   }),
-  decorators: [
-    () => ({ template: '<div id="app" style="height: 100vh; width: 100vw;"><story/></div>' }),
-  ],
+  decorators: [],
   argTypes: {
     teleportDestination: { control: 'text' },
     persistent: { control: 'boolean' },

@@ -33,9 +33,7 @@ const meta: Meta<typeof CommonSidebar> = {
     },
   },
   tags: ['autodocs'],
-  decorators: [
-    () => ({ template: '<div style="width: 200px; background-color: white;"><story/></div>' }),
-  ],
+  decorators: [],
 };
 
 export default meta;

@@ -31,20 +31,17 @@ const preview: Preview = {
       },
     },
     disableSaveFromUI: true,
-    // TODO: mockが動作していないので修正する
-    msw: {
-      // Storybook共通のAPIハンドラを記載
-      handlers: [
-        // セッションAPI
-        http.post('/api/ems/session', async ({ request }) => {
-          return HttpResponse.text('success');
-        }),
-      ],
-    },
   },
+  decorators: [
+    // 共通のdecoratorを指定
+    () => ({
+      template:
+        '<div id="app" style="position: absolute; inset: 0; margin: auto; padding: 16px;"><story/></div>',
+    }),
+  ],
   loaders: [mswLoader],
 };
 
-export const decorators = [withScreenshot(options), mswDecorator];
+export const decorators = [withScreenshot(options)];
 
 export default preview;

@@ -28,20 +28,9 @@ const meta: Meta<typeof CommonFormWindow> = {
   args: {
     title: 'タイトル',
     content: 'コンテンツ',
+    windowStyle: 'auto',
   },
-  parameters: {
-    slots: {
-      title: {
-        description: 'Totle slot',
-        template: `<span>タイトルスロット</span>`,
-      },
-      content: {
-        description: 'Content slot',
-        components: { CommonButton },
-        template: `<CommonButton button-title="コンテンツスロット" />`,
-      },
-    },
-  },
+  parameters: {},
   tags: ['autodocs'],
 };
 
