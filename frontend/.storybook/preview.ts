@@ -31,16 +31,6 @@ const preview: Preview = {
       },
     },
     disableSaveFromUI: true,
-    // TODO: mockが動作していないので修正する
-    msw: {
-      // Storybook共通のAPIハンドラを記載
-      handlers: [
-        // セッションAPI
-        http.post('/api/ems/session', async ({ request }) => {
-          return HttpResponse.text('success');
-        }),
-      ],
-    },
   },
   decorators: [
     // 共通のdecoratorを指定
