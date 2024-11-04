@@ -30,20 +30,7 @@ const meta: Meta<typeof CommonDisplayInformation> = {
     title: 'タイトル',
     content: 'コンテンツ',
   },
-  parameters: {
-    // TODO: スロットにコンポーネントを描画したい
-    slots: {
-      title: {
-        description: 'Totle slot',
-        template: `<p>タイトルスロット</p>`,
-      },
-      content: {
-        description: 'Content slot',
-        components: { CommonButton },
-        template: `<CommonButton :button-title="コンテンツスロット" />`,
-      },
-    },
-  },
+  parameters: {},
   tags: ['autodocs'],
 };
 

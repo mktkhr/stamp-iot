@@ -59,7 +59,6 @@
     "puppeteer": "^23.4.1",
     "reg-cli": "^0.18.7",
     "storybook-addon-sass-postcss": "^0.3.2",
-    "storybook-addon-vue-slots": "^0.9.29",
     "storybook-vue3-router": "^5.0.0",
     "storycap": "^5.0.1",
     "ts-jest": "29.2.3",

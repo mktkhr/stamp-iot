@@ -8,7 +8,6 @@ const config: StorybookConfig = {
     '@storybook/addon-essentials',
     '@chromatic-com/storybook',
     '@storybook/addon-interactions',
-    'storybook-addon-vue-slots',
     'storybook-vue3-router',
     'storycap',
     'storybook-msw-addon',
