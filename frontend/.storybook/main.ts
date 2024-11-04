@@ -10,7 +10,7 @@ const config: StorybookConfig = {
     '@storybook/addon-interactions',
     'storybook-vue3-router',
     'storycap',
-    'storybook-msw-addon',
+    'msw-storybook-addon',
     {
       name: 'storybook-addon-sass-postcss',
       options: {
