@@ -52,6 +52,6 @@ const preview: Preview = {
   loaders: [mswLoader],
 };
 
-export const decorators = [withScreenshot(options), mswDecorator];
+export const decorators = [withScreenshot(options)];
 
 export default preview;
