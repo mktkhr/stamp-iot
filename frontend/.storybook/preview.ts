@@ -38,10 +38,9 @@ const preview: Preview = {
       template:
         '<div id="app" style="position: absolute; inset: 0; margin: auto; padding: 16px;"><story/></div>',
     }),
+    withScreenshot(options),
   ],
   loaders: [mswLoader],
 };
-
-export const decorators = [withScreenshot(options)];
 
 export default preview;
