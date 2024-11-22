@@ -121,6 +121,49 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  screenshot-main:
+    name: Take Expected Screenshots At Main Branch
+    runs-on: [self-hosted]
+    timeout-minutes: 30
+    needs: build
+
+    strategy:
+      matrix:
+        node-version: [20.15.1]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      # スクリーンショットのキャッシュの有無を評価する
+      - name: Restore cached expected screenshots
+        id: expected_screenshots_cache
+        uses: ./.github/composite/frontend-cache-scr
+
+      # 以下はキャッシュが存在しなかった場合に実行される
+      - name: Use Node.js ${{ matrix.node-version }}
+        if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
+        uses: ./.github/composite/frontend-setup
+
+      - name: Restore or build storybook # キャッシュにスクショが保存されてなかったらStorybookをビルドしてスクショ撮影する
+        if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
+        uses: ./.github/composite_actions/cache-storybook-static
+
+      - name: Take expected screenshots
+        if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
+        run: yarn storycap:ci
+        working-directory: ./frontend
+
+      - name: Upload expected screenshots to artifact
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: expected-screenshots
+          path: __screenshots__
+          retention-days: 30
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
