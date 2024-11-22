@@ -1,0 +1,34 @@
+name: "Package Install"
+description: "Frontendのパッケージインストールを行うAction"
+
+runs:
+  using: "composite"
+
+  strategy:
+    matrix:
+      node-version: [20.15.1]
+
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: "yarn"
+        cache-dependency-path: yarn-lock.json
+      working-directory: ./frontend
+    # キャッシュが存在するかを確認する
+    - name: Restore node_modules From Cache
+      id: node_modules_cache
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn-lock.json') }}
+      working-directory: ./frontend
+    # キャッシュが存在しなかった場合はInstall
+    - name: Install Dependencies
+      if: ${{ steps.node_modules_cache.outputs.cache-hit != 'true'}}
+      run: |
+        npm install -g yarn
+        yarn
+      shell: bash
+      working-directory: ./frontend
