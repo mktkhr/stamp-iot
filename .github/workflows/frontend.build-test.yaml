@@ -140,7 +140,7 @@ jobs:
       # スクリーンショットのキャッシュの有無を評価する
       - name: Restore cached expected screenshots
         id: expected_screenshots_cache
-        uses: ./.github/composite/frontend-cache-scr
+        uses: ./.github/composite/frontend-cache-screenshot
 
       # 以下はキャッシュが存在しなかった場合に実行される
       - name: Use Node.js ${{ matrix.node-version }}
@@ -149,7 +149,7 @@ jobs:
 
       - name: Restore or build storybook # キャッシュにスクショが保存されてなかったらStorybookをビルドしてスクショ撮影する
         if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
-        uses: ./.github/composite_actions/cache-storybook-static
+        uses: ./.github/composite/cache-storybook-static
 
       - name: Take expected screenshots
         if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
