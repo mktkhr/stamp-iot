@@ -9,9 +9,6 @@ runs:
   using: "composite"
 
   steps:
-    - name: Move To Frontend directory
-      run: cd frontend
-      shell: bash
     - name: Get commit hash of current branch
       id: get_hash
       run: echo "hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
@@ -20,5 +17,5 @@ runs:
       uses: actions/cache@v4
       id: expected_screenshots_cache_id
       with:
-        path: __screenshots__
+        path: ./frontend/__screenshots__
         key: ${{ runner.os }}-screenshots-${{ steps.get_hash.outputs.hash }}
