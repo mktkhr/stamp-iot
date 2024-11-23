@@ -1,0 +1,19 @@
+name: "Cache Expected Screenshots"
+description: "スクリーンショットのキャッシュの有無を評価する"
+outputs:
+  cache-hit:
+    description: "スクリーンショットのキャッシュが存在するか?"
+    value: ${{ steps.expected_screenshots_cache_id.outputs.cache-hit }}
+runs:
+  using: "composite"
+  steps:
+    - name: Get commit hash of current branch
+      id: get_hash
+      run: echo "hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+      shell: bash
+    - name: Cache screenshots
+      uses: actions/cache@v4
+      id: expected_screenshots_cache_id
+      with:
+        path: __screenshots__
+        key: ${{ runner.os }}-screenshots-${{ steps.get_hash.outputs.hash }}
