@@ -149,7 +149,7 @@ jobs:
 
       - name: Restore or build storybook # キャッシュにスクショが保存されてなかったらStorybookをビルドしてスクショ撮影する
         if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
-        uses: ./.github/workflows/composite/cache-storybook-static
+        uses: ./.github/workflows/composite/frontend-cache-storybook-static
 
       - name: Take expected screenshots
         if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
