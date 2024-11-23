@@ -4,6 +4,7 @@ on:
     paths:
       - "frontend/**"
       - ".github/workflows/frontend.build-test.yaml"
+      - ".github/workflows/composite/frontend**/**"
   pull_request:
     branches:
       - main
