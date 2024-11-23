@@ -4,15 +4,14 @@ description: "Frontendのパッケージインストールを行うAction"
 runs:
   using: "composite"
 
-  strategy:
-    matrix:
-      node-version: [20.15.1]
-
   steps:
+    - name: Move To Frontend directory
+      run: cd frontend
+      shell: bash
     - name: Setup Node
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 20.15.1
         cache: "yarn"
         cache-dependency-path: yarn-lock.json
       working-directory: ./frontend
@@ -23,7 +22,6 @@ runs:
       with:
         path: node_modules
         key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn-lock.json') }}
-      working-directory: ./frontend
     # キャッシュが存在しなかった場合はInstall
     - name: Install Dependencies
       if: ${{ steps.node_modules_cache.outputs.cache-hit != 'true'}}
@@ -31,4 +29,3 @@ runs:
         npm install -g yarn
         yarn
       shell: bash
-      working-directory: ./frontend
