@@ -4,9 +4,6 @@ runs:
   using: "composite"
 
   steps:
-    - name: Move To Frontend directory
-      run: cd frontend
-      shell: bash
     - name: Get commit hash of current branch
       id: get_hash
       run: echo "hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
@@ -21,5 +18,7 @@ runs:
     # キャッシュが存在しなかったら、Storybookをビルドする
     - name: Build Storybook
       if: ${{ steps.storybook_cache.outputs.cache-hit != 'true'}}
-      run: yarn build-storybook
+      run: |
+        cd frontend
+        yarn build-storybook
       shell: bash
