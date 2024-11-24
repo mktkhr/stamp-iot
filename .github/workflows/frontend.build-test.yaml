@@ -210,6 +210,78 @@ jobs:
           path: ./frontend/__screenshots__
           retention-days: 5
 
+  compare_screenshots:
+    name: Compare Screenshots
+    needs:
+      - screenshot-main
+      - screenshot-feature
+    runs-on: [self-hosted]
+    timeout-minutes: 30
+
+    strategy:
+      matrix:
+        node-version: [20.15.1]
+
+    steps:
+      - name: Check out code
+        if: ${{ github.event_name != 'pull_request_target' }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check out PR
+        if: ${{ github.event_name == 'pull_request_target' }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: ./.github/workflows/composite/frontend-setup
+
+      - name: Download expected screenshots from artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: expected-screenshots
+          path: ./frontend/__screenshots__/before
+
+      - name: Download actual screenshots from artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: actual-screenshots
+          path: ./frontend/__screenshots__/after
+
+      - name: Workaround for detached HEAD
+        run: git checkout ${GITHUB_HEAD_REF#refs/heads/} || git checkout -b ${GITHUB_HEAD_REF#refs/heads/} && git pull
+
+      - name: Compare Screenshots
+        run: yarn vrt
+
+      - name: Deploy VRT report to github page
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/__screenshots__/report
+          destination_dir: ${{ github.head_ref }}/vrt-report
+
+      - name: Find comment
+        uses: peter-evans/find-comment@v3
+        id: find_comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: reg-suit report
+
+      - name: Comment VRT report URL
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            reg-suit report
+            https://mktkhr.github.io/stamp-iot/${{github.head_ref}}/vrt-report
+          edit-mode: replace
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
