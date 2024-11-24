@@ -253,6 +253,21 @@ jobs:
         run: yarn vrt
         working-directory: ./frontend
 
+      - name: Upload reg-cli Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: reg-cli-report
+          path: ./frontend/__screenshots__/report
+          retention-days: 1
+
+      - uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./frontend/__screenshots__/report
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
       - name: Deploy VRT report to github page
         uses: peaceiris/actions-gh-pages@v3
         with:
