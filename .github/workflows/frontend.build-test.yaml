@@ -273,6 +273,23 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
+      - name: Find comment
+        uses: peter-evans/find-comment@v3
+        id: find_comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          direction: first
+
+      - name: Comment VRT report URL
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            reg-suit report
+            ${{ steps.deployment.outputs.page_url}}
+          edit-mode: replace
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
