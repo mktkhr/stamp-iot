@@ -166,7 +166,7 @@ jobs:
 
         with:
           name: expected-screenshots
-          path: __screenshots__
+          path: ./frontend/__screenshots__
           retention-days: 30
 
 concurrency:
