@@ -265,7 +265,7 @@ jobs:
           path: ./frontend/__screenshots__/report
           retention-days: 1
 
-      - uses: actions/upload-pages-artifact@v1
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: ./frontend/__screenshots__/report
 
