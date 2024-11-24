@@ -263,12 +263,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: reg-cli-report
-          path: ./frontend/__screenshots__/report
+          path: ./frontend/__screenshots__
           retention-days: 1
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ./frontend/__screenshots__/report
+          path: ./frontend/__screenshots__
 
       - name: Deploy to GitHub Pages
         id: deployment
