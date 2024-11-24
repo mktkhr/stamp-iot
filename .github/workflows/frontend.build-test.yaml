@@ -170,7 +170,7 @@ jobs:
           retention-days: 30
 
   screenshot-feature:
-    name: Take Expected Screenshots At Feature Branch
+    name: Take Actual Screenshots At Feature Branch
     runs-on: [self-hosted]
     timeout-minutes: 30
     needs:
