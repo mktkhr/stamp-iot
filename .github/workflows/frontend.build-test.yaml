@@ -270,8 +270,7 @@ jobs:
         id: find_comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          comment-author: "github-actions[bot]"
-          body-includes: reg-suit report
+          direction: first
 
       - name: Comment VRT report URL
         uses: peter-evans/create-or-update-comment@v4
