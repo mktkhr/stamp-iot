@@ -152,6 +152,10 @@ jobs:
         if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
         uses: ./.github/workflows/composite/frontend-cache-storybook-static
 
+      - name: Install Chrome for puppeteer
+        if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
+        run: apt-get install -y libgtk-3.0 libgbm-dev libnss3 libatk-bridge2.0-0 libasound2
+
       - name: Take expected screenshots
         if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
         run: yarn storycap:ci
