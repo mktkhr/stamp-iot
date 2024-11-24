@@ -268,30 +268,6 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Deploy VRT report to github page
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./frontend/__screenshots__/report
-          destination_dir: ./${{ github.head_ref }}/vrt-report
-
-      - name: Find comment
-        uses: peter-evans/find-comment@v3
-        id: find_comment
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          direction: first
-
-      - name: Comment VRT report URL
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          comment-id: ${{ steps.find_comment.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            reg-suit report
-            https://mktkhr.github.io/stamp-iot/${{github.head_ref}}/vrt-report
-          edit-mode: replace
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
