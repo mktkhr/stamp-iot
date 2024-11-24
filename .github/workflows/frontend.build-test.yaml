@@ -169,6 +169,47 @@ jobs:
           path: ./frontend/__screenshots__
           retention-days: 30
 
+  screenshot-feature:
+    name: Take Expected Screenshots At Feature Branch
+    runs-on: [self-hosted]
+    timeout-minutes: 30
+    needs:
+      - build
+      - screenshot-main
+
+    strategy:
+      matrix:
+        node-version: [20.15.1]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: ./.github/workflows/composite/frontend-setup
+
+      - name: Workaround for detached HEAD
+        run: |
+          git checkout ${GITHUB_HEAD_REF#refs/heads/} || git checkout -b ${GITHUB_HEAD_REF#refs/heads/} && git pull
+
+      - name: Build Storybook
+        run: yarn build-storybook
+        working-directory: ./frontend
+
+      - name: Install Chrome for puppeteer
+        run: apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2-dev libdrm-dev libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2
+
+      - name: Take actual screenshots
+        run: yarn storycap:ci
+        working-directory: ./frontend
+
+      - name: Upload actual screenshots to artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: actual-screenshots
+          path: ./frontend/__screenshots__
+          retention-days: 5
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
