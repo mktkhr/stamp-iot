@@ -154,7 +154,7 @@ jobs:
 
       - name: Install Chrome for puppeteer
         if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
-        run: apt-get update && apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2-dev libdrm-dev libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2
+        run: apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2-dev libdrm-dev libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2
 
       - name: Take expected screenshots
         if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
