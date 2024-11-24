@@ -217,6 +217,11 @@ jobs:
       matrix:
         node-version: [20.15.1]
 
+    # GitHub Pages デプロイ用
+    permissions:
+      pages: write
+      id-token: write
+
     steps:
       - name: Check out code
         if: ${{ github.event_name != 'pull_request_target' }}
