@@ -1,15 +1,10 @@
 name: Node.js CI
 on:
-  push:
+  pull_request:
     paths:
       - "frontend/**"
       - ".github/workflows/frontend.build-test.yaml"
       - ".github/workflows/composite/frontend**/**"
-  pull_request:
-    branches:
-      - main
-    types:
-      - closed
 
 jobs:
   build:
