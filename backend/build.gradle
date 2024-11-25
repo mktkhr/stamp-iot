@@ -2,10 +2,14 @@ plugins {
     id 'org.springframework.boot' version '3.3.3'
     id 'io.spring.dependency-management' version '1.1.6'
     id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '2.0.21'
+}
+
+kotlin {
+    jvmToolchain(21)
 }
 
 group = 'com.example'
-sourceCompatibility = '21'
 
 repositories {
     mavenCentral()
@@ -39,6 +43,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
     testImplementation 'org.mockito:mockito-core:5.4.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 test {
