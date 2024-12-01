@@ -28,6 +28,10 @@ class RedisService(
 	 */
 	@Throws(IllegalArgumentException::class)
 	fun getUserUuidFromSessionUuid(key: String?): String {
+		if (key == null) {
+			throw IllegalArgumentException("Session key must not be null.")
+		}
+
 		return redisTemplate.opsForValue()[key] as String
 	}
 
@@ -37,7 +41,12 @@ class RedisService(
 	 * @param key   セッションUUID
 	 * @param value ユーザーUUID
 	 */
+	@Throws(IllegalArgumentException::class)
 	operator fun set(key: String?, value: String, timeInSec: Long) {
+		if (key == null) {
+			throw IllegalArgumentException("Session key must not be null.")
+		}
+
 		redisTemplate.opsForValue()[key, value, timeInSec] = TimeUnit.SECONDS
 	}
 }
