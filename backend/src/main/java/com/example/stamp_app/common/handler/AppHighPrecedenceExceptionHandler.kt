@@ -6,7 +6,6 @@ import com.example.stamp_app.domain.exception.EMSDatabaseException
 import com.example.stamp_app.domain.exception.EMSResourceDuplicationException
 import com.example.stamp_app.domain.exception.EMSResourceNotFoundException
 import jakarta.validation.ConstraintViolationException
-import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import java.util.*
 
-@Slf4j
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class AppHighPrecedenceExceptionHandler {
