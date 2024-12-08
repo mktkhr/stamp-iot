@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
 interface EnvironmentalDataRepository : JpaRepository<EnvironmentalData?, UUID?> {
-    
-    override fun findAll(): List<EnvironmentalData?>
+
+	override fun findAll(): List<EnvironmentalData>
 
 }
