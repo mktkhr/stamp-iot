@@ -23,7 +23,7 @@ data class MicroController(
 	val name: String? = null,
 
 	@Comment(value = "MACアドレス")
-	val macAddress: @NotNull @Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$") String? = null,
+	val macAddress: @NotNull @Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$") String,
 
 	@Column
 	@ColumnDefault("60")
