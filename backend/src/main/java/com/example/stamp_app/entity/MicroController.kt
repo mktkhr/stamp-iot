@@ -28,10 +28,10 @@ data class MicroController (
     @Comment(value = "MACアドレス")
     val macAddress: @NotNull @Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$") String? = null,
 
-    @Column
-    @ColumnDefault("60")
-    @Comment(value = "測定間隔(分)")
-    val interval: @Pattern(regexp = "^(60|30|20|15|10|5|1)$") String? = null,
+	@Column
+	@ColumnDefault("60")
+	@Comment(value = "測定間隔(分)")
+	val interval: @Pattern(regexp = "^(60|30|20|15|10|5|1)$") String,
 
     @Column
     @Comment(value = "測定に使用するSDI-12アドレス(カンマ区切り)")
