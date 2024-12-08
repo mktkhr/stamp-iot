@@ -73,7 +73,8 @@ open class AccountService(
 			throw EMSResourceNotFoundException("")
 		}
 
-		val isCorrectPassword = loginUser.password!!.matches(DigestUtils.md5DigestAsHex(loginPostParam.password.toByteArray()).toRegex())
+		val isCorrectPassword =
+			loginUser.password!!.matches(DigestUtils.md5DigestAsHex(loginPostParam.password.toByteArray()).toRegex())
 
 		// パスワードが合致しない場合，401を返す
 		if (!isCorrectPassword) {
@@ -103,10 +104,10 @@ open class AccountService(
 
 		// IDと名前のみを返す
 		return AccountGetResponse(
-			account.id,
+			account.id!!,
 			account.name,
-			account.createdAt,
-			account.updatedAt
+			account.createdAt!!,
+			account.updatedAt!!
 		)
 	}
 
