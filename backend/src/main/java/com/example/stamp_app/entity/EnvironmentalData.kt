@@ -31,7 +31,7 @@ data class EnvironmentalData (
     @Column(name = "analogValue")
     val analogValue: String? = null,
 
-    @JsonBackReference
-    @ManyToOne
-    val measuredDataMaster: MeasuredDataMaster? = null
 ){}
+	@JsonBackReference
+	@ManyToOne
+	val measuredDataMaster: MeasuredDataMaster
