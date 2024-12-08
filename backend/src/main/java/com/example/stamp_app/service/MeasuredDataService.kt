@@ -210,7 +210,7 @@ open class MeasuredDataService(
 			.map { data: EnvironmentalData ->
 				EnvironmentalDataGetResponse.convertFromEnvironmentalData(
 					data,
-					data.measuredDataMaster.id,
+					data.measuredDataMaster.id!!,
 					data.measuredDataMaster.dayOfYear
 				)
 			}
