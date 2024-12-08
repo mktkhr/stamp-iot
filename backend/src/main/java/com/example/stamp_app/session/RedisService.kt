@@ -27,12 +27,12 @@ class RedisService(
 	 * @return String ユーザーUUID or null
 	 */
 	@Throws(IllegalArgumentException::class)
-	fun getUserUuidFromSessionUuid(key: String?): String {
+	fun getUserUuidFromSessionUuid(key: String?): String? {
 		if (key == null) {
 			throw IllegalArgumentException("Session key must not be null.")
 		}
 
-		return redisTemplate.opsForValue()[key] as String
+		return redisTemplate.opsForValue()[key] as String?
 	}
 
 	/**
