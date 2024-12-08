@@ -11,13 +11,13 @@ data class MeasuredDataMaster(
 	val id: Long? = null,
 
 	@Column
-	val dayOfYear: String? = null,
+	val dayOfYear: String,
 
 	@Column
-	val createdAt: LocalDateTime? = null,
+	val createdAt: LocalDateTime,
 
 	@Column
-	val updatedAt: LocalDateTime? = null,
+	val updatedAt: LocalDateTime,
 
 	@Column
 	val deletedAt: LocalDateTime? = null,
