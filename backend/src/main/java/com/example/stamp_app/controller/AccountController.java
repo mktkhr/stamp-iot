@@ -86,7 +86,7 @@ public class AccountController {
 
         // redisにセッション情報を追加
         final var sessionId = UUID.randomUUID().toString();
-        redisService.set(sessionId, accountLoginResponse.account().getUuid().toString(), SESSION_VALID_TIME_IN_SEC);
+        redisService.set(sessionId, accountLoginResponse.account.getUuid().toString(), SESSION_VALID_TIME_IN_SEC);
 
         // cookieを生成し，レスポンスにセット
         final var cookie = sessionService.generateCookie(sessionId);
