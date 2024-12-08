@@ -39,7 +39,7 @@ data class Sdi12Data(
 
 	@JsonBackReference
 	@ManyToOne
-	val measuredDataMaster: MeasuredDataMaster? = null,
+	val measuredDataMaster: MeasuredDataMaster,
 
 	@ManyToOne
 	val sensor: Sensor? = null
