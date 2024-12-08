@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 
 @Service
 class RedisService(
-		private val redisTemplate: RedisTemplate<String, Any>
+	private val redisTemplate: RedisTemplate<String, Any>
 ) {
 
 	/**
