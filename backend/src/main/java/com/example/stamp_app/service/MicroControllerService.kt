@@ -90,7 +90,7 @@ open class MicroControllerService(
 			throw EMSResourceNotFoundException("")
 		}
 		val microControllerList = account.microController
-		return MicroControllerGetResponse.convertMicroControllerToListResponse(microControllerList)
+		return MicroControllerGetResponse.convertMicroControllerToListResponse(microControllerList ?: listOf())
 	}
 
 	/**
