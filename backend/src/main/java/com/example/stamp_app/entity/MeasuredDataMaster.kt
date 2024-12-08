@@ -25,8 +25,8 @@ data class MeasuredDataMaster(
     @Column
     val deletedAt: LocalDateTime? = null,
 
-    @ManyToOne
-    val microController: MicroController? = null,
+	@ManyToOne
+	val microController: MicroController,
 
     @JsonManagedReference
     @OneToMany(mappedBy = "measuredDataMaster")
