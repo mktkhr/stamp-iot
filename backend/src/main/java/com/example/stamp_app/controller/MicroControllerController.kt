@@ -206,7 +206,7 @@ open class MicroControllerController(
 			requestedUser.userUuid!!,
 			param!!
 		)
-		val response = MicroControllerGetResponse.convertMicroControllerToDetailResponse(microController)
+		val response = MicroControllerGetResponse.convertMicroControllerToDetailResponse(microController!!)
 		return ResponseEntity(response, HttpStatus.OK)
 	}
 }
