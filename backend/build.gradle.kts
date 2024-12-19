@@ -44,6 +44,7 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 	testImplementation("org.mockito:mockito-core:5.4.0")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
