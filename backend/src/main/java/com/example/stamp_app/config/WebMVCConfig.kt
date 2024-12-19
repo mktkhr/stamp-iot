@@ -6,12 +6,12 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-open class WebMVCConfig(
+class WebMVCConfig(
 	private val appInterceptor: AppInterceptor
 ) : WebMvcConfigurer {
 
 	override fun addInterceptors(registry: InterceptorRegistry) {
 		registry.addInterceptor(appInterceptor)
 	}
-	
+
 }

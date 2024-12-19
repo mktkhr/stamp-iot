@@ -19,7 +19,7 @@ import java.util.*
 
 @Service
 @Transactional(rollbackFor = [Exception::class])
-open class AccountService(
+class AccountService(
 	private val accountRepository: AccountRepository
 ) {
 

@@ -7,17 +7,17 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.StringRedisSerializer
 
 @Configuration
-open class RedisConfig {
-    @Bean
-    open fun redisTemplate(factory: RedisConnectionFactory?): RedisTemplate<String, Any> {
-        val template = RedisTemplate<String, Any>()
-        val stringRedisSerializer = StringRedisSerializer()
+class RedisConfig {
+	@Bean
+	fun redisTemplate(factory: RedisConnectionFactory?): RedisTemplate<String, Any> {
+		val template = RedisTemplate<String, Any>()
+		val stringRedisSerializer = StringRedisSerializer()
 
-        template.connectionFactory = factory
-        template.keySerializer = stringRedisSerializer
-        template.hashKeySerializer = stringRedisSerializer
-        template.afterPropertiesSet()
+		template.connectionFactory = factory
+		template.keySerializer = stringRedisSerializer
+		template.hashKeySerializer = stringRedisSerializer
+		template.afterPropertiesSet()
 
-        return template
-    }
+		return template
+	}
 }

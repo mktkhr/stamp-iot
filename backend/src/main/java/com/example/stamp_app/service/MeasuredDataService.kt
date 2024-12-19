@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Service
-open class MeasuredDataService(
+class MeasuredDataService(
 	private val microControllerRepository: MicroControllerRepository,
 	private val measuredDataMasterRepository: MeasuredDataMasterRepository,
 	private val sdi12DataRepository: Sdi12DataRepository,

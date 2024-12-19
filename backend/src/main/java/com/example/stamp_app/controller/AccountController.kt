@@ -26,7 +26,7 @@ import java.util.*
 @RestController
 @Tag(name = "Account", description = "アカウント関連API")
 @RequestMapping(value = ["/ems/account"])
-open class AccountController(
+class AccountController(
 	private val accountService: AccountService,
 	private val sessionService: SessionService,
 	private val redisService: RedisService,

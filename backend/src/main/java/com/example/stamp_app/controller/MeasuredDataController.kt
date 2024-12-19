@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*
 @Validated
 @Tag(name = "MeasuredData", description = "測定結果関連API")
 @RequestMapping(value = ["/ems/measured-data"])
-open class MeasuredDataController(
+class MeasuredDataController(
 	private val measuredDataService: MeasuredDataService,
 	private val redisService: RedisService,
 	private val requestedUser: RequestedUser

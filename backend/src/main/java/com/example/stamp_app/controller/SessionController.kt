@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @Tag(name = "Session", description = "セッション関連API")
 @RequestMapping(value = ["/ems/session"])
-open class SessionController(
+class SessionController(
 	private val sessionService: SessionService,
 	private val redisService: RedisService
 ) {
@@ -48,7 +48,7 @@ open class SessionController(
 		val cookieList = request.cookies
 		val sessionUuid = sessionService.getSessionUuidFromCookie(cookieList)
 			?: return ResponseEntity("failed", HttpStatus.OK)
-		
+
 		val userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid)
 		return if (userUuid == null) {
 			ResponseEntity("failed", HttpStatus.OK)

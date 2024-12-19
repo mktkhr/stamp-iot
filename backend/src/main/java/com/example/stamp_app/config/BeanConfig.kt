@@ -5,10 +5,10 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-open class BeanConfig {
+class BeanConfig {
 	@Bean
 	@Throws(Exception::class)
-	open fun appInterceptor(): AppInterceptor {
+	fun appInterceptor(): AppInterceptor {
 		return AppInterceptor()
 	}
 }

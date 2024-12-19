@@ -20,7 +20,7 @@ import org.springframework.boot.runApplication
 	],
 	info = Info(title = "Stamp IoT API仕様書", description = "Stamp IoT用バックエンドアプリ", version = "v1")
 )
-open class BackendApplication
+class BackendApplication
 
 fun main(args: Array<String>) {
 	runApplication<BackendApplication>(*args)

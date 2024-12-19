@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*
 @Validated
 @Tag(name = "MicroController", description = "マイコン関連API")
 @RequestMapping(value = ["/ems/micro-controller"])
-open class MicroControllerController(
+class MicroControllerController(
 	private val microControllerService: MicroControllerService,
 	private val requestedUser: RequestedUser
 ) {

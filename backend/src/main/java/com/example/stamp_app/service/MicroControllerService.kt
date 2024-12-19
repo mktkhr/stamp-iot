@@ -18,7 +18,7 @@ import java.util.*
 
 @Service
 @Slf4j
-open class MicroControllerService(
+class MicroControllerService(
 	private val microControllerRepository: MicroControllerRepository,
 	private val accountRepository: AccountRepository,
 	private val requestedUser: RequestedUser
