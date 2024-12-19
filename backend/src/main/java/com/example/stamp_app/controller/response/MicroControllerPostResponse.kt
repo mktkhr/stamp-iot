@@ -30,5 +30,5 @@ data class MicroControllerPostResponse(
 	private val updatedAt: LocalDateTime,
 
 	@Schema(description = "削除日時", example = "2023-01-01T01:01:01.111111")
-	private val deletedAt: LocalDateTime,
+	private val deletedAt: LocalDateTime?,
 )
