@@ -3,6 +3,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.6"
 	id("java")
 	id("org.jetbrains.kotlin.jvm") version "2.0.21"
+	id("org.jetbrains.kotlin.plugin.spring") version "2.0.21"
 }
 
 kotlin {
