@@ -8,6 +8,13 @@ import jakarta.validation.constraints.Positive
 
 @Schema(description = "マイコン登録パラメータ")
 data class MicroControllerPostParam(
-	@Schema(description = "ユーザーID") val userId: @NotNull @Positive Long,
-	@Schema(description = "MACアドレス") val macAddress: @NotBlank @Pattern(regexp = "^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$") String
+	@Schema(description = "ユーザーID")
+	@field:NotNull
+	@field:Positive
+	val userId: Long,
+
+	@Schema(description = "MACアドレス")
+	@field:NotBlank
+	@field:Pattern(regexp = "^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$")
+	val macAddress: String
 )
