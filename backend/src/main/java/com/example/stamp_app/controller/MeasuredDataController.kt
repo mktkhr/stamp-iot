@@ -95,7 +95,13 @@ class MeasuredDataController(
 			required = true,
 			description = "マイコンUUID",
 			example = "61d5f7a7-7629-496e-be68-cfe022264578"
-		) @RequestParam microControllerUuid: @Pattern(regexp = "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$") String
+		)
+		@RequestParam
+		@Pattern(
+			regexp = "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$",
+			message = "UUID patter is invalid"
+		)
+		microControllerUuid: String
 	): ResponseEntity<MeasuredDataGetResponse> {
 		val userUuid = redisService.getUserUuidFromSessionUuid(requestedUser.sessionUuid)
 		val response = measuredDataService.getMeasuredData(userUuid, microControllerUuid)
