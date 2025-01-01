@@ -4,6 +4,7 @@ plugins {
 	id("java")
 	id("org.jetbrains.kotlin.jvm") version "2.0.21"
 	id("org.jetbrains.kotlin.plugin.spring") version "2.0.21"
+	kotlin("plugin.noarg") version "2.0.21"
 }
 
 kotlin {
@@ -65,4 +66,9 @@ tasks.jar {
 tasks.bootRun {
 	// RemoteDebug用の設定
 	jvmArgs = listOf("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005")
+}
+
+noArg {
+	// @Entityアノテーションがついているクラスに対してNoArgConstructorを追加する
+	annotation("jakarta.persistence.Entity")
 }
