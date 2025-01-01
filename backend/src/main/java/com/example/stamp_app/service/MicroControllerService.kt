@@ -139,8 +139,9 @@ class MicroControllerService(
 	 * @param param 更新用パラメータ
 	 * @return 更新後のマイコン詳細
 	 */
+	@Throws(EMSResourceNotFoundException::class)
 	@Transactional(rollbackFor = [Exception::class])
-	fun updateMicroControllerDetail(userUuid: String, param: MicroControllerPatchParam): MicroController? {
+	fun updateMicroControllerDetail(userUuid: String, param: MicroControllerPatchParam): MicroController {
 		val microController = microControllerRepository.findByUuid(param.microControllerUuid)
 
 		// マイコンが存在しなかった場合，404を返す
@@ -154,7 +155,7 @@ class MicroControllerService(
 			log.error("マイコン所有者とリクエストユーザーの不一致 マイコンUUID: " + param.microControllerUuid)
 			throw EMSResourceNotFoundException("")
 		}
-		val updatedMicroController = MicroController(
+		val updateTargetMicroController = MicroController(
 			microController.id,
 			microController.uuid,
 			if (Objects.nonNull(param.name)) param.name else microController.name,
@@ -167,8 +168,9 @@ class MicroControllerService(
 			microController.measuredDataMasters,
 			microController.account
 		)
-		microControllerRepository.save(updatedMicroController)
+		microControllerRepository.save(updateTargetMicroController)
 
 		return microControllerRepository.findByUuid(param.microControllerUuid)
+			?: throw EMSResourceNotFoundException("マイコンの更新に失敗しました。")
 	}
 }
