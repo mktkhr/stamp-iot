@@ -3,7 +3,6 @@ package com.example.stamp_app.controller.response
 import com.example.stamp_app.entity.MicroController
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
-import java.util.function.Consumer
 
 @Schema(description = "マイコン詳細データ")
 data class MicroControllerGetResponse(
@@ -39,7 +38,7 @@ data class MicroControllerGetResponse(
 		): List<MicroControllerGetResponse> {
 
 			val microControllerGetResponseList: MutableList<MicroControllerGetResponse> = ArrayList()
-			microControllerList.forEach(Consumer { microController: MicroController ->
+			microControllerList.forEach { microController: MicroController ->
 				val microControllerGetResponse = MicroControllerGetResponse(
 					microController.id!!,
 					microController.uuid.toString(),
@@ -51,7 +50,7 @@ data class MicroControllerGetResponse(
 					microController.updatedAt!!
 				)
 				microControllerGetResponseList.add(microControllerGetResponse)
-			})
+			}
 			return microControllerGetResponseList
 		}
 
