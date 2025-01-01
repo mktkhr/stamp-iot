@@ -7,8 +7,10 @@ import jakarta.validation.constraints.Pattern
 @Schema(description = "測定結果登録パラメータ")
 data class MeasuredDataPostParam(
 
+	@field:NotBlank(message = "MacAddress must not be blank")
+	@field:Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$", message = "MacAddress pattern is invalid")
 	@Schema(description = "MACアドレス", example = "AA:AA:AA:AA:AA:AA")
-	val macAddress: @NotBlank @Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$") String,
+	val macAddress: String,
 
 	@Schema(description = "SDI-12パラメータリスト")
 	val sdi12Param: List<Sdi12Param>,
