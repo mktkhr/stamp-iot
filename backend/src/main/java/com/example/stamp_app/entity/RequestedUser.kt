@@ -5,5 +5,5 @@ import org.springframework.stereotype.Component
 @Component
 data class RequestedUser(
 	var sessionUuid: String? = null,
-	var userUuid: String
+	var userUuid: String = ""
 )
