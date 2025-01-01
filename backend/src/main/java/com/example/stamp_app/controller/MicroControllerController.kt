@@ -134,9 +134,15 @@ class MicroControllerController(
 			required = true,
 			description = "マイコンUUID",
 			example = "61d5f7a7-7629-496e-be68-cfe022264578"
-		) @RequestParam microControllerUuid: @Pattern(regexp = "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$") String?
+		)
+		@RequestParam
+		@Pattern(
+			regexp = "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$",
+			message = "UUID pattern is invalid"
+		)
+		microControllerUuid: String
 	): ResponseEntity<MicroControllerGetResponse> {
-		val microController = microControllerService.getMicroControllerDetail(microControllerUuid!!)
+		val microController = microControllerService.getMicroControllerDetail(microControllerUuid)
 		val response = MicroControllerGetResponse.convertMicroControllerToDetailResponse(microController)
 		return ResponseEntity(response, HttpStatus.OK)
 	}
