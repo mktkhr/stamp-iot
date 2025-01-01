@@ -173,9 +173,13 @@ class MicroControllerController(
 			required = true,
 			description = "マイコンUUID",
 			example = "AA:AA:AA:AA:AA:AA"
-		) @RequestParam macAddress: @Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$") String?
+		)
+		@RequestParam
+		@Valid
+		@Pattern(regexp = "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$", message = "MacAddress pattern is invalid")
+		macAddress: String
 	): ResponseEntity<MicroControllerGetDetailNoSessionResponse> {
-		val microController = microControllerService.getMicroControllerDetailWithMacAddress(macAddress!!)
+		val microController = microControllerService.getMicroControllerDetailWithMacAddress(macAddress)
 		val response = MicroControllerGetDetailNoSessionResponse
 			.convertMicroControllerToDetailResponse(microController)
 		return ResponseEntity(response, HttpStatus.OK)
