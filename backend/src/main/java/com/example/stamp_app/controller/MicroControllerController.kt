@@ -200,7 +200,10 @@ class MicroControllerController(
 		@RequestBody(
 			description = "マイコン詳細更新パラメータ",
 			content = [Content(schema = Schema(implementation = MicroControllerPatchParam::class))]
-		) @Validated @org.springframework.web.bind.annotation.RequestBody param: @Valid MicroControllerPatchParam?
+		)
+		@Valid
+		@org.springframework.web.bind.annotation.RequestBody
+		param: MicroControllerPatchParam
 	): ResponseEntity<MicroControllerGetResponse> {
 		val microController = microControllerService.updateMicroControllerDetail(
 			requestedUser.userUuid!!,
