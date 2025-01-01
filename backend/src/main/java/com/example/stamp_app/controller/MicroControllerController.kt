@@ -99,7 +99,7 @@ class MicroControllerController(
 		 */
 		get() {
 			val microControllerList = microControllerService.getMicroControllerList(
-				requestedUser.userUuid!!
+				requestedUser.userUuid
 			)
 			return ResponseEntity(microControllerList, HttpStatus.OK)
 		}
@@ -206,10 +206,10 @@ class MicroControllerController(
 		param: MicroControllerPatchParam
 	): ResponseEntity<MicroControllerGetResponse> {
 		val microController = microControllerService.updateMicroControllerDetail(
-			requestedUser.userUuid!!,
-			param!!
+			requestedUser.userUuid,
+			param
 		)
-		val response = MicroControllerGetResponse.convertMicroControllerToDetailResponse(microController!!)
+		val response = MicroControllerGetResponse.convertMicroControllerToDetailResponse(microController)
 		return ResponseEntity(response, HttpStatus.OK)
 	}
 }
