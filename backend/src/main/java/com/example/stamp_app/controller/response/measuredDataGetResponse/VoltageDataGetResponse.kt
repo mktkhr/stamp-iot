@@ -12,22 +12,22 @@ import java.time.LocalDateTime
 @Schema(description = "電圧データ")
 data class VoltageDataGetResponse(
 	@Schema(description = "測定データマスターID", example = "1")
-	private val measuredDataMasterId: Long,
+	val measuredDataMasterId: Long,
 
 	@Schema(description = "DOY", example = "111.11")
-	private val dayOfYear: String,
+	val dayOfYear: String,
 
 	@Schema(description = "電圧", example = "11.11")
-	private val voltage: String? = null,
+	val voltage: String? = null,
 
 	@Schema(description = "作成日時", example = "2023-01-01T01:01:01.111111")
-	private val createdAt: LocalDateTime,
+	val createdAt: LocalDateTime,
 
 	@Schema(description = "更新日時", example = "2023-01-01T01:01:01.111111")
-	private val updatedAt: LocalDateTime,
+	val updatedAt: LocalDateTime,
 
 	@Schema(description = "削除日時", example = "2023-01-01T01:01:01.111111")
-	private val deletedAt: LocalDateTime? = null,
+	val deletedAt: LocalDateTime? = null,
 
 	) {
 
@@ -43,5 +43,5 @@ data class VoltageDataGetResponse(
 			)
 		}
 	}
-	
+
 }

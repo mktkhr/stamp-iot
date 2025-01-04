@@ -12,37 +12,37 @@ import java.time.LocalDateTime
 @Schema(description = "環境データ")
 data class EnvironmentalDataGetResponse(
 	@Schema(description = "測定データマスターID", example = "1")
-	private val measuredDataMasterId: Long,
+	val measuredDataMasterId: Long,
 
 	@Schema(description = "DOY", example = "111.11")
-	private val dayOfYear: String,
+	val dayOfYear: String,
 
 	@Schema(description = "大気圧", example = "1011.11")
-	private val airPress: String? = null,
+	val airPress: String? = null,
 
 	@Schema(description = "気温", example = "11.11")
-	private val temp: String? = null,
+	val temp: String? = null,
 
 	@Schema(description = "相対湿度", example = "77.77")
-	private val humi: String? = null,
+	val humi: String? = null,
 
 	@Schema(description = "二酸化炭素濃度", example = "1111.11")
-	private val co2Concent: String? = null,
+	val co2Concent: String? = null,
 
 	@Schema(description = "総揮発性有機化合物", example = "11.11")
-	private val tvoc: String? = null,
+	val tvoc: String? = null,
 
 	@Schema(description = "アナログ値", example = "11.11")
-	private val analogValue: String? = null,
+	val analogValue: String? = null,
 
 	@Schema(description = "作成日時", example = "2023-01-01T01:01:01.111111")
-	private val createdAt: LocalDateTime,
+	val createdAt: LocalDateTime,
 
 	@Schema(description = "更新日時", example = "2023-01-01T01:01:01.111111")
-	private val updatedAt: LocalDateTime,
+	val updatedAt: LocalDateTime,
 
 	@Schema(description = "削除日時", example = "2023-01-01T01:01:01.111111")
-	private val deletedAt: LocalDateTime? = null
+	val deletedAt: LocalDateTime? = null
 ) {
 	companion object {
 		fun convertFromEnvironmentalData(
