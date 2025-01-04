@@ -1,0 +1,28 @@
+package com.example.stamp_app.entity
+
+object DummyData {
+	const val REGISTER_POST_PATH = "/ems/account/register"
+	const val LOGIN_POST_PATH = "/ems/account/login"
+	const val MEASURED_DATA_POST_PATH = "/ems/measured-data"
+	const val MEASURED_DATA_GET_PATH = "/ems/measured-data"
+	const val MICROCONTROLLER_PATCH_PATH = "/ems/micro-controller/detail"
+	const val MICROCONTROLLER_POST_PATH = "/ems/micro-controller"
+	const val MICROCONTROLLER_GET_PATH = "/ems/micro-controller/detail"
+	const val MICROCONTROLLER_NO_SESSION_GET_PATH = "/ems/micro-controller/detail/no-session"
+	const val INVALID_7_LENGTH_PASSWORD = "A123456"
+	const val VALID_8_LENGTH_PASSWORD = "A1234567"
+	const val INVALID_8_LENGTH_PASSWORD = "a1234567"
+	const val VALID_9_LENGTH_PASSWORD = "A12345678"
+	const val VALID_23_LENGTH_PASSWORD = "A1234567890123456789012"
+	const val VALID_24_LENGTH_PASSWORD = "A12345678901234567890123"
+	const val INVALID_24_LENGTH_PASSWORD = "a12345678901234567890123"
+	const val INVALID_25_LENGTH_PASSWORD = "A123456789012345678901234"
+	const val VALID_EMAIL_ADDRESS = "aaa@example.com"
+	const val INVALID_EMAIL_ADDRESS = "aaaexample.com"
+	const val INVALID_UUID = "a"
+	const val VALID_UUID = "4e540b38-31f8-40b4-9602-44dea41e5c5a"
+	const val INVALID_INTERVAL = "100"
+	const val INVALID_SDI_ADDRESS = "11"
+	const val INVALID_MAC_ADDRESS = "a"
+	const val VALID_MAC_ADDRESS = "AA:AA:AA:AA:AA:AA"
+}
