@@ -169,12 +169,11 @@ class MeasuredDataService(
 					.filter { measuredData: Sdi12Data ->
 						measuredData.measuredDataMaster.sdi12Data != null &&
 							measuredData.measuredDataMaster.id != null &&
-							measuredData.measuredDataMaster.dayOfYear != null &&
 							measuredData.measuredDataMaster.microController.id == microController.id &&
 							measuredData.measuredDataMaster.microController.account!!.uuid.toString() == userUuid
 					}
 					.map { measuredData: Sdi12Data ->
-						if (measuredData.measuredDataMaster.id != null && measuredData.measuredDataMaster.dayOfYear != null) {
+						if (measuredData.measuredDataMaster.id != null) {
 							return@map Sdi12DataGetResponse.convertFromSdi12Data(
 								measuredData,
 								measuredData.measuredDataMaster.id,
