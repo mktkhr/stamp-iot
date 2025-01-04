@@ -99,7 +99,7 @@ class MeasuredDataController(
 		@RequestParam
 		@Pattern(
 			regexp = "^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})$",
-			message = "UUID patter is invalid"
+			message = "UUID pattern is invalid"
 		)
 		microControllerUuid: String
 	): ResponseEntity<MeasuredDataGetResponse> {
