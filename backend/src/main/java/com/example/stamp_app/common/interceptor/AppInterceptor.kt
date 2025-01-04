@@ -23,16 +23,16 @@ class AppInterceptor : HandlerInterceptor {
 	}
 
 	@Autowired
-	var sessionService: SessionService? = null
+	private lateinit var sessionService: SessionService
 
 	@Autowired
-	var redisService: RedisService? = null
+	private lateinit var redisService: RedisService
 
 	@Autowired
-	var requestedUser: RequestedUser? = null
+	private lateinit var requestedUser: RequestedUser
 
 	@Value("\${spring.profiles.active}")
-	var activeProfile: String? = null
+	private lateinit var activeProfile: String
 
 	/**
 	 * Cookieを基に，セッションの有無を確認する
@@ -61,15 +61,15 @@ class AppInterceptor : HandlerInterceptor {
 			return true
 		}
 		val cookieList = request.cookies
-		val sessionUuid = sessionService!!.getSessionUuidFromCookie(cookieList)
+		val sessionUuid = sessionService.getSessionUuidFromCookie(cookieList)
 		if (sessionUuid == null) {
 			log.error("セッションの取得に失敗")
 			throw ResponseStatusException(HttpStatus.BAD_REQUEST)
 		}
-		val userUuid = redisService!!.getUserUuidFromSessionUuid(sessionUuid)
+		val userUuid = redisService.getUserUuidFromSessionUuid(sessionUuid)
 		if (userUuid != null) {
-			requestedUser!!.sessionUuid = sessionUuid
-			requestedUser!!.userUuid = userUuid
+			requestedUser.sessionUuid = sessionUuid
+			requestedUser.userUuid = userUuid
 			log.info(requestedUser.toString())
 			response.status = HttpStatus.OK.value()
 			return true
