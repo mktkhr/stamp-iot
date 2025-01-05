@@ -233,5 +233,7 @@ const generateColorStringFromIndex = (index: number) => {
       return 'rgba(255, 0, 255, 0.5)';
     case 6:
       return 'rgba(0, 255, 255, 0.5)';
+    default:
+      return 'rgba(0, 0, 0, 0.5)';
   }
 };
