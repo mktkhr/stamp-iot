@@ -14,7 +14,6 @@ export const useRegister = () => {
   const mailAddressError = ref('');
   const passwordError = ref('');
   const passwordConfirmError = ref('');
-  const showNotification = ref(false);
   const notificationMessage = ref('');
 
   const accountStore = AccountStore();
@@ -69,11 +68,15 @@ export const useRegister = () => {
       .register(mailAddressRef.value, passwordRef.value)
       .then(() => {
         notificationMessage.value = i18n.global.t('Register.successfullyRegistered');
-        showNotification.value = true;
-        setTimeout(() => {
-          showNotification.value = false;
-          router.replace('/login');
-        }, 1500);
+
+        router.replace('/login');
+
+        alertStore.addAlert({
+          id: '',
+          type: 'info',
+          content: 'アカウントの登録に成句しました。再度ログインしてください。',
+          timeInSec: 5,
+        });
       })
       .catch((e) => {
         const statusCode = e.response.status.toString();
