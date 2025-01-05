@@ -23,12 +23,8 @@ export const AccountStore = defineStore('AccountStore', {
      * Cookieの情報を基にredisからアカウントUUIDを取得し，アカウントUUIDからアカウント情報をもらってstoreに保存
      */
     async fetchAccountInfo() {
-      let accountInfo: AccountInfoState;
-      try {
-        accountInfo = await getAccountInfo();
-      } finally {
-        this.$state.account = accountInfo;
-      }
+      const accountInfo = await getAccountInfo();
+      this.$state.account = accountInfo;
     },
     async login(mailAddress: string, password: string) {
       const spinnerStore = SpinnerStore();
