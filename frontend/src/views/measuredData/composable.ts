@@ -10,7 +10,7 @@ import {
 import { AlertStore } from '@/store/alertStore';
 import { MeasuredDataStore } from '@/store/measuredDataStore';
 import { MicroControllerStore } from '@/store/microControllerStore';
-import { generateRandowmString } from '@/utils/stringUtil';
+import { generateRandomString } from '@/utils/stringUtil';
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import { computed, ref } from 'vue';
 
@@ -27,7 +27,7 @@ export const useMeasuredData = (microControllerUuid: string) => {
       }
 
       alertStore.addAlert({
-        id: generateRandowmString(),
+        id: generateRandomString(),
         type: 'alert',
         content: notificationMessage.value,
         timeInSec: 5,

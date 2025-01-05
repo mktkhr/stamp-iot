@@ -7,7 +7,7 @@ import { i18n } from '@/main';
 import { AccountStore } from '@/store/accountStore';
 import { AlertStore } from '@/store/alertStore';
 import { MicroControllerStore } from '@/store/microControllerStore';
-import { generateRandowmString } from '@/utils/stringUtil';
+import { generateRandomString } from '@/utils/stringUtil';
 
 export const useHome = () => {
   const alertStore = AlertStore();
@@ -25,7 +25,7 @@ export const useHome = () => {
       }
 
       alertStore.addAlert({
-        id: generateRandowmString(),
+        id: generateRandomString(),
         type: 'alert',
         content: notificationMessage.value,
         timeInSec: 5,
@@ -61,7 +61,7 @@ export const useHome = () => {
         }
 
         alertStore.addAlert({
-          id: generateRandowmString(),
+          id: generateRandomString(),
           type: 'alert',
           content: notificationMessage.value,
           timeInSec: 5,

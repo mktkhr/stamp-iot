@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3';
 
 import { AlertContent, AlertStore } from '@/store/alertStore';
-import { generateRandowmString } from '@/utils/stringUtil';
+import { generateRandomString } from '@/utils/stringUtil';
 import CommonAlertGroup from './CommonAlertGroup.vue';
 
 const meta = {
@@ -25,28 +25,28 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 const ALERT: AlertContent = {
-  id: generateRandowmString(),
+  id: generateRandomString(),
   type: 'alert',
   content: 'Alert',
   timeInSec: 3,
 };
 
 const WARNING: AlertContent = {
-  id: generateRandowmString(),
+  id: generateRandomString(),
   type: 'warning',
   content: 'Warning',
   timeInSec: 4,
 };
 
 const SUCCESS: AlertContent = {
-  id: generateRandowmString(),
+  id: generateRandomString(),
   type: 'success',
   content: 'Success',
   timeInSec: 5,
 };
 
 const INFO: AlertContent = {
-  id: generateRandowmString(),
+  id: generateRandomString(),
   type: 'info',
   content: 'Info',
   timeInSec: 6,

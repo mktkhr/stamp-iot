@@ -3,7 +3,7 @@
  * @param length 生成する文字列の長さ
  * @returns 生成した文字列
  */
-export const generateRandowmString = (length: number = 16) => {
+export const generateRandomString = (length: number = 16) => {
   const sourceCharacters: string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   const randomValues = new Uint32Array(length);
   crypto.getRandomValues(randomValues);
