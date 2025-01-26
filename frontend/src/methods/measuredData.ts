@@ -89,7 +89,7 @@ export class MeasuredDataset {
   }
 }
 
-export class Sdi12ChartConfig {
+export type Sdi12ChartConfig = {
   x: {
     type: 'linear'; // 軸のタイプ指定(詳細不明だが，linearでないと全データが等間隔で表示される)
     display: true; // 表示の有無
