@@ -203,13 +203,13 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
 });
 
 class datasetFrame {
-  label: string;
-  data: Array<{ x: number; y: number }>;
+  label: string = '';
+  data: Array<{ x: number; y: number }> = [];
   fill?: boolean;
-  lineTension: number;
-  borderColor: string;
-  pointStyle: string;
-  pointRadius: number;
+  lineTension: number = 0;
+  borderColor: string = 'rgba(0, 0, 0, 0.5)';
+  pointStyle: string = '';
+  pointRadius: number = 0;
 }
 
 /**
