@@ -5,6 +5,16 @@ export class MeasuredDataState {
   sdi12Data: Array<Sdi12DataState>;
   environmentalData: Array<EnvironmentalDataState>;
   voltageData: Array<VoltageDataState>;
+
+  constructor(
+    sdi12Data: Array<Sdi12DataState>,
+    environmentalData: Array<EnvironmentalDataState>,
+    voltageData: Array<VoltageDataState>
+  ) {
+    this.sdi12Data = sdi12Data;
+    this.environmentalData = environmentalData;
+    this.voltageData = voltageData;
+  }
 }
 
 export type Sdi12DataState = {
@@ -59,6 +69,24 @@ export class MeasuredDataset {
   borderColor: string;
   pointStyle: string;
   pointRadius: number;
+
+  constructor(
+    label: string,
+    data: number[],
+    fill: boolean | undefined,
+    lineTension: number,
+    borderColor: string,
+    pointStyle: string,
+    pointRadius: number
+  ) {
+    this.label = label;
+    this.data = data;
+    this.fill = fill;
+    this.lineTension = lineTension;
+    this.borderColor = borderColor;
+    this.pointStyle = pointStyle;
+    this.pointRadius = pointRadius;
+  }
 }
 
 export class Sdi12ChartConfig {
