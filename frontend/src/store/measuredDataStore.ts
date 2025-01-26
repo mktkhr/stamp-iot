@@ -10,7 +10,7 @@ import { i18n } from '@/main';
 
 export const MeasuredDataStore = defineStore('MeasuredDataStore', {
   state: () => ({
-    measuredDataList: new MeasuredDataState(),
+    measuredDataList: new MeasuredDataState([], [], []),
   }),
 
   getters: {
