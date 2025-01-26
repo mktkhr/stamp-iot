@@ -122,7 +122,7 @@ export type Sdi12ChartConfig = {
       // stepSize: 0.1,
     };
   };
-}
+};
 
 /**
  * SDI-12のキーワードから凡例に表示する文言を返す
