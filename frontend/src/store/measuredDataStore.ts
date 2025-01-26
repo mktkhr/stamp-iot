@@ -10,7 +10,7 @@ import { i18n } from '@/main';
 
 export const MeasuredDataStore = defineStore('MeasuredDataStore', {
   state: () => ({
-    measuredDataList: new MeasuredDataState(),
+    measuredDataList: new MeasuredDataState([], [], []),
   }),
 
   getters: {
@@ -65,72 +65,88 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
             data = [];
             sdi12Dataset.label = '';
           } else if (dataType == 'vwc') {
-            data = measuredData.dataList.map((data) => {
-              return { x: data.dayOfYear, y: data.vwc };
-            });
+            data = measuredData.dataList
+              .filter((data) => data.vwc != undefined)
+              .map((data) => {
+                return { x: data.dayOfYear, y: data.vwc ?? 0 }; // NOTE: vwcのundefinedはfilter済み
+              });
             sdi12Dataset.label =
               i18n.global.t('MeasuredData.volumetricWaterContent') +
               '(アドレス:' +
               measuredData.sdiAddress +
               ')';
           } else if (dataType == 'brp') {
-            data = measuredData.dataList.map((data) => {
-              return { x: data.dayOfYear, y: data.brp };
-            });
+            data = measuredData.dataList
+              .filter((data) => data.brp != undefined)
+              .map((data) => {
+                return { x: data.dayOfYear, y: data.brp ?? 0 }; // NOTE: brpのundefinedはfilter済み
+              });
             sdi12Dataset.label =
               i18n.global.t('MeasuredData.bulkRelativePermittivity') +
               '(アドレス:' +
               measuredData.sdiAddress +
               ')';
           } else if (dataType == 'soilTemp') {
-            data = measuredData.dataList.map((data) => {
-              return { x: data.dayOfYear, y: data.soilTemp };
-            });
+            data = measuredData.dataList
+              .filter((data) => data.soilTemp != undefined)
+              .map((data) => {
+                return { x: data.dayOfYear, y: data.soilTemp ?? 0 }; // NOTE: soilTempのundefinedはfilter済み
+              });
             sdi12Dataset.label =
               i18n.global.t('MeasuredData.temperature') +
               '(アドレス:' +
               measuredData.sdiAddress +
               ')';
           } else if (dataType == 'sbec') {
-            data = measuredData.dataList.map((data) => {
-              return { x: data.dayOfYear, y: data.sbec };
-            });
+            data = measuredData.dataList
+              .filter((data) => data.sbec != undefined)
+              .map((data) => {
+                return { x: data.dayOfYear, y: data.sbec ?? 0 }; // NOTE: sbecのundefinedはfilter済み
+              });
             sdi12Dataset.label =
               i18n.global.t('MeasuredData.bulkElectricConductivity') +
               '(アドレス:' +
               measuredData.sdiAddress +
               ')';
           } else if (dataType == 'spwec') {
-            data = measuredData.dataList.map((data) => {
-              return { x: data.dayOfYear, y: data.spwec };
-            });
+            data = measuredData.dataList
+              .filter((data) => data.spwec != undefined)
+              .map((data) => {
+                return { x: data.dayOfYear, y: data.spwec ?? 0 }; // NOTE: spwecのundefinedはfilter済み
+              });
             sdi12Dataset.label =
               i18n.global.t('MeasuredData.soilPoreWaterElectricConductivity') +
               '(アドレス:' +
               measuredData.sdiAddress +
               ')';
           } else if (dataType == 'gax') {
-            data = measuredData.dataList.map((data) => {
-              return { x: data.dayOfYear, y: data.gax };
-            });
+            data = measuredData.dataList
+              .filter((data) => data.gax != undefined)
+              .map((data) => {
+                return { x: data.dayOfYear, y: data.gax ?? 0 }; // NOTE: gaxのundefinedはfilter済み
+              });
             sdi12Dataset.label =
               i18n.global.t('MeasuredData.gravitationalAccelerationX') +
               '(アドレス:' +
               measuredData.sdiAddress +
               ')';
           } else if (dataType == 'gay') {
-            data = measuredData.dataList.map((data) => {
-              return { x: data.dayOfYear, y: data.gay };
-            });
+            data = measuredData.dataList
+              .filter((data) => data.gay != undefined)
+              .map((data) => {
+                return { x: data.dayOfYear, y: data.gay ?? 0 }; // NOTE: gayのundefinedはfilter済み
+              });
             sdi12Dataset.label =
               i18n.global.t('MeasuredData.gravitationalAccelerationY') +
               '(アドレス:' +
               measuredData.sdiAddress +
               ')';
           } else if (dataType == 'gaz') {
-            data = measuredData.dataList.map((data) => {
-              return { x: data.dayOfYear, y: data.gaz };
-            });
+            data = measuredData.dataList
+              .filter((data) => data.gaz != undefined)
+              .map((data) => {
+                return { x: data.dayOfYear, y: data.gaz ?? 0 }; // NOTE: gazのundefinedはfilter済み
+              });
             sdi12Dataset.label =
               i18n.global.t('MeasuredData.gravitationalAccelerationZ') +
               '(アドレス:' +
@@ -170,7 +186,7 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
           (data: EnvironmentalDataState) => {
             if (dataType === '') {
               environmentalDataset.label = '';
-              return { x: '', y: '' };
+              return { x: 0, y: 0 };
             } else if (dataType === 'airPress') {
               environmentalDataset.label = i18n.global.t('MeasuredData.airPressure');
               return { x: data.dayOfYear, y: data.airPress };
@@ -191,6 +207,9 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
             } else if (dataType === 'analogValue') {
               environmentalDataset.label = i18n.global.t('MeasuredData.analogValue');
               return { x: data.dayOfYear, y: data.analogValue };
+            } else {
+              environmentalDataset.label = '';
+              return { x: 0, y: 0 };
             }
           }
         );
@@ -203,13 +222,13 @@ export const MeasuredDataStore = defineStore('MeasuredDataStore', {
 });
 
 class datasetFrame {
-  label: string;
-  data: Array<{ x: number; y: number }>;
+  label: string = '';
+  data: Array<{ x: number; y: number }> = [];
   fill?: boolean;
-  lineTension: number;
-  borderColor: string;
-  pointStyle: string;
-  pointRadius: number;
+  lineTension: number = 0;
+  borderColor: string = 'rgba(0, 0, 0, 0.5)';
+  pointStyle: string = '';
+  pointRadius: number = 0;
 }
 
 /**
@@ -233,5 +252,7 @@ const generateColorStringFromIndex = (index: number) => {
       return 'rgba(255, 0, 255, 0.5)';
     case 6:
       return 'rgba(0, 255, 255, 0.5)';
+    default:
+      return 'rgba(0, 0, 0, 0.5)';
   }
 };

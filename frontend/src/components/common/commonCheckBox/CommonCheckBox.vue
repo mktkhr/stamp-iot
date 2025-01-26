@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { generateRandowmString } from '@/utils/stringUtil';
+import { generateRandomString } from '@/utils/stringUtil';
 
 interface Props {
   title: string;
@@ -9,7 +9,7 @@ withDefaults(defineProps<Props>(), {
 });
 
 const modelValue = defineModel();
-const inputId = generateRandowmString();
+const inputId = generateRandomString();
 </script>
 <template>
   <div class="wrapper-input">

@@ -6,7 +6,7 @@ import { i18n } from '@/main';
 import validation from '@/methods/validation';
 import { AccountStore } from '@/store/accountStore';
 import { AlertStore } from '@/store/alertStore';
-import { generateRandowmString } from '@/utils/stringUtil';
+import { generateRandomString } from '@/utils/stringUtil';
 
 export const useLogin = () => {
   const mailAddressRef = ref('');
@@ -48,7 +48,7 @@ export const useLogin = () => {
     if (validate()) {
       alertStore.addAlert(
         {
-          id: generateRandowmString(),
+          id: generateRandomString(),
           type: 'warning',
           content: i18n.global.t('Validation.Error.invalid'),
           timeInSec: 5,
@@ -73,7 +73,7 @@ export const useLogin = () => {
         }
 
         alertStore.addAlert({
-          id: generateRandowmString(),
+          id: generateRandomString(),
           type: 'alert',
           content: notificationMessage.value,
           timeInSec: 5,

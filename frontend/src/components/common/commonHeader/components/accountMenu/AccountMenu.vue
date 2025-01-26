@@ -4,6 +4,7 @@ import CommonOverlay from '@/components/common/commonOverlay/CommonOverlay.vue';
 import { AccountStore } from '@/store/accountStore';
 import { ref } from 'vue';
 import AccountDeleteDialog from '../accountDeleteDialog/AccountDeleteDialog.vue';
+import router from '@/router';
 
 const showDeleteDialog = ref(false);
 
@@ -36,6 +37,7 @@ const onClickAccountDeleteAccept = async () => {
  */
 const onClickLogout = async () => {
   await accountStore.logout();
+  router.replace('/login');
 };
 </script>
 <template>

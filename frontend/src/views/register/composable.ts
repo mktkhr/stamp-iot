@@ -4,7 +4,7 @@ import validation from '@/methods/validation';
 import router from '@/router';
 import { AccountStore } from '@/store/accountStore';
 import { AlertStore } from '@/store/alertStore';
-import { generateRandowmString } from '@/utils/stringUtil';
+import { generateRandomString } from '@/utils/stringUtil';
 import { ref } from 'vue';
 
 export const useRegister = () => {
@@ -14,7 +14,6 @@ export const useRegister = () => {
   const mailAddressError = ref('');
   const passwordError = ref('');
   const passwordConfirmError = ref('');
-  const showNotification = ref(false);
   const notificationMessage = ref('');
 
   const accountStore = AccountStore();
@@ -56,7 +55,7 @@ export const useRegister = () => {
     if (validate()) {
       alertStore.addAlert(
         {
-          id: generateRandowmString(),
+          id: generateRandomString(),
           type: 'warning',
           content: i18n.global.t('Validation.Error.invalid'),
           timeInSec: 5,
@@ -69,11 +68,15 @@ export const useRegister = () => {
       .register(mailAddressRef.value, passwordRef.value)
       .then(() => {
         notificationMessage.value = i18n.global.t('Register.successfullyRegistered');
-        showNotification.value = true;
-        setTimeout(() => {
-          showNotification.value = false;
-          router.replace('/login');
-        }, 1500);
+
+        router.replace('/login');
+
+        alertStore.addAlert({
+          id: '',
+          type: 'info',
+          content: 'アカウントの登録に成句しました。再度ログインしてください。',
+          timeInSec: 5,
+        });
       })
       .catch((e) => {
         const statusCode = e.response.status.toString();
@@ -88,7 +91,7 @@ export const useRegister = () => {
         }
 
         alertStore.addAlert({
-          id: generateRandowmString(),
+          id: generateRandomString(),
           type: 'alert',
           content: notificationMessage.value,
           timeInSec: 5,

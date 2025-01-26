@@ -5,6 +5,16 @@ export class MeasuredDataState {
   sdi12Data: Array<Sdi12DataState>;
   environmentalData: Array<EnvironmentalDataState>;
   voltageData: Array<VoltageDataState>;
+
+  constructor(
+    sdi12Data: Array<Sdi12DataState>,
+    environmentalData: Array<EnvironmentalDataState>,
+    voltageData: Array<VoltageDataState>
+  ) {
+    this.sdi12Data = sdi12Data;
+    this.environmentalData = environmentalData;
+    this.voltageData = voltageData;
+  }
 }
 
 export type Sdi12DataState = {
@@ -23,7 +33,7 @@ export type VoltageDataState = {
 
 export type Sdi12Data = {
   measuredDataMasterId?: number;
-  dayOfYear?: number;
+  dayOfYear: number;
   vwc?: number;
   soilTemp?: number;
   brp?: number;
@@ -59,9 +69,27 @@ export class MeasuredDataset {
   borderColor: string;
   pointStyle: string;
   pointRadius: number;
+
+  constructor(
+    label: string,
+    data: number[],
+    fill: boolean | undefined,
+    lineTension: number,
+    borderColor: string,
+    pointStyle: string,
+    pointRadius: number
+  ) {
+    this.label = label;
+    this.data = data;
+    this.fill = fill;
+    this.lineTension = lineTension;
+    this.borderColor = borderColor;
+    this.pointStyle = pointStyle;
+    this.pointRadius = pointRadius;
+  }
 }
 
-export class Sdi12ChartConfig {
+export type Sdi12ChartConfig = {
   x: {
     type: 'linear'; // 軸のタイプ指定(詳細不明だが，linearでないと全データが等間隔で表示される)
     display: true; // 表示の有無
@@ -94,7 +122,7 @@ export class Sdi12ChartConfig {
       // stepSize: 0.1,
     };
   };
-}
+};
 
 /**
  * SDI-12のキーワードから凡例に表示する文言を返す

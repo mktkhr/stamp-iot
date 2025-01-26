@@ -1,4 +1,4 @@
-import { generateRandowmString } from '@/utils/stringUtil';
+import { generateRandomString } from '@/utils/stringUtil';
 import { onMounted, ref, Ref, watch } from 'vue';
 
 export const useMenu = (
@@ -20,7 +20,7 @@ export const useMenu = (
   const CONTENT_MARGIN = 8; // anchorとcontentとのmargin(px)
 
   // 画面内に複数のmenuが存在した場合に
-  const menuContentId = generateRandowmString();
+  const menuContentId = generateRandomString();
 
   /**
    * menuのcontent以外をクリックした際に発火する処理
