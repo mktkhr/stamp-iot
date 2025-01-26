@@ -33,7 +33,7 @@ export type VoltageDataState = {
 
 export type Sdi12Data = {
   measuredDataMasterId?: number;
-  dayOfYear?: number;
+  dayOfYear: number;
   vwc?: number;
   soilTemp?: number;
   brp?: number;
