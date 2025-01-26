@@ -43,6 +43,7 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.dbunit:dbunit:2.8.0")
 	testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 	testImplementation("org.mockito:mockito-core:5.4.0")
 	testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
