@@ -1,0 +1,35 @@
+server:
+  port: 8082
+domain: localhost
+spring:
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    # Show JPA query
+    show-sql: false
+  properties:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+    # Connection settings for UnitTest
+    url: jdbc:postgresql://localhost:5433/ems_db?useUnicode=true&characterEncoding=UTF-8&serverTimeZone=JST
+  data:
+    redis:
+      host: redis
+      port: 6379
+      database: 0
+  session:
+    # Disable spring.session
+    store-type: none
+  # enable flyway.clean()
+  flyway:
+    clean-disabled: false
+
+hibernate:
+  jdbc:
+    lob:
+      non_contextual_creation: true
