@@ -39,7 +39,7 @@ jobs:
         run: mv ./backend/build/libs/server.jar server.jar
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jar-file
           path: server.jar
