@@ -54,4 +54,49 @@ class AccountServiceTest : TestBase() {
 
 	}
 
+	@Nested
+	inner class DeleteAccountTest {
+
+		@Test
+		@DisplayName("存在するUUIDのアカウントを削除した場合，正常に削除できること")
+		fun `case2-1`() {
+
+			val expectedAccount = AccountGetResponse(
+				1L,
+				"TestAccount",
+				LocalDateTime.parse("2025-01-01T01:00"),
+				LocalDateTime.parse("2025-01-01T01:00")
+			)
+
+			loadDatasetAndInsert("src/test/resources/service/account/case2.xml")
+
+			val account = accountService.getAccountInfo("8ea20e98-043d-4117-8a24-771351bce045")
+
+			assertEquals(expectedAccount, account)
+
+			accountService.deleteAccount("8ea20e98-043d-4117-8a24-771351bce045")
+
+			assertThrows<IllegalArgumentException> { accountService.getAccountInfo("8ea20e98-043d-4117-8a24-771351bce045") }
+		}
+
+		@Test
+		@DisplayName("存在しないUUIDのアカウントを削除しようとした場合，エラーになること")
+		fun `case2-2`() {
+
+			loadDatasetAndInsert("src/test/resources/service/account/case2.xml")
+
+			assertThrows<IllegalArgumentException> { accountService.deleteAccount("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa") }
+		}
+
+		@Test
+		@DisplayName("すでに論理削除済みのアカウントを削除しようとした場合，エラーになること")
+		fun `case2-3`() {
+
+			loadDatasetAndInsert("src/test/resources/service/account/case2-3.xml")
+
+			assertThrows<IllegalArgumentException> { accountService.deleteAccount("8ea20e98-043d-4117-8a24-771351bce045") }
+		}
+
+	}
+
 }
