@@ -1,6 +1,8 @@
 package com.example.stamp_app.service.account
 
+import com.example.stamp_app.controller.param.account.LoginPostParam
 import com.example.stamp_app.controller.response.AccountGetResponse
+import com.example.stamp_app.domain.exception.EMSResourceNotFoundException
 import com.example.stamp_app.service.AccountService
 import com.example.stamp_app.service.TestBase
 import jakarta.transaction.Transactional
@@ -91,6 +93,61 @@ class AccountServiceTest : TestBase() {
 		@Test
 		@DisplayName("すでに論理削除済みのアカウントを削除しようとした場合，エラーになること")
 		fun `case2-3`() {
+
+			loadDatasetAndInsert("src/test/resources/service/account/case2-3.xml")
+
+			assertThrows<IllegalArgumentException> { accountService.deleteAccount("8ea20e98-043d-4117-8a24-771351bce045") }
+		}
+
+	}
+
+	@Nested
+	inner class LoginTest {
+
+		@Test
+		@DisplayName("Paramのemailに該当するアカウントが存在しない場合，エラーになること")
+		fun `case3-1`() {
+
+			val loginPostParam = LoginPostParam(
+				"test@example.com",
+				"TestTest"
+			)
+
+			assertThrows<EMSResourceNotFoundException> { accountService.login(loginPostParam) }
+
+		}
+
+		@Test
+		@DisplayName("Paramのemailに該当するアカウントが存在するが，論理削除済みの場合，エラーになること")
+		fun `case3-2`() {
+
+			loadDatasetAndInsert("src/test/resources/service/account/case3-2.xml")
+
+			val loginPostParam = LoginPostParam(
+				"test@example.com",
+				"TestTest"
+			)
+
+			assertThrows<EMSResourceNotFoundException> { accountService.login(loginPostParam) }
+		}
+
+		@Test
+		@DisplayName("Paramのemailに該当するアカウントが存在するが，パスワードが一致しない場合，エラーになること")
+		fun `case3-3`() {
+
+			loadDatasetAndInsert("src/test/resources/service/account/case3.xml")
+
+			val loginPostParam = LoginPostParam(
+				"test@example.com",
+				"HogeHoge"
+			)
+
+			assertThrows<IllegalAccessException> { accountService.login(loginPostParam) }
+		}
+
+		@Test
+		@DisplayName("Paramのemailに該当するアカウントが存在し，パスワードも一致する場合，正常にログインできること")
+		fun `case3-4`() {
 
 			loadDatasetAndInsert("src/test/resources/service/account/case2-3.xml")
 
