@@ -1,0 +1,12 @@
+<dataset>
+    <account
+            id="1"
+            uuid="8ea20e98-043d-4117-8a24-771351bce045"
+            mail_address="test@example.com"
+            name="TestAccount"
+            password="0c74c6051287c95df4cf530675cacced"
+            created_at="2025-01-01 01:00:00.000"
+            updated_at="2025-01-01 01:00:00.000"
+            deleted_at="[null]"
+    />
+</dataset>

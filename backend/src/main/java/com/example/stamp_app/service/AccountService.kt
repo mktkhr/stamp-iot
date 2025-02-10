@@ -97,7 +97,7 @@ class AccountService(
 		val account = accountRepository.findByUuid(UUID.fromString(userUuid))
 
 		// アカウントが存在しない場合，400を返す
-		if (account == null) {
+		if (account == null || account.deletedAt != null) {
 			log.error("This account does not exist.")
 			throw IllegalArgumentException()
 		}
@@ -120,8 +120,8 @@ class AccountService(
 	fun deleteAccount(userUuid: @NotNull String?) {
 		val account = accountRepository.findByUuid(UUID.fromString(userUuid))
 
-		// アカウントが存在しない場合，400を返す
-		if (account == null) {
+		// アカウントが存在しない場合，すでに削除されている場合，400を返す
+		if (account == null || account.deletedAt != null) {
 			log.error("This account does not exist.")
 			throw IllegalArgumentException()
 		}

@@ -17,6 +17,22 @@ services:
     networks:
       - compose-network
 
+  postgres-unit-test:
+    image: postgres:16.2
+    container_name: postgres-unit-test
+    ports:
+      - 5433:5432
+    volumes:
+      - type: volume
+        source: postgres-db-unit-test
+        target: /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ems_db
+    networks:
+      - compose-network
+
   redis:
     image: redis:7.2.4
     container_name: redis
@@ -79,6 +95,7 @@ services:
 
 volumes:
   postgres-db:
+  postgres-db-unit-test:
   redis-db:
 
 networks:

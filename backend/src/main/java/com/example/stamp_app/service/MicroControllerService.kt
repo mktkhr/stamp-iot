@@ -34,12 +34,8 @@ class MicroControllerService(
 		val microController = microControllerRepository.findByMacAddress(macAddress)
 			?: throw EMSResourceNotFoundException("")
 
-		// 対象のマイクロコントローラーがDB上に存在しなかった場合，404を返す
-
 		// リクエストしたアカウント情報を取得
 		val requestedAccount = accountRepository.findById(userId) ?: throw EMSResourceNotFoundException("")
-
-		// 対象のアカウントが存在しなかった場合，400を返す
 
 		// 既にマイクロコントローラーがアカウントに紐づけられていた場合，401を返す
 		if (microController.account != null) {
@@ -71,7 +67,7 @@ class MicroControllerService(
 			microController.sdi12Address,
 			microController.createdAt!!,
 			microController.updatedAt!!,
-			microController.deletedAt!!
+			microController.deletedAt
 		)
 	}
 
