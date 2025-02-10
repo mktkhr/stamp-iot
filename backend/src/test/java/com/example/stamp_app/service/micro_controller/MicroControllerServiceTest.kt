@@ -215,4 +215,47 @@ class MicroControllerServiceTest : TestBase() {
 		}
 
 	}
+
+	@Nested
+	inner class GetMicroControllerDetailWithMacAddressTest {
+
+		@Test
+		@DisplayName("存在しないMacAddressが指定された場合，EMSResourceNotFoundExceptionが発生すること")
+		fun `case4-1`() {
+			assertThrows<EMSResourceNotFoundException> {
+				microControllerService.getMicroControllerDetailWithMacAddress("BB:BB:BB:BB:BB:BB")
+			}
+		}
+
+		@Test
+		@DisplayName("存在するMacAddressが指定された場合，正常に取得できること")
+		fun `case4-2`() {
+
+			loadDatasetAndInsert("src/test/resources/service/micro_controller/case4.xml")
+
+			val microControllerDetail =
+				microControllerService.getMicroControllerDetailWithMacAddress("AA:AA:AA:AA:AA:AA")
+
+			val expectedMicroController = MicroController(
+				1,
+				UUID.fromString("1ea20e98-043d-4117-8a24-771351bce045"),
+				"テスト端末",
+				"AA:AA:AA:AA:AA:AA",
+				"60",
+				"1",
+				LocalDateTime.parse("2025-01-01T01:00:00.000"),
+				LocalDateTime.parse("2025-01-01T01:00:00.000"),
+				null,
+				null,
+				null
+			)
+
+			// NOTE: accountとmeasuredMasterを含めるとStackOverflowが発生するため，nullに変更する
+			val ignoreAccountAndMeasuredDataMaster =
+				microControllerDetail.copy(account = null, measuredDataMasters = null)
+
+			Assertions.assertEquals(expectedMicroController, ignoreAccountAndMeasuredDataMaster)
+		}
+
+	}
 }
