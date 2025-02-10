@@ -7,7 +7,6 @@ import com.example.stamp_app.domain.exception.EMSResourceDuplicationException
 import com.example.stamp_app.domain.exception.EMSResourceNotFoundException
 import com.example.stamp_app.service.AccountService
 import com.example.stamp_app.service.TestBase
-import jakarta.transaction.Transactional
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
@@ -17,6 +16,7 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.Rollback
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @SpringBootTest
