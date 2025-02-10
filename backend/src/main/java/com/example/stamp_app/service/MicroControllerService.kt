@@ -34,8 +34,6 @@ class MicroControllerService(
 		val microController = microControllerRepository.findByMacAddress(macAddress)
 			?: throw EMSResourceNotFoundException("")
 
-		// 対象のマイクロコントローラーがDB上に存在しなかった場合，404を返す
-
 		// リクエストしたアカウント情報を取得
 		val requestedAccount = accountRepository.findById(userId) ?: throw EMSResourceNotFoundException("")
 
