@@ -1,5 +1,6 @@
 package com.example.stamp_app.service.micro_controller
 
+import com.example.stamp_app.controller.param.microController.MicroControllerPatchParam
 import com.example.stamp_app.controller.response.MicroControllerGetResponse
 import com.example.stamp_app.domain.exception.EMSResourceDuplicationException
 import com.example.stamp_app.domain.exception.EMSResourceNotFoundException
@@ -253,6 +254,78 @@ class MicroControllerServiceTest : TestBase() {
 			// NOTE: accountとmeasuredMasterを含めるとStackOverflowが発生するため，nullに変更する
 			val ignoreAccountAndMeasuredDataMaster =
 				microControllerDetail.copy(account = null, measuredDataMasters = null)
+
+			Assertions.assertEquals(expectedMicroController, ignoreAccountAndMeasuredDataMaster)
+		}
+
+	}
+
+	@Nested
+	inner class UpdateMicroControllerDetailTest {
+
+		@Test
+		@DisplayName("存在しないUUIDのMicroControllerが指定された場合，EMSResourceNotFoundExceptionが発生すること")
+		fun `case5-1`() {
+			val param = MicroControllerPatchParam(
+				UUID.fromString("99999999-043d-4117-8a24-771351bce045"),
+				"更新先端末名",
+				"10",
+				"1,2,3"
+			)
+
+			assertThrows<EMSResourceNotFoundException> {
+				microControllerService.updateMicroControllerDetail("8ea20e98-043d-4117-8a24-771351bce045", param)
+			}
+		}
+
+		@Test
+		@DisplayName("存在しないUUIDのユーザーが指定された場合，EMSResourceNotFoundExceptionが発生すること")
+		fun `case5-2`() {
+			val param = MicroControllerPatchParam(
+				UUID.fromString("1ea20e98-043d-4117-8a24-771351bce045"),
+				"更新先端末名",
+				"10",
+				"1,2,3"
+			)
+
+			assertThrows<EMSResourceNotFoundException> {
+				microControllerService.updateMicroControllerDetail("11111111-043d-4117-8a24-771351bce045", param)
+			}
+		}
+
+		@Test
+		@DisplayName("リクエストに問題がない場合，正常に更新できること")
+		fun `case5-3`() {
+			loadDatasetAndInsert("src/test/resources/service/micro_controller/case5.xml")
+
+			val param = MicroControllerPatchParam(
+				UUID.fromString("1ea20e98-043d-4117-8a24-771351bce045"),
+				"更新先端末名",
+				"10",
+				"1,2,3"
+			)
+
+			val updatedMicroController =
+				microControllerService.updateMicroControllerDetail("8ea20e98-043d-4117-8a24-771351bce045", param)
+
+			val expectedMicroController = MicroController(
+				1,
+				UUID.fromString("1ea20e98-043d-4117-8a24-771351bce045"),
+				"更新先端末名",
+				"AA:AA:AA:AA:AA:AA",
+				"10",
+				"1,2,3",
+				LocalDateTime.parse("2025-01-01T01:00:00.000"),
+				null,
+				null,
+				null,
+				null
+			)
+
+			// NOTE: accountとmeasuredMasterを含めるとStackOverflowが発生するため，nullに変更する
+			// NOTE: updated_atはテスト実行のタイミングによって変わるため，nullに変更する
+			val ignoreAccountAndMeasuredDataMaster =
+				updatedMicroController.copy(account = null, measuredDataMasters = null, updatedAt = null)
 
 			Assertions.assertEquals(expectedMicroController, ignoreAccountAndMeasuredDataMaster)
 		}
