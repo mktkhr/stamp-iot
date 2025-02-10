@@ -67,7 +67,7 @@ class MicroControllerService(
 			microController.sdi12Address,
 			microController.createdAt!!,
 			microController.updatedAt!!,
-			microController.deletedAt!!
+			microController.deletedAt
 		)
 	}
 
