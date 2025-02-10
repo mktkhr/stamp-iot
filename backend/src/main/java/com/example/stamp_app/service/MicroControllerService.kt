@@ -39,8 +39,6 @@ class MicroControllerService(
 		// リクエストしたアカウント情報を取得
 		val requestedAccount = accountRepository.findById(userId) ?: throw EMSResourceNotFoundException("")
 
-		// 対象のアカウントが存在しなかった場合，400を返す
-
 		// 既にマイクロコントローラーがアカウントに紐づけられていた場合，401を返す
 		if (microController.account != null) {
 			throw EMSResourceDuplicationException("")
