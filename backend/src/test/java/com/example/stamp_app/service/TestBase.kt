@@ -72,6 +72,6 @@ abstract class TestBase {
 		val replaced = ReplacementDataSet(dataSet).apply {
 			addReplacementObject("[null]", null)
 		}
-		DatabaseOperation.CLEAN_INSERT.execute(dbUnitConnection, replaced)
+		DatabaseOperation.INSERT.execute(dbUnitConnection, replaced)
 	}
 }
