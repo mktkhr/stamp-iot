@@ -1,11 +1,14 @@
 package com.example.stamp_app.service.account
 
 import com.example.stamp_app.controller.param.account.LoginPostParam
+import com.example.stamp_app.controller.param.account.RegisterPostParam
 import com.example.stamp_app.controller.response.AccountGetResponse
+import com.example.stamp_app.domain.exception.EMSResourceDuplicationException
 import com.example.stamp_app.domain.exception.EMSResourceNotFoundException
 import com.example.stamp_app.service.AccountService
 import com.example.stamp_app.service.TestBase
 import jakarta.transaction.Transactional
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -152,6 +155,54 @@ class AccountServiceTest : TestBase() {
 			loadDatasetAndInsert("src/test/resources/service/account/case2-3.xml")
 
 			assertThrows<IllegalArgumentException> { accountService.deleteAccount("8ea20e98-043d-4117-8a24-771351bce045") }
+		}
+
+	}
+
+	@Nested
+	inner class AddAccountTest {
+
+		@Test
+		@DisplayName("同一のEmailのアカウントが既に存在する場合，エラーになること")
+		fun `case4-1`() {
+
+			loadDatasetAndInsert("src/test/resources/service/account/case4.xml")
+
+			val registerPostParam = RegisterPostParam(
+				"test@example.com",
+				"TestTest"
+			)
+
+			assertThrows<EMSResourceDuplicationException> { accountService.addAccount(registerPostParam) }
+		}
+
+		@Test
+		@DisplayName("Emailが重複しないアカウントの場合，正常に登録できること")
+		fun `case4-2`() {
+
+			val registerPostParam = RegisterPostParam(
+				"test@example.com",
+				"TestTest"
+			)
+
+			assertDoesNotThrow { accountService.addAccount(registerPostParam) }
+
+			val expectedAccount = AccountGetResponse(
+				1L,
+				"TestAccount",
+				LocalDateTime.parse("2025-01-01T01:00"),
+				LocalDateTime.parse("2025-01-01T01:00")
+			)
+
+			val savedAccount = accountService.getAccountInfo("8ea20e98-043d-4117-8a24-771351bce045")
+
+			// NOTE: created_at, updated_atの差分を吸収する
+			val ignoreDates = savedAccount.copy(
+				createdAt = LocalDateTime.parse("2025-01-01T01:00"),
+				updatedAt = LocalDateTime.parse("2025-01-01T01:00")
+			)
+
+			assertEquals(expectedAccount, savedAccount)
 		}
 
 	}
