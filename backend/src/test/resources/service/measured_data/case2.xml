@@ -1,0 +1,153 @@
+<dataset>
+    <account
+            id="1"
+            uuid="8ea20e98-043d-4117-8a24-771351bce045"
+            mail_address="test@example.com"
+            name="TestAccount"
+            password="0c74c6051287c95df4cf530675cacced"
+            created_at="2025-01-01 01:00:00.000"
+            updated_at="2025-01-01 01:00:00.000"
+            deleted_at="[null]"
+    />
+
+    <account
+            id="2"
+            uuid="8ea20e98-043d-4117-8a24-771351bce046"
+            mail_address="test2@example.com"
+            name="TestAccount2"
+            password="0c74c6051287c95df4cf530675cacced"
+            created_at="2025-01-01 01:00:00.000"
+            updated_at="2025-01-01 01:00:00.000"
+            deleted_at="[null]"
+    />
+
+    <micro_controller
+            id="1"
+            uuid="1ea20e98-043d-4117-8a24-771351bce045"
+            interval="60"
+            mac_address="AA:AA:AA:AA:AA:AA"
+            name="テスト端末"
+            sdi12address="1"
+            created_at="2025-01-01 01:00:00.000"
+            updated_at="2025-01-01 01:00:00.000"
+            deleted_at="[null]"
+            account_id="1"
+    />
+
+    <!--アカウント紐付きなし-->
+    <micro_controller
+            id="2"
+            uuid="2ea20e98-043d-4117-8a24-771351bce045"
+            interval="60"
+            mac_address="BB:BB:BB:BB:BB:BB"
+            name="テスト端末B"
+            sdi12address="1,2,3"
+            created_at="2025-01-01 01:00:00.000"
+            updated_at="2025-01-01 01:00:00.000"
+            deleted_at="[null]"
+            account_id="[null]"
+    />
+
+    <measured_data_master
+            id="1"
+            voltage="12.34"
+            day_of_year="1"
+            created_at="2025-01-01 01:00:00.000"
+            updated_at="2025-01-01 01:00:00.000"
+            deleted_at="[null]"
+            micro_controller_id="1"
+    />
+
+    <measured_data_master
+            id="2"
+            voltage="23.45"
+            day_of_year="1.1"
+            created_at="2025-01-01 02:00:00.000"
+            updated_at="2025-01-01 02:00:00.000"
+            deleted_at="[null]"
+            micro_controller_id="1"
+    />
+
+    <sdi12data
+            id="1"
+            bulk_relative_permittivity="1.234"
+            gravitational_accelerationxaxis="2.345"
+            gravitational_accelerationyaxis="3.456"
+            gravitational_accelerationzaxis="4.567"
+            soil_bulk_electric_conductivity="5.67"
+            sdi_address="1"
+            soil_temperature="12.34"
+            soil_pore_water_electric_conductivity="23.45"
+            volumetric_water_content="34.56"
+            measured_data_master_id="1"
+            sensor_id="1"
+    />
+
+    <sdi12data
+            id="2"
+            bulk_relative_permittivity="1.234"
+            gravitational_accelerationxaxis="2.345"
+            gravitational_accelerationyaxis="3.456"
+            gravitational_accelerationzaxis="4.567"
+            soil_bulk_electric_conductivity="5.67"
+            sdi_address="2"
+            soil_temperature="12.34"
+            soil_pore_water_electric_conductivity="23.45"
+            volumetric_water_content="34.56"
+            measured_data_master_id="1"
+            sensor_id="1"
+    />
+
+    <sdi12data
+            id="3"
+            bulk_relative_permittivity="2.345"
+            gravitational_accelerationxaxis="3.456"
+            gravitational_accelerationyaxis="4.567"
+            gravitational_accelerationzaxis="5.678"
+            soil_bulk_electric_conductivity="6.789"
+            sdi_address="1"
+            soil_temperature="23.45"
+            soil_pore_water_electric_conductivity="34.56"
+            volumetric_water_content="45.67"
+            measured_data_master_id="2"
+            sensor_id="1"
+    />
+
+    <sdi12data
+            id="4"
+            bulk_relative_permittivity="2.345"
+            gravitational_accelerationxaxis="3.456"
+            gravitational_accelerationyaxis="4.567"
+            gravitational_accelerationzaxis="5.678"
+            soil_bulk_electric_conductivity="6.789"
+            sdi_address="2"
+            soil_temperature="23.45"
+            soil_pore_water_electric_conductivity="34.56"
+            volumetric_water_content="45.67"
+            measured_data_master_id="2"
+            sensor_id="1"
+    />
+
+    <environmental_data
+            id="1"
+            atmospheric_pressure="1234.56"
+            analog_value="123"
+            co2concentration="1234"
+            relative_humidity="12.34"
+            temperature="23.45"
+            total_volatile_organic_compounds="345"
+            measured_data_master_id="1"
+    />
+
+    <environmental_data
+            id="2"
+            atmospheric_pressure="2345.67"
+            analog_value="234"
+            co2concentration="2345"
+            relative_humidity="23.45"
+            temperature="34.56"
+            total_volatile_organic_compounds="456"
+            measured_data_master_id="2"
+    />
+
+</dataset>
