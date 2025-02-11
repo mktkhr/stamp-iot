@@ -1,0 +1,40 @@
+<dataset>
+    <account
+            id="1"
+            uuid="8ea20e98-043d-4117-8a24-771351bce045"
+            mail_address="test@example.com"
+            name="TestAccount"
+            password="0c74c6051287c95df4cf530675cacced"
+            created_at="2025-01-01 01:00:00.000"
+            updated_at="2025-01-01 01:00:00.000"
+            deleted_at="[null]"
+    />
+
+    <micro_controller
+            id="1"
+            uuid="1ea20e98-043d-4117-8a24-771351bce045"
+            interval="60"
+            mac_address="AA:AA:AA:AA:AA:AA"
+            name="テスト端末"
+            sdi12address="1"
+            created_at="2025-01-01 01:00:00.000"
+            updated_at="2025-01-01 01:00:00.000"
+            deleted_at="[null]"
+            account_id="1"
+    />
+
+    <!--アカウント紐付きなし-->
+    <micro_controller
+            id="2"
+            uuid="2ea20e98-043d-4117-8a24-771351bce045"
+            interval="60"
+            mac_address="BB:BB:BB:BB:BB:BB"
+            name="テスト端末B"
+            sdi12address="1,2,3"
+            created_at="2025-01-01 01:00:00.000"
+            updated_at="2025-01-01 01:00:00.000"
+            deleted_at="[null]"
+            account_id="[null]"
+    />
+
+</dataset>
