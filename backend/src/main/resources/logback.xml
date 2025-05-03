@@ -1,73 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
-    <timestamp key="LOG_DATE" datePattern="yyyyMMdd"/>
-    <property name="LOG_FILE" value="application.log"/>
-    <property name="LOG_DIR" value="./logs/"/>
+    <property name="LOG_PATH_LOCAL" value="./logs"/>
+    <property name="LOG_FILE_LOCAL" value="application.log"/>
+    <property name="LOG_LEVEL" value="INFO"/>
 
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <encoder>
-            <pattern>${FILE_LOG_PATTERN}</pattern>
-        </encoder>
-        <file>${LOG_DIR}${LOG_FILE}</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_DIR}%d{yyyyMMdd}.${LOG_FILE}</fileNamePattern>
-            <maxHistory>5</maxHistory>
-        </rollingPolicy>
-    </appender>
+    <!-- ローカル環境 -->
+    <springProfile name="local,unit-test">
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH_LOCAL}/${LOG_FILE_LOCAL}</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH_LOCAL}/%d{yyyyMMdd}.log.zip</fileNamePattern>
+                <maxHistory>5</maxHistory>
+            </rollingPolicy>
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <timestamp>
+                        <fieldName>timestamp</fieldName>
+                    </timestamp>
 
-    <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
-        <target>System.err</target>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>WARN</level>
-        </filter>
-        <encoder>
-            <pattern>%date %level [%thread] %logger %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <target>System.out</target>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>DEBUG</level>
-            <onMatch>ACCEPT</onMatch>
-        </filter>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>INFO</level>
-            <onMatch>ACCEPT</onMatch>
-        </filter>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>TRACE</level>
-            <onMatch>ACCEPT</onMatch>
-        </filter>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>WARN</level>
-            <onMatch>DENY</onMatch>
-        </filter>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>DENY</onMatch>
-        </filter>
-        <encoder>
-            <pattern>%date %level [%thread] %logger %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <!-- dev では INFO 以上を出力 -->
-    <springProfile name="dev">
-        <root level="INFO">
+                    <logLevel/>
+                    <threadName/>
+                    <loggerName/>
+                    <message/>
+                    <stackTrace/>
+                </providers>
+            </encoder>
+        </appender>
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%thread] %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+        <root level="${LOG_LEVEL}">
             <appender-ref ref="FILE"/>
             <appender-ref ref="STDOUT"/>
-            <appender-ref ref="STDERR"/>
         </root>
     </springProfile>
 
-    <!-- production では INFO 以上を出力 -->
+    <!-- 本番環境 -->
     <springProfile name="prod">
-        <root level="INFO">
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <timestamp>
+                        <fieldName>timestamp</fieldName>
+                    </timestamp>
+
+                    <logLevel/>
+                    <threadName/>
+                    <loggerName/>
+                    <message/>
+                    <stackTrace/>
+                </providers>
+            </encoder>
+        </appender>
+
+        <root level="${LOG_LEVEL}">
             <appender-ref ref="STDOUT"/>
-            <appender-ref ref="STDERR"/>
         </root>
     </springProfile>
 
