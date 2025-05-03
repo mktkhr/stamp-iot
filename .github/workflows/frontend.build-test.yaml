@@ -96,27 +96,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Docker meta(PROD)
-        id: meta-prod
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ghcr.io/mktkhr/stamp-iot/nginx
-          tags: |
-            type=raw,value=latest
-            type=sha,prefix=,suffix=,format=short
-
-      - name: Build and push(PROD)
-        uses: docker/build-push-action@v6
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile-eks
-          push: true
-          tags: ${{ steps.meta-prod.outputs.tags }}
-          platforms: linux/amd64,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
   screenshot-main:
     name: Take Expected Screenshots At Main Branch
     runs-on: [self-hosted]
