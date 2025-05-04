@@ -110,7 +110,6 @@ jobs:
 
       # 以下はキャッシュが存在しなかった場合に実行される
       - name: Use Node.js ${{ matrix.node-version }}
-        if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
         uses: ./.github/workflows/composite/frontend-setup
 
       - name: Restore or build storybook # キャッシュにスクショが保存されてなかったらStorybookをビルドしてスクショ撮影する
