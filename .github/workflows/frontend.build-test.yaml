@@ -121,6 +121,9 @@ jobs:
         if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
         run: echo "${{ secrets.EMS_PASS }}" | sudo -S apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2-dev libdrm-dev libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2t64
 
+      - name: Install Chrome for Puppeteer
+        run: npx puppeteer browsers install chrome
+
       - name: Take expected screenshots
         if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
         run: yarn storycap:ci
@@ -163,6 +166,9 @@ jobs:
 
       - name: Install Chrome for puppeteer
         run: echo "${{ secrets.EMS_PASS }}" | sudo -S apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2-dev libdrm-dev libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2t64
+
+      - name: Install Chrome for Puppeteer
+        run: npx puppeteer browsers install chrome
 
       - name: Take actual screenshots
         run: yarn storycap:ci
