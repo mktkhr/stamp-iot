@@ -20,18 +20,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "yarn"
-          cache-dependency-path: ./frontend/yarn.lock
-
       - name: Install packages
-        run: |
-          npm install -g yarn
-          yarn
-        working-directory: ./frontend
+        uses: ./.github/workflows/composite/frontend-setup
 
       - name: Run build
         run: yarn build:prod

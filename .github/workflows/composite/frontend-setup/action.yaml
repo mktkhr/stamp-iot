@@ -9,15 +9,13 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: 20.15.1
-        cache: yarn
-        cache-dependency-path: ./frontend/yarn.lock
     # キャッシュが存在するかを確認する
     - name: Restore node_modules From Cache
       id: node_modules_cache
       uses: actions/cache@v4
       with:
-        path: node_modules
-        key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn-lock.json') }}
+        path: frontend/node_modules
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('frontend/yarn.lock') }}
     # キャッシュが存在しなかった場合はInstall
     - name: Install Dependencies
       if: ${{ steps.node_modules_cache.outputs.cache-hit != 'true'}}
