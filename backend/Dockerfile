@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM eclipse-temurin:21.0.3_9-jre-ubi9-minimal
+FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jre
 
 RUN /usr/sbin/adduser stamp-group && /usr/sbin/useradd -g stamp-group -u 10001 stamp-user
 RUN mkdir logs && chown -R stamp-user logs
