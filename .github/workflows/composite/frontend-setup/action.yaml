@@ -16,11 +16,15 @@ runs:
       with:
         path: frontend/node_modules
         key: ${{ runner.os }}-node-modules-${{ hashFiles('frontend/yarn.lock') }}
-    # キャッシュが存在しなかった場合はInstall
-    - name: Install Dependencies
-      if: ${{ steps.node_modules_cache.outputs.cache-hit != 'true'}}
+
+    - name: Install yarn
       run: |
         cd frontend
         npm install -g yarn
-        yarn
+      shell: bash
+
+    # キャッシュが存在しなかった場合はInstall
+    - name: Install Dependencies
+      if: ${{ steps.node_modules_cache.outputs.cache-hit != 'true'}}
+      run: yarn
       shell: bash
