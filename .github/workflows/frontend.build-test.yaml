@@ -65,17 +65,17 @@ jobs:
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Docker meta(DEV)
+      - name: Docker meta
         id: meta-dev
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/mktkhr/stamp-iot/nginx-dev
+            ghcr.io/mktkhr/stamp-iot/nginx
           tags: |
             type=raw,value=latest
             type=sha,prefix=,suffix=,format=short
 
-      - name: Build and push(DEV)
+      - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
