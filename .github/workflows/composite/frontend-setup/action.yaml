@@ -26,5 +26,7 @@ runs:
     # キャッシュが存在しなかった場合はInstall
     - name: Install Dependencies
       if: ${{ steps.node_modules_cache.outputs.cache-hit != 'true'}}
-      run: yarn
+      run: |
+        cd frontend
+        yarn
       shell: bash
