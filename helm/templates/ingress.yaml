@@ -18,3 +18,10 @@ spec:
                 name: nginx-service
                 port:
                   number: 8080
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: java-service
+                port:
+                  number: 8082
