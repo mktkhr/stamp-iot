@@ -20,18 +20,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "yarn"
-          cache-dependency-path: ./frontend/yarn.lock
-
       - name: Install packages
-        run: |
-          npm install -g yarn
-          yarn
-        working-directory: ./frontend
+        uses: ./.github/workflows/composite/frontend-setup
 
       - name: Run build
         run: yarn build:prod
@@ -59,6 +49,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
@@ -75,29 +68,8 @@ jobs:
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Docker meta(DEV)
+      - name: Docker meta
         id: meta-dev
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ghcr.io/mktkhr/stamp-iot/nginx-dev
-          tags: |
-            type=raw,value=latest
-            type=sha,prefix=,suffix=,format=short
-
-      - name: Build and push(DEV)
-        uses: docker/build-push-action@v6
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: ${{ steps.meta-dev.outputs.tags }}
-          platforms: linux/amd64,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Docker meta(PROD)
-        id: meta-prod
         uses: docker/metadata-action@v5
         with:
           images: |
@@ -106,16 +78,14 @@ jobs:
             type=raw,value=latest
             type=sha,prefix=,suffix=,format=short
 
-      - name: Build and push(PROD)
+      - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
-          file: ./frontend/Dockerfile-eks
+          file: ./frontend/Dockerfile
           push: true
-          tags: ${{ steps.meta-prod.outputs.tags }}
+          tags: ${{ steps.meta-dev.outputs.tags }}
           platforms: linux/amd64,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
   screenshot-main:
     name: Take Expected Screenshots At Main Branch
@@ -140,7 +110,6 @@ jobs:
 
       # 以下はキャッシュが存在しなかった場合に実行される
       - name: Use Node.js ${{ matrix.node-version }}
-        if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
         uses: ./.github/workflows/composite/frontend-setup
 
       - name: Restore or build storybook # キャッシュにスクショが保存されてなかったらStorybookをビルドしてスクショ撮影する
@@ -149,7 +118,10 @@ jobs:
 
       - name: Install Chrome for puppeteer
         if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
-        run: apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2-dev libdrm-dev libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2
+        run: echo "${{ secrets.EMS_PASS }}" | sudo -S apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2-dev libdrm-dev libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2
+
+      - name: Install Chrome for Puppeteer
+        run: npx puppeteer browsers install chrome
 
       - name: Take expected screenshots
         if: ${{ steps.expected_screenshots_cache.outputs.cache-hit != 'true'}}
@@ -179,6 +151,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: ./.github/workflows/composite/frontend-setup
@@ -192,7 +166,10 @@ jobs:
         working-directory: ./frontend
 
       - name: Install Chrome for puppeteer
-        run: apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2-dev libdrm-dev libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2
+        run: echo "${{ secrets.EMS_PASS }}" | sudo -S apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2-dev libdrm-dev libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2
+
+      - name: Install Chrome for Puppeteer
+        run: npx puppeteer browsers install chrome
 
       - name: Take actual screenshots
         run: yarn storycap:ci

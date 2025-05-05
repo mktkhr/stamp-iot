@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: ${SPRING_PROFILE_ACTIVE:dev}
+    active: ${SPRING_PROFILE_ACTIVE:local}
   flyway:
     enabled: true
     locations: classpath:db/migration

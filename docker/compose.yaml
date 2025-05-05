@@ -73,26 +73,6 @@ services:
     networks:
       - compose-network
 
-  java:
-    image: amazoncorretto:21.0.4
-    container_name: java
-    tty: true
-    ports:
-      - 7082:7082
-      - 8082:8082
-      - 5005:5005
-    depends_on:
-      - postgres
-      - redis
-    volumes:
-      - type: bind
-        source: ../backend
-        target: /app/backend
-    working_dir: /app/backend
-    command: /bin/bash -c "./gradlew -g cache bootRun --build-cache"
-    networks:
-      - compose-network
-
 volumes:
   postgres-db:
   postgres-db-unit-test:
