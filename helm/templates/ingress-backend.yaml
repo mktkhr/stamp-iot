@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-nginx
+  name: ingress-api
   namespace: {{ .Values.namespace }}
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -12,6 +12,8 @@ metadata:
     nginx.ingress.kubernetes.io/limit-rate-after: "0"
     # lets encrypt
     cert-manager.io/cluster-issuer: letsencrypt-stamp-iot
+    # Path Rewrite
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: nginx
   tls:
@@ -22,10 +24,10 @@ spec:
     - host: {{ .Values.ingress.host }}
       http:
         paths:
-          - path: /
-            pathType: Prefix
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
-                name: nginx-service
+                name: java-service
                 port:
-                  number: {{ .Values.nginx.port }}
+                  number: {{ .Values.java.port }}
