@@ -1,0 +1,31 @@
+# Grafana
+grafana:
+  host: monitor.ems-engineering.site
+  replicaCount: 1
+  envFromSecret: stamp-iot-grafana-secret
+  admin:
+    existingSecret: stamp-iot-grafana-secret
+    userKey: GF_SECURITY_ADMIN_USER
+    passwordKey: GF_SECURITY_ADMIN_PASSWORD
+  ingress:
+    enabled: false
+  persistence:
+    enabled: true
+    existingClaim: grafana-pvc
+
+# Prometheus
+nodeExporter:
+  enabled: true
+
+# Loki
+loki:
+  persistence:
+    enabled: true
+    existingClaim: loki-pvc
+
+# Alloy
+alloy:
+  config:
+    configMap:
+      create: false
+      name: alloy-config
