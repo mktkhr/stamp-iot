@@ -23,9 +23,9 @@ loki:
     enabled: true
     existingClaim: loki-pvc
 
-# Alloy
-alloy:
+# Promtail
+promtail:
+  enabled: true
   config:
-    configMap:
-      create: false
-      name: alloy-config
+    clients:
+      - url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
