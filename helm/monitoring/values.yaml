@@ -22,6 +22,23 @@ loki:
   persistence:
     enabled: true
     existingClaim: loki-pvc
+  config:
+    schema_config:
+      configs:
+        - from: 2020-10-24
+          store: boltdb-shipper
+          object_store: filesystem
+          schema: v11
+          index:
+            prefix: index_
+            period: 24h
+    storage_config:
+      boltdb:
+        directory: /data/loki/index
+      boltdb_shipper:
+        active_index_directory: /data/loki/active
+        cache_location: /data/loki/boltdb-cache
+        shared_store: filesystem
 
 # Promtail
 promtail:
