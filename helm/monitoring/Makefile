@@ -24,28 +24,57 @@ install:
 		--create-namespace \
 		--values $(VALUES_FILE)
 
-upgrade:
-	KUBECONFIG=$(KUBECONFIG) helm upgrade $(RELEASE_NAME) $(CHART_DIR) \
+install-grafana:
+	KUBECONFIG=$(KUBECONFIG) helm install grafana $(CHART_DIR) \
 		--namespace $(NAMESPACE) \
 		--values $(VALUES_FILE)
 
-upgrade-prom:
-	KUBECONFIG=$(KUBECONFIG) helm upgrade kube-prometheus prometheus-community/kube-prometheus-stack \       
+install-prometheus:
+	KUBECONFIG=$(KUBECONFIG) helm install kube-prometheus prometheus-community/kube-prometheus-stack \       
+		--namespace $(NAMESPACE) \
+		--values $(VALUES_FILE)
+
+install-loki:
+	helm install loki grafana/loki-stack \
 		--namespace monitoring \
-		--values values.yaml
+		--set promtail.enabled=true \
+		--values $(VALUES_FILE)
+
+upgrade:
+	KUBECONFIG=$(KUBECONFIG) helm upgrade grafana $(CHART_DIR) \
+		--namespace $(NAMESPACE) \
+		--values $(VALUES_FILE)
+
+upgrade-grafana:
+	KUBECONFIG=$(KUBECONFIG) helm upgrade grafana $(CHART_DIR) \
+		--namespace $(NAMESPACE) \
+		--values $(VALUES_FILE)
+
+upgrade-prometheus:
+	KUBECONFIG=$(KUBECONFIG) helm upgrade kube-prometheus prometheus-community/kube-prometheus-stack \       
+		--namespace $(NAMESPACE) \
+		--values $(VALUES_FILE)
 
 upgrade-loki:
 	KUBECONFIG=$(KUBECONFIG) helm upgrade loki grafana/loki-stack \
-		--namespace monitoring \
-		--values values.yaml
-
-upgrade-alloy:
-	KUBECONFIG=$(KUBECONFIG) helm upgrade alloy grafana/alloy \        
-  --namespace monitoring \
-  --values values.yaml
+		--namespace $(NAMESPACE) \
+		--values $(VALUES_FILE)
 
 uninstall:
 	KUBECONFIG=$(KUBECONFIG) helm uninstall $(RELEASE_NAME) --namespace $(NAMESPACE)
+
+uninstall-grafana:
+	KUBECONFIG=$(KUBECONFIG) helm uninstall grafana $(CHART_DIR) \
+		--namespace $(NAMESPACE)
+
+uninstall-prometheus:
+	KUBECONFIG=$(KUBECONFIG) helm uninstall kube-prometheus prometheus-community/kube-prometheus-stack \       
+		--namespace $(NAMESPACE) \
+		--values $(VALUES_FILE)
+
+uninstall-loki:
+	KUBECONFIG=$(KUBECONFIG) helm uninstall loki \
+		--namespace $(NAMESPACE)
 
 rollback:
 	KUBECONFIG=$(KUBECONFIG) helm rollback $(RELEASE_NAME)
