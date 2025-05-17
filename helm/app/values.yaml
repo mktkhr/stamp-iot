@@ -4,8 +4,8 @@ nginx:
   image: "ghcr.io/mktkhr/stamp-iot/nginx:0617f35"
   port: 8080
   replicas:
-    min: 1
-    max: 3
+    min: 2
+    max: 4
 
 java:
   image: "ghcr.io/mktkhr/stamp-iot/java:manual-arm"
@@ -13,8 +13,8 @@ java:
   actuator:
     port: 7082
   replicas:
-    min: 1
-    max: 3
+    min: 2
+    max: 4
 
 ingress:
   host: www.ems-engineering.jp

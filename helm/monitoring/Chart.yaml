@@ -1,0 +1,7 @@
+apiVersion: v2
+name: stamp-iot-grafana
+version: 0.1.0
+dependencies:
+  - name: grafana
+    version: "8.15.0"
+    repository: "https://grafana.github.io/helm-charts"

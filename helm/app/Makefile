@@ -1,8 +1,8 @@
 # 環境設定
 RELEASE_NAME ?= stamp-iot
-CHART_DIR ?= ./helm
+CHART_DIR ?= .
 NAMESPACE ?= stamp-iot
-VALUES_FILE ?= ./helm/values.yaml
+VALUES_FILE ?= values.yaml
 KUBECONFIG ?= ${HOME}/.kube/config
 POD ?= 
 
@@ -43,13 +43,13 @@ diff:
 status:
 	KUBECONFIG=$(KUBECONFIG) helm status $(RELEASE_NAME) --namespace $(NAMESPACE)
 
-get-values:
+values:
 	KUBECONFIG=$(KUBECONFIG) helm get values $(RELEASE_NAME) --namespace $(NAMESPACE) -o yaml
 
-get-pod:
+pod:
 	kubectl --kubeconfig=$(KUBECONFIG) get pods -o wide -n ${NAMESPACE}
 
-get-node:
+node:
 	kubectl --kubeconfig=$(KUBECONFIG) get nodes -o wide
 
 log:

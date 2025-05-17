@@ -1,0 +1,48 @@
+# Grafana
+grafana:
+  host: monitor.ems-engineering.site
+  replicaCount: 1
+  envFromSecret: stamp-iot-grafana-secret
+  admin:
+    existingSecret: stamp-iot-grafana-secret
+    userKey: GF_SECURITY_ADMIN_USER
+    passwordKey: GF_SECURITY_ADMIN_PASSWORD
+  ingress:
+    enabled: false
+  persistence:
+    enabled: true
+    existingClaim: grafana-pvc
+
+# Prometheus
+nodeExporter:
+  enabled: true
+
+# Loki
+loki:
+  persistence:
+    enabled: true
+    existingClaim: loki-pvc
+  config:
+    schema_config:
+      configs:
+        - from: 2020-10-24
+          store: boltdb-shipper
+          object_store: filesystem
+          schema: v11
+          index:
+            prefix: index_
+            period: 24h
+    storage_config:
+      boltdb:
+        directory: /data/loki/index
+      boltdb_shipper:
+        active_index_directory: /data/loki/active
+        cache_location: /data/loki/boltdb-cache
+        shared_store: filesystem
+
+# Promtail
+promtail:
+  enabled: true
+  config:
+    clients:
+      - url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push

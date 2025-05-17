@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-grafana
+  namespace: {{ .Values.grafana.namespace }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # lets encrypt
+    cert-manager.io/cluster-issuer: letsencrypt-stamp-iot-grafana
+    # Path Rewrite
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.grafana.host }}
+      secretName: stamp-iot-grafana-tls
+  rules:
+    - host: {{ .Values.grafana.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 80
